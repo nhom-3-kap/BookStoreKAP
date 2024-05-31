@@ -7,35 +7,94 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BookStoreKAP.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BookStoreKAP</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+    <header class="header">
+        <section class="header-top">
+            <p>BUY BESTSELLERS AT UNBELIEVABLE DISCOUNTS! </p>
+            <a href="#">SHOP NOW</a>
+        </section>
+
+        <div class="container">
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li>
+                        <a href="#" class="nav-item"><i class="bi bi-geo-alt"></i> <span>Store Location</span> </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item">About Us</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item">Blog</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item">Contact Us</a>
+                    </li>
+                </ul>
+
+                <ul class="nav-list">
+                    <li >
+                        <a href="#" class="nav-item">
+                            <i class="bi bi-person nav-icon"></i>
+                            <span>Login</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="container">
+            <section class="header-search">
+                <div class="header-search-img">
+                    <a href="#">
+                        <img src="images/logo.jpg" alt="logo" />
+                    </a>
+                </div>
+
+                <div class="header-search-content-left">
+                    <div class="header-search-wrap">
+                        <input type="text" placeholder="Search by author, Publisher, Book type, Category, SKU" />
+                        <button class="header-search-btn active"><i class="bi bi-search"></i></button>
+                    </div>
+
+                    <div class="header-search-cart">
+                        <div class="header-search-wrap-cart-icon">
+                            <i class="bi bi-bag"></i>
+                            <span>0</span>
+                        </div>
+                        <p>CART</p>
+                    </div>
+
+                    <div class="header-search-wrap-btn">
+                        <a href="#" class="header-search-btn">
+                            SEE ALL OFFERS
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </header>
+
+    <main role="main" class="app">
+        <nav class="nav-category">
+            <div class="container">
+                <div class="nav-category-inner">
+                    <ul class="nav-category-list">
+                        <li><a class="nav-category-item" href="#">HOME</a></li>
+                        <li><a class="nav-category-item" href="#">NEW RELEASES</a></li>
+                        <li><a class="nav-category-item" href="#">BESTSELLERS</a></li>
+                        <li><a class="nav-category-item" href="#">BOOK REQUEST</a></li>
+                        <li><a class="nav-category-item" href="#">CHA BAR</a></li>
+                        <li><a class="nav-category-item" href="#">FESTIVALS</a></li>
+                        <li><a class="nav-category-item" href="#">EVENTS</a></li>
                     </ul>
-                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+        @RenderBody()
+    </main>
 
     <footer class="border-top footer text-muted">
         <div class="container">

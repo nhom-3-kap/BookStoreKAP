@@ -1,0 +1,42 @@
+﻿.breadcrumb-wrap {
+    display: flex;
+    column-gap: 12px;
+    margin: 40px 0px 22px 0px;
+}
+
+    .breadcrumb-wrap a {
+        color: #888;
+        font-weight: 600;
+    }
+
+        .breadcrumb-wrap a:hover {
+            color: #000;
+        }
+
+    .breadcrumb-wrap b {
+        font-weight: 600;
+    }
+
+.container .container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+.heading {
+    font-size: 26px;
+    line-height: normal;
+    margin-bottom: 26px;
+    text-transform: uppercase;
+    position: relative;
+}
+.content-page p {
+    padding-bottom: 15px;
+    margin-bottom: 0;
+}
+
+.content-page p:last-child {
+    padding-bottom: 0px;
+}
+

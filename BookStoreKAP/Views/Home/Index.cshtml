@@ -60,8 +60,8 @@
         </div>
         <div class="owl-carousel" id="carousel-new-release">
             <div class="owl-carousel-new-release-item">
-                <div class="new-release-card">
-                    <div class="new-release-card-heading">
+                <div class="card-product">
+                    <div class="card-product-heading">
                         <a href="#">
                             <img src="https://www.oxfordbookstore.com/public/uploads/product_images/9788177680171.jpg" />
                         </a>
@@ -69,9 +69,13 @@
                             <i class="bi bi-suit-heart"></i>
                         </button>
                     </div>
-                    <div class="new-release-card-content">
-                        <h6 class="new-release-card-title">The World after Apu Satyajit...</h6>
-                        <div class="new-release-card-desc">
+                    <div class="card-product-content">
+                        <h6 class="card-product-title">
+                            <a href="#">
+                                The World after Apu Satyajit...
+                            </a>
+                        </h6>
+                        <div class="card-product-desc">
                             <span>
                                 <strong>Book Author: </strong>
                             </span>
@@ -79,19 +83,19 @@
                                 Swapan Mullick
                             </span>
                         </div>
-                        <div class="new-release-card-wrap-price">
-                            <span class="new-release-card-current-price">399$</span>
-                            <span class="new-release-card-old-price">499$</span>
+                        <div class="card-product-wrap-price">
+                            <span class="card-product-current-price">399$</span>
+                            <span class="card-product-old-price">499$</span>
                         </div>
                     </div>
-                    <div class="new-release-card-fotter">
+                    <div class="card-product-fotter">
 
-                        <div class="new-release-card-wrap-btn">
-                            <button class="new-release-card-btn">BUY</button>
-                            <button class="new-release-card-btn">ADD TO CARD</button>
+                        <div class="card-product-wrap-btn">
+                            <button class="card-product-btn kap-btn kap-btn-primary">BUY</button>
+                            <button class="card-product-btn kap-btn kap-btn-secondary">ADD TO CARD</button>
                         </div>
 
-                        <div class="new-release-card-wrap-star">
+                        <div class="card-product-wrap-star">
                             <button><i class="bi bi-star"></i></button>
                             <button><i class="bi bi-star"></i></button>
                             <button><i class="bi bi-star"></i></button>
@@ -116,6 +120,14 @@
                 <img src="/images/Heading-Line-R.png" alt="heading left" />
             </div>
         </div>
+
+        @for (int i = 0; i < Model.Count; i++)
+        {
+
+        }
+        <partial name="_CardProductPartial" />
+        <partial name="_CardProductPartial" />
+
     </section>
 
     <section>

@@ -63,7 +63,7 @@ button {
 .card-product {
     border: solid 1.5px #f5f5f5;
     padding: 15px;
-    max-width: 251.2px;
+    max-width: 260px;
 }
 
 .card-product-heading {
@@ -152,7 +152,8 @@ button {
 .card-product-desc {
     text-align: center;
 }
-
+.card-product-wrap-btn{
+}
 .card-product-wrap-price {
     display: flex;
     column-gap: 10px;

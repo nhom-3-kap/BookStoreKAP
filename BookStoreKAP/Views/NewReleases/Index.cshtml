@@ -8,12 +8,12 @@
         <div class="breadcrumb-wrap">
             <a href="/">Home</a>
             <span>&#10095;</span>
-            <p>New Releases</p>
+            <p>@(ViewBag.Service)</p>
             
         </div>
         <div class="header-wrap">
 
-        <h3 class="header">NEW RELEASES</h3>
+        <h3 class="header">@(ViewBag.Service)</h3>
         <div class="wrap-btn">
                 <button class="active"><i class="bi bi-grid"> </i></button>
                 <button><i class="bi bi-list"> </i></button>
@@ -23,7 +23,7 @@
             <div class="col-lg-2">
                 <div class="side-bar">
                     <div class="side-category">
-                        <p>PRODUCT CATEGORIES</p>
+                        <h6>PRODUCT CATEGORIES</h6>
                     
                         <div class="side-bar-item">
                             <p><strong>Books</strong></p>
@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div class="side-price">
-                        <p>PRICE RANGE</p>
+                        <h6>PRICE RANGE</h6>
                         <div >
                             <div class="side-price-item">
                                 <p>Price Range:</p>
@@ -52,38 +52,169 @@
             </div>
             <div class="col-lg-10">
                 <div class="row">
-                    <div class="col-lg-3">
-                        <div class="product-box">
-                            <div class="product-image">
-                                <a href="#"><img src="~/images/Worldworst.jpg" weight="151", height="155"></a>
-                                <div></div>
+                    <div class="col-lg-4">
+                        <div class="card-product">
+                            <div class="card-product-heading">
+                                <a href="#">
+                                    <img src="/images/Worldworst.jpg" />
+                                </a>
+                                <button>
+                                    <i class="bi bi-suit-heart"></i>
+                                </button>
                             </div>
-                            <div>
-                                <p>World's Best Girlfriend</p>
-                                <p>Durjoy Datta</p>
-                                <div>
-                                    <span>29$</span>
-                                    <span>49$</span>
+                            <div class="card-product-content">
+                                <h6 class="card-product-title">
+                                    <a href="#">
+                                        The World after Apu Satyajit...
+                                    </a>
+                                </h6>
+                                <div class="card-product-desc">
+                                    <span>
+                                        <strong>Book Author: </strong>
+                                    </span>
+                                    <span>
+                                        Swapan Mullick
+                                    </span>
+                                </div>
+                                <div class="card-product-wrap-price">
+                                    <span class="card-product-current-price">399$</span>
+                                    <span class="card-product-old-price">499$</span>
                                 </div>
                             </div>
-                            <div>
-                                <button>BUY</button>
-                                <button>ADD TO CART</button>
-                                <div>ngoi</div>
+                            <div class="card-product-fotter">
+
+                                <div class="card-product-wrap-btn">
+                                    <button class="card-product-btn kap-btn kap-btn-primary">BUY</button>
+                                    <button class="card-product-btn kap-btn kap-btn-secondary">ADD TO CARD</button>
+                                </div>
+
+                               
+
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
-                        item
-                    </div>
+                    <div class="col-lg-4">
+                        <div class="card-product">
+                            <div class="card-product-heading">
+                                <a href="#">
+                                    <img src="/images/Worldworst.jpg" />
+                                </a>
+                                <button>
+                                    <i class="bi bi-suit-heart"></i>
+                                </button>
+                            </div>
+                            <div class="card-product-content">
+                                <h6 class="card-product-title">
+                                    <a href="#">
+                                        The World after Apu Satyajit...
+                                    </a>
+                                </h6>
+                                <div class="card-product-desc">
+                                    <span>
+                                        <strong>Book Author: </strong>
+                                    </span>
+                                    <span>
+                                        Swapan Mullick
+                                    </span>
+                                </div>
+                                <div class="card-product-wrap-price">
+                                    <span class="card-product-current-price">399$</span>
+                                    <span class="card-product-old-price">499$</span>
+                                </div>
+                            </div>
+                            <div class="card-product-fotter">
 
-                    <div class="col-lg-3">
-                        item
-                    </div>
+                                <div class="card-product-wrap-btn">
+                                    <button class="card-product-btn kap-btn kap-btn-primary">BUY</button>
+                                    <button class="card-product-btn kap-btn kap-btn-secondary">ADD TO CARD</button>
+                                </div>
 
-                    <div class="col-lg-3">
-                        item
+                                
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card-product">
+                            <div class="card-product-heading">
+                                <a href="#">
+                                    <img src="/images/Worldworst.jpg" />
+                                </a>
+                                <button>
+                                    <i class="bi bi-suit-heart"></i>
+                                </button>
+                            </div>
+                            <div class="card-product-content">
+                                <h6 class="card-product-title">
+                                    <a href="#">
+                                        The World after Apu Satyajit...
+                                    </a>
+                                </h6>
+                                <div class="card-product-desc">
+                                    <span>
+                                        <strong>Book Author: </strong>
+                                    </span>
+                                    <span>
+                                        Swapan Mullick
+                                    </span>
+                                </div>
+                                <div class="card-product-wrap-price">
+                                    <span class="card-product-current-price">399$</span>
+                                    <span class="card-product-old-price">499$</span>
+                                </div>
+                            </div>
+                            <div class="card-product-fotter">
+
+                                <div class="card-product-wrap-btn">
+                                    <button class="card-product-btn kap-btn kap-btn-primary">BUY</button>
+                                    <button class="card-product-btn kap-btn kap-btn-secondary">ADD TO CARD</button>
+                                </div>
+
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card-product">
+                            <div class="card-product-heading">
+                                <a href="#">
+                                    <img src="/images/Worldworst.jpg" />
+                                </a>
+                                <button>
+                                    <i class="bi bi-suit-heart"></i>
+                                </button>
+                            </div>
+                            <div class="card-product-content">
+                                <h6 class="card-product-title">
+                                    <a href="#">
+                                        The World after Apu Satyajit...
+                                    </a>
+                                </h6>
+                                <div class="card-product-desc">
+                                    <span>
+                                        <strong>Book Author: </strong>
+                                    </span>
+                                    <span>
+                                        Swapan Mullick
+                                    </span>
+                                </div>
+                                <div class="card-product-wrap-price">
+                                    <span class="card-product-current-price">399$</span>
+                                    <span class="card-product-old-price">499$</span>
+                                </div>
+                            </div>
+                            <div class="card-product-fotter">
+
+                                <div class="card-product-wrap-btn">
+                                    <button class="card-product-btn kap-btn kap-btn-primary">BUY</button>
+                                    <button class="card-product-btn kap-btn kap-btn-secondary">ADD TO CARD</button>
+                                </div>
+
+                               
+
+                            </div>
+                        </div>
                     </div>
                     
                 </div>

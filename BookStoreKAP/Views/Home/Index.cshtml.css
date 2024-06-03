@@ -59,3 +59,9 @@
         text-transform: uppercase;
         user-select: none;
     }
+
+.section-feature-book,
+.section-bestsellers,
+.section-new-release {
+    margin-bottom: 40px;
+}

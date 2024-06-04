@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Calibri';
-    src: url('/fonts/calibri.woff2') format('woff2'), url('/fonts/calibrib.woff2') format('woff');
+    src: url('/fonts/calibri.woff2') format('woff2'), url('/fonts/calibrib.woff2') format('woff2');
 }
 
 :root {

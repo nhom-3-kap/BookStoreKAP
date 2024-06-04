@@ -1,5 +1,5 @@
-﻿.header{
-    margin-bottom:5px;
+﻿.header {
+    margin-bottom: 5px;
 }
 
 .header-top {
@@ -85,7 +85,7 @@
     .header-search .header-search-content-left {
         display: flex;
         justify-content: space-between;
-        align-items:center;
+        align-items: center;
         column-gap: 35px;
     }
 
@@ -165,8 +165,7 @@
     background-color: transparent;
     padding: 4px 12px;
     color: var(--primary-color);
-    font-size:13px;
-
+    font-size: 13px;
     transition: 0.3s;
 }
 
@@ -175,18 +174,91 @@
     }
 
 .nav-category {
-    padding:15px 0;
+    padding: 15px 0;
     background-color: var(--primary-color);
 }
 
 .nav-category-list {
-    display:flex;
-    align-items:center;
+    display: flex;
+    align-items: center;
     justify-content: space-evenly;
 }
 
 .nav-category-item {
     color: var(--white-color);
-    font-size:18px;
+    font-size: 18px;
     text-transform: uppercase;
+}
+
+.kap-fotter {
+    padding: 20px;
+    margin-top: 40px;
+}
+
+.fotter-item-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-color-light);
+    margin-bottom: 16px;
+}
+
+.wrap-fotter-item-search {
+    margin-bottom: 24px;
+}
+
+.wrap-fotter-search {
+    border: 1px solid var(--black-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fotter-search {
+    border: none;
+    padding: 0.6rem 0.75rem;
+    outline: none;
+    width: 80%;
+}
+
+.fotter-btn-search {
+    background-color: var(--black-color);
+    height: 45.19px;
+    width: 60px;
+}
+
+    .fotter-btn-search > i {
+        color: var(--white-color);
+        font-size: 24px;
+    }
+
+.fotter-desc {
+    font-size: 13px;
+    color: var(--text-color-light);
+    margin-bottom: 16px;
+}
+
+.wrap-fotter-social {
+    display: flex;
+    align-items: center;
+    column-gap: 16px;
+    color: var(--text-color-light);
+    font-weight: 700;
+}
+
+.wrap-social {
+    display: flex;
+    column-gap: 8px;
+    color: var(--text-color-light);
+}
+
+    .wrap-social .social-item {
+        font-size: 13px;
+    }
+
+.fotter-list > li {
+    margin-bottom: 8px;
+}
+
+.fotter-item {
+    color: #777;
 }

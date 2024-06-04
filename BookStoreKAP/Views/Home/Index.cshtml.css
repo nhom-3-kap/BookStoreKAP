@@ -60,8 +60,40 @@
         user-select: none;
     }
 
+.section-sold-book,
 .section-feature-book,
 .section-bestsellers,
 .section-new-release {
     margin-bottom: 40px;
+}
+
+
+.wrap-feature-author {
+    background-image: url("/images/athpbl_bg.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100vw;
+    padding: 40px 0;
+}
+
+.card-author {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-author-img > img {
+    width: 135px !important;
+    height: 135px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.card-author-name {
+    text-align: center;
+    font-size: 16px;
+    color: var(--white-color);
 }

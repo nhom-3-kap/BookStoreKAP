@@ -1,5 +1,6 @@
 ﻿function initializeOwlCarousel(selector, options) {
     $(selector).owlCarousel({
+        autoplay: options.autoplay || true,
         loop: options.loop || true,
         margin: options.margin || 10,
         nav: options.nav || true,
@@ -62,5 +63,21 @@ $(document).ready(function () {
     initializeOwlCarousel("#carousel-sold-book", {
         controlLeft: '.control-left',
         controlRight: '.control-right'
+    });
+
+    initializeOwlCarousel("#carousel-feature-author", {
+        controlLeft: '.control-left',
+        controlRight: '.control-right',
+        responsive: {
+            0: {
+                items: 3
+            },
+            600: {
+                items: 5
+            },
+            1000: {
+                items: 7
+            }
+        }
     });
 });

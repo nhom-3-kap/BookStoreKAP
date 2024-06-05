@@ -45,6 +45,10 @@ button {
 
 /*Button KAP*/
 .kap-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     min-width: 60px;
     padding: 0 10px;
     color: var(--white-color);
@@ -64,7 +68,14 @@ button {
         color: var(--primary-color);
         background-color: transparent;
         border: 1.5px solid var(--primary-color);
+        transition: 0.3s;
     }
+
+        .kap-btn.kap-btn-solid:hover {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            border-color: var(--white-color);
+        }
 /*Component Card Product*/
 .card-product {
     position: relative;
@@ -188,6 +199,10 @@ button {
 }
 
 .card-product-wrap-btn {
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    column-gap: 8px;
 }
 
 .card-product-wrap-price {

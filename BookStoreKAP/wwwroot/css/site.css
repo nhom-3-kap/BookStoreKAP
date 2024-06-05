@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Calibri';
-    src: url('/fonts/calibri.woff2') format('woff2'), url('/fonts/calibrib.woff2') format('woff');
+    src: url('/fonts/calibri.woff2') format('woff2'), url('/fonts/calibrib.woff2') format('woff2');
 }
 
 :root {
@@ -43,8 +43,9 @@ button {
     cursor: pointer;
 }
 
+/*Button KAP*/
 .kap-btn {
-    min-width: 76px;
+    min-width: 60px;
     padding: 0 10px;
     color: var(--white-color);
     text-transform: uppercase;
@@ -59,18 +60,51 @@ button {
         background-color: var(--secondary-color);
     }
 
+    .kap-btn.kap-btn-solid {
+        color: var(--primary-color);
+        background-color: transparent;
+        border: 1.5px solid var(--primary-color);
+    }
 /*Component Card Product*/
 .card-product {
+    position: relative;
     border: solid 1.5px #f5f5f5;
     padding: 15px;
     max-width: 260px;
+    transition: 0.4s linear;
+    overflow: hidden;
 }
+
+    .card-product:hover {
+        border: solid 1.5px #fbe9e9;
+    }
+
+    .card-product::after {
+        content: "";
+        position: absolute;
+        top: 130px;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #f5f5f5;
+        clip-path: polygon(0 0, 100% 14%, 100% 100%, 0% 100%);
+        z-index: 0;
+        -webkit-transition: all 300ms ease-in-out;
+        -moz-transition: all 300ms ease-in-out;
+        transition: all 300ms ease-in-out;
+        z-index: -2;
+    }
+
+    .card-product:hover::after {
+        background-color: #fbe9e9;
+    }
 
 .card-product-heading {
     position: relative;
     padding: 25px 15px 20px 15px;
     transition: 0.3s linear;
     margin-bottom: 15px;
+    background-color: #fff;
 }
 
     .card-product-heading::before {
@@ -79,7 +113,7 @@ button {
         top: 50%;
         left: 50%;
         transform: translate(-50%,-50%);
-        width: 100%;
+        width: calc(100% + 4px);
         height: 0;
         border-left: 1px solid var(--primary-color);
         border-right: 1px solid var(--primary-color);
@@ -94,7 +128,7 @@ button {
         left: 50%;
         transform: translate(-50%,-50%);
         width: 0;
-        height: 100%;
+        height: calc(100% + 4px);
         border-top: 1px solid var(--primary-color);
         border-bottom: 1px solid var(--primary-color);
         transition: 0.4s linear;
@@ -102,11 +136,11 @@ button {
     }
 
     .card-product-heading:hover::before {
-        height: 100%;
+        height: calc(100% + 4px);
     }
 
     .card-product-heading:hover::after {
-        width: 100%;
+        width: calc(100% + 4px);
     }
 
     .card-product-heading > a {
@@ -152,8 +186,10 @@ button {
 .card-product-desc {
     text-align: center;
 }
-.card-product-wrap-btn{
+
+.card-product-wrap-btn {
 }
+
 .card-product-wrap-price {
     display: flex;
     column-gap: 10px;
@@ -177,4 +213,42 @@ button {
     flex-direction: column;
     row-gap: 4px;
     align-items: center;
+}
+
+
+/*CAROUSEL*/
+
+.wrap-carousel {
+    position: relative;
+}
+
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 99;
+}
+
+    .carousel-controls .control {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: var(--white-color);
+    }
+
+        .carousel-controls .control.control-left {
+        }
+
+        .carousel-controls .control.control-left {
+        }
+
+.carousel-btn-more {
+    display: block;
+    margin: 20px auto 0 auto;
 }

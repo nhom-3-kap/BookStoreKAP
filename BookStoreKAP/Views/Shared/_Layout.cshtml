@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BookStoreKAP</title>
+    <title>@ViewData["Title"] | BookStoreKAP</title>
+    <link rel="shortcut icon" href="/images/Logo.png" type="image/x-icon">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BookStoreKAP.styles.css" asp-append-version="true" />
@@ -96,9 +97,77 @@
         @RenderBody()
     </main>
 
-    <footer class="border-top footer text-muted">
+    <footer class="kap-fotter">
         <div class="container">
-            &copy; 2024 - BookStoreKAP - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="wrap-fotter-item">
+                        <div class="wrap-fotter-item-search">
+                            <p class="fotter-item-title">FIND A STORE</p>
+                            <div class="wrap-fotter-search">
+                                <input type="text" value="" class="fotter-search" placeholder="Store name, Location, or ZIP Code"/>
+                                <button class="fotter-btn-search"><i class="bi bi-arrow-right-short"></i></button>
+                            </div>
+                        </div>
+                        <div class="wrap-fotter-item-search">
+                            <p class="fotter-item-title">SIGN UP FOR NEWS, AND UPDATES</p>
+                            <div class="wrap-fotter-search">
+                                <input type="text" value="" class="fotter-search" placeholder="Enter Your Email Address"/>
+                                <button class="fotter-btn-search"><i class="bi bi-arrow-right-short"></i></button>
+                            </div>
+                        </div>
+                        <p class="fotter-desc">Submit your email address to receive Apeejay Oxford Bookstores Pvt. Ltd offers & updates. You can view Apeejay Oxford Bookstores Pvt. Ltd Privacy Policy here.</p>
+                        <div class="wrap-fotter-social">
+                            <p>FOLLOW US</p>
+                            <div class="wrap-social">
+                                <button class="social-item">
+                                    <i class="bi bi-facebook"></i>
+                                </button>
+                                <button class="social-item">
+                                    <i class="bi bi-twitter"></i>
+                                </button>
+                                <button class="social-item">
+                                    <i class="bi bi-instagram"></i>
+                                </button>
+                                <button class="social-item">
+                                    <i class="bi bi-youtube"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="wrap-fotter-item">
+                        <p class="fotter-item-title">SHOPPING GUIDE</p>
+                        <ul class="fotter-list">
+                            <li><a class="fotter-item" href="#">Store Locator</a></li>
+                            <li><a class="fotter-item" href="#">Return Policy</a></li>
+                            <li><a class="fotter-item" href="#">Payments & Shipping</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="wrap-fotter-item">
+                        <p class="fotter-item-title">INFORMATION</p>
+                        <ul class="fotter-list">
+                            <li><a class="fotter-item" href="#">About Us</a></li>
+                            <li><a class="fotter-item" href="#">Blog</a></li>
+                            <li><a class="fotter-item" href="#">Careers</a></li>
+                            <li><a class="fotter-item" href="#">Contact Us</a></li>
+                            <li><a class="fotter-item" href="#">Privacy policy</a></li>
+                            <li><a class="fotter-item" href="#">Terms & condition</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="wrap-fotter-item">
+                        <p class="fotter-item-title">QUICK HELP</p>
+                        <ul class="fotter-list">
+                            <li><a class="fotter-item" href="#">Help Center</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

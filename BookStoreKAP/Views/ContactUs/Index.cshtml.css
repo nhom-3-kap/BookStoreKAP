@@ -1,0 +1,163 @@
+﻿/* General Styles */
+.container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.breadcrumb-wrap {
+    display: flex;
+    column-gap: 12px;
+    margin: 40px 0px 22px 0px;
+}
+
+    .breadcrumb-wrap a {
+        color: #888;
+        font-weight: 600;
+    }
+
+        .breadcrumb-wrap a:hover {
+            color: #000;
+        }
+
+    .breadcrumb-wrap b {
+        font-weight: 600;
+    }
+
+.header {
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.header-wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.wrap-btn > button {
+    background-color: transparent;
+    padding: 6px 10px;
+    border: 1px solid #444;
+}
+
+    .wrap-btn > button.active > i {
+        color: #ff0000;
+    }
+
+.heading {
+    font-size: 21px;
+    margin-bottom: 20px;
+    color: #333;
+}
+.cd-heading h3 {
+    margin-bottom: 20px;
+}
+
+.cd-wrap {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+    .cd-wrap h3 {
+        font-size: 20px;
+        line-height: normal;
+        font-family: Calibri;
+        font-weight:bold;
+    }
+
+    .cd-wrap h5 p,
+    .cd-wrap h5 strong,
+    .cd-wrap h5 a {
+        margin: 0;
+        color: #ffffff;
+        font-size: 14px;
+        font-family: Calibri;
+        font-weight: bold;
+    }
+.col-md-5 {
+    background-color: #CA1F26;
+    color: white;
+}
+
+.contact-detail-wrap {
+    background: #da1f26;
+    padding: 80px 60px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.cd-form-wrap {
+    padding: 30px 40px;
+    background: #f2f2f2;
+    height: 100%;
+}
+    .cd-form-wrap .form-control {
+        border: 0px;
+        border-bottom: 1px solid #afafaf;
+        height: 40px;
+        border-radius: 0px;
+        box-shadow: none;
+        outline: none;
+        color: #000;
+        padding-left: 0px;
+        background: transparent;
+    }
+    .cd-form-wrap textarea.form-control {
+        height: 120px;
+        resize: none;
+    }
+input {
+    overflow: visible;
+}
+.form-control, input[type=text], input[type=email], input[type=tel], input[type=file], input[type=search], input[type=date], input[type=time], textarea, select {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.cd-cont i {
+    margin-right: 10px;
+}
+
+.fc-box input, .fc-box textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.err {
+    color: red;
+}
+
+.viewmore {
+    border: solid 1px #da1f26;
+    padding: 10px 25px;
+    color: #da1f26;
+    font-weight: 600;
+    display: inline-block;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all .3s;
+    margin-top: 15px;
+    margin-left: 15px;
+}
+
+    .viewmore:hover {
+        background: #da1f26;
+        color: #fff;
+        text-decoration: none;
+        transition: all .3s;
+    }

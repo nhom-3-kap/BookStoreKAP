@@ -1,0 +1,85 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div>
+    <div class="container">
+        <div class="breadcrumb-wrap">
+            <a href="/">Home</a>
+            <span>&#10095;</span>
+            <p>CONTACT US</p>
+
+        </div>
+        <section class="login sectiongap">
+            <div class="container">
+                <div class="row no-gutters justify-content-center">
+                    <!--
+                                        <div class="col-md-12">
+                                            <div class="section-title">
+                                                <h2><span>Login</span></h2>
+                                            </div>
+                                        </div>
+                    -->
+                    <div class="col-lg-5 col-md-6">
+                        <div class="left-log">
+                            <img src="https://www.oxfordbookstore.com/public/customResource/apeejay-frontend/images/log-bg.jpg">
+                        </div>
+                    </div>
+                    <div class="col-lg-5 col-md-6">
+                        <div class="form-wrap">
+                            <h5>Login</h5>
+                            <form action="https://www.oxfordbookstore.com/login" method="post" id="loginform" novalidate="novalidate">
+                                <input type="hidden" name="_token" value="YkfMKlXTfxOWSl5YCTd6AKrQCL9SJ2UKYGexWApR">                                <div class="form-group">
+                                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email id" name="email">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="password">
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="rem_me" name="rem_me" value="1">
+                                        <label class="form-check-label" for="exampleCheck1">Remember Me</label>
+                                    </div>
+                                    <a href="https://www.oxfordbookstore.com/forgot-password">Forgot Password</a>
+                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                <span id="captcha_error" style="color: red; display: none;">Validate Captcha</span>
+                                <div class="form-group">
+
+                                    <div class="g-recaptcha" data-sitekey="6Lc6nfMlAAAAAIF1kGsOj5cW3HVBtVpiH2h7bolB" id="RecaptchaField1"><div style="width: 304px; height: 78px;"><div><iframe title="reCAPTCHA" width="304" height="78" role="presentation" name="a-r51on0a2zv7m" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox allow-storage-access-by-user-activation" src="https://www.google.com/recaptcha/api2/anchor?ar=1&amp;k=6Lc6nfMlAAAAAIF1kGsOj5cW3HVBtVpiH2h7bolB&amp;co=aHR0cHM6Ly93d3cub3hmb3JkYm9va3N0b3JlLmNvbTo0NDM.&amp;hl=vi&amp;v=9pvHvq7kSOTqqZusUzJ6ewaF&amp;size=normal&amp;cb=x08tauj9hunh"></iframe></div><textarea id="g-recaptcha-response" name="g-recaptcha-response" class="g-recaptcha-response" style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;" data-gramm="false" wt-ignore-input="true"></textarea></div><iframe style="display: none;"></iframe></div>
+
+                                </div>
+
+                                <input type="hidden" name="loginfrom" value="site">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <button id="loginBtn" type="submit" class="btn w-auto btn-primary">Login</button>
+                                    <a class="signin-google" href="https://www.oxfordbookstore.com/google"><button type="button" class="btn btn-primary google">Sign In With Google</button></a>
+                                </div>
+                            </form>
+                            <p class="text-center mb-0">Don't have an Account? <a href="https://www.oxfordbookstore.com/register">Sign Up</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

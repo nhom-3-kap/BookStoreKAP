@@ -23,7 +23,7 @@
             <nav class="nav">
                 <ul class="nav-list">
                     <li>
-                        <a href="/StoreLocation" class="nav-item"><i class="bi bi-geo-alt"></i> <span>Store Location</span> </a>
+                        <a href="/Location" class="nav-item"><i class="bi bi-geo-alt"></i> <span>Store Location</span> </a>
                     </li>
                     <li>
                         <a href="/AboutUs" class="nav-item">About Us</a>
@@ -88,15 +88,14 @@
                         <li><a class="nav-category-item" href="/">HOME</a></li>
                         <li><a class="nav-category-item" href="/List?Service=NewReleases">NEW RELEASES</a></li>
                         <li><a class="nav-category-item" href="/List?Service=BestSellers">BESTSELLERS</a></li>
-                        <li><a class="nav-category-item" href="#">BOOK REQUEST</a></li>
- 
+                        <li><a class="nav-category-item" href="/BookRequest">BOOK REQUEST</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
         @RenderBody()
     </main>
-
+    <hr>
     <footer class="kap-fotter">
         <div class="container">
             <div class="row">
@@ -169,6 +168,7 @@
                 </div>
             </div>
         </div>
+        
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="/lib/owl/js/owl.carousel.min.js"></script>

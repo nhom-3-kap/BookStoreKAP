@@ -39,15 +39,16 @@
 }
 .side-bar-item {
     border-top: 1px solid #333;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 8px 0px 6px;
     border-bottom: 1px solid #333;
     cursor: pointer;
+    overflow: hidden;
+    height: 38px;
+    transition: height 0.2s ease-in-out;
 }
 .side-bar-item:last-child {
     border: none;
+
     
 }
 .side-price-item > span{
@@ -65,6 +66,44 @@
 .col-lg-4 {
     margin-top: 8px;
     margin-bottom: 8px;
+}
+.wrap-icon.rotate {
+    transform: rotate(-180deg);
+}
+.wrap-icon {
+    transition: 0.3s;
+    transform: rotate(0deg);
+}
+.side-bar-item > .side-bar-item-wrap-title > p {
+    user-select: none;
+}
+.side-bar-item-wrap-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+.side-bar-item-child{
+    margin-left: 16px;
+
+}
+.side-bar-item-child > a{
+    font-weight: 600;
+    font-size: 16px;
+    display: block;
+    
+}
+.new-releases-child {
+    display: flex;
+    
+   
+}
+.new-releases-child > a{
+        color: black;
+}
+.right-icon {
+        font-size: 12px;
+        padding: 5px;
 }
 
 

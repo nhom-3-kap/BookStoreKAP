@@ -172,6 +172,10 @@
         color: var(--text-color-light);
     }
 
+.header-search > nav-list {
+    color: var(--text-color-light);
+}
+
 .nav-category {
     padding: 15px 0;
     background-color: var(--primary-color);

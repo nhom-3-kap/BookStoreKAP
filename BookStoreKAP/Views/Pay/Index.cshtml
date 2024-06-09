@@ -1,0 +1,129 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div>
+    <div class="container">
+        <div class="breadcrumb-wrap">
+            <a href="/">Home</a>
+            <span>&#10095;</span>
+            <p>Pay</p>
+
+        </div>
+        <section class="my-account sectiongap">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3">
+                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                            <a class="nav-link active" id="v-pills-createShippingAddress-tab" href="https://www.oxfordbookstore.com/customer/dashboard/createShippingAddress">Add Address</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="tab-content" id="v-pills-createShippingAddress">
+                            <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                                    <input type="hidden" name="_token" value="wcsPdo6faZoMdpFyQEmvHGz9xZIgKcbBkECeXw1L">                            <div class="myprofile">
+                                        <input type="hidden" name="user_id" value="509">
+                                        <h2>Add New Address</h2>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                <h4 class="labelhead">Name:<span class="req">*</span></h4>
+                                                    <input name="name" type="text" placeholder="Truong Hoang Phu" value="">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                <h4 class="labelhead">Phone:<span class="req">*</span></h4>
+                                                    <input name="address" type="text" placeholder="0376976198" value="">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                <h4 class="labelhead">Email:<span class="req">*</span></h4>
+                                                    <input name="address" type="text" placeholder="phuth21@uef.edu.vn" value="">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                <h4 class="labelhead">Address:<span class="req">*</span></h4>
+                                                <input name="address" type="text" placeholder="141 Dien Bien Phu, phuong 25, quan Binh Thanh, Tp. HCM" value="">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="labelhead" for="">Payment method<span class="req">*</span></label>
+                                                    <select onchange="getState(this.value)" class="s2 select2-hidden-accessible" name="country" id="country" data-select2-id="country" tabindex="-1" aria-hidden="true">
+                                                        <option>Choose One</option>
+                                                        <option value="101" selected="" data-select2-id="2">Card</option>
+@*                                                     </select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="1" style="width: 218.587px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-country-container"><span class="select2-selection__rendered" id="select2-country-container" role="textbox" aria-readonly="true" title="India">India</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+ *@
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @* <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="labelhead" for="">Country/Region<span class="req">*</span></label>
+                                                    <select onchange="getState(this.value)" class="s2 select2-hidden-accessible" name="country" id="country" data-select2-id="country" tabindex="-1" aria-hidden="true">
+                                                        <option>Choose One</option>
+                                                        <option value="101" selected="" data-select2-id="2">India</option>
+                                                    </select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="1" style="width: 218.587px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-country-container"><span class="select2-selection__rendered" id="select2-country-container" role="textbox" aria-readonly="true" title="India">India</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="labelhead" for="">State<span class="req">*</span></label>
+                                                    <select class="s2 state select2-hidden-accessible" name="state" id="state" required="" tabindex="-1" aria-hidden="true" onchange="getCity(this.value)" data-select2-id="state"><option value="1">Andaman and Nicobar Islands</option><option value="2">Andhra Pradesh</option><option value="3">Arunachal Pradesh</option><option value="4">Assam</option><option value="5">Bihar</option><option value="6">Chandigarh</option><option value="7">Chhattisgarh</option><option value="8">Dadra and Nagar Haveli</option><option value="9">Daman and Diu</option><option value="10">Delhi</option><option value="11">Goa</option><option value="12">Gujarat</option><option value="13">Haryana</option><option value="14">Himachal Pradesh</option><option value="15">Jammu and Kashmir</option><option value="16">Jharkhand</option><option value="17">Karnataka</option><option value="18">Kenmore</option><option value="19">Kerala</option><option value="20">Lakshadweep</option><option value="21">Madhya Pradesh</option><option value="22">Maharashtra</option><option value="23">Manipur</option><option value="24">Meghalaya</option><option value="25">Mizoram</option><option value="26">Nagaland</option><option value="27">Narora</option><option value="28">Natwar</option><option value="29">Odisha</option><option value="30">Paschim Medinipur</option><option value="31">Pondicherry</option><option value="32">Punjab</option><option value="33">Rajasthan</option><option value="34">Sikkim</option><option value="35">Tamil Nadu</option><option value="36">Telangana</option><option value="37">Tripura</option><option value="38">Uttar Pradesh</option><option value="39">Uttarakhand</option><option value="40">Vaishali</option><option value="41">West Bengal</option></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="51" style="width: 218.587px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-state-container"><span class="select2-selection__rendered" id="select2-state-container" role="textbox" aria-readonly="true"></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="labelhead" for="">Town/City<span class="req">*</span></label>
+                                                    <select class="s2 city select2-hidden-accessible" name="city" id="city" required="" tabindex="-1" aria-hidden="true" data-select2-id="city"></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="53" style="width: 218.587px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-city-container"><span class="select2-selection__rendered" id="select2-city-container" role="textbox" aria-readonly="true"></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <div class="labelhead">Postcode: <span class="req">* </span></div>
+                                                    <!-- <input name="postcode" type="text" required placeholder="Postal Code" value=""> -->
+                                                    <select name="postcode" required="" id="postcode" tabindex="-1" class="select2-hidden-accessible" aria-hidden="true" data-select2-id="postcode">
+                                                        <option selected="" disabled="" readonly="" data-select2-id="8">choose one</option>
+                                                    </select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="7" style="width: 218.587px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-postcode-container"><span class="select2-selection__rendered" id="select2-postcode-container" role="textbox" aria-readonly="true" title="choose one">choose one</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h4 class="labelhead">Email: <span class="req">* </span></h4>
+                                                    <input name="email" type="text" required="" placeholder="example@gmail.com" value="">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <h4 class="labelhead">Phone: <span class="req">* </span></h4>
+                                                    <input name="phone" type="text" required="" placeholder="Your 10 digit contact no." value="">
+
+                                                </div>
+                                            </div> *@
+                                        </div>
+                                        <input type="hidden" name="rowid" id="rowid" value="">
+                                        <input type="hidden" name="type" id="type" value="shipping" hidden="">
+                                        <button name="" id="" class="btn btn-danger" type="submit" role="button">Create Address</button>
+                                    </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

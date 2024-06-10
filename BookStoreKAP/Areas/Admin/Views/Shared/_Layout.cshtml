@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] | BookStoreKAP</title>
+    <link rel="shortcut icon" href="/images/Logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BookStoreKAP.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="/lib/owl/css/owl.carousel.min.css" rel="stylesheet" />
+    <link href="/lib/owl/css/owl.theme.default.min.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="app">
+        <section class="admin-side-bar">
+            <div class="admin-side-bar-header">
+                <div class="admin-side-bar-logo">
+                    <span>Admin KAP</span>
+                </div>
+            </div>
+            <div class="admin-side-bar-content">
+                <div class="admin-side-bar-menu">
+                    <div class="admin-side-bar-menu-item">
+                        <a href="#" class="admin-side-bar-menu-item-control">
+                            <p><i class="bi bi-speedometer2"></i> <span>Dashboard</span></p>
+                        </a>
+                    </div>
+                </div>
+                <div class="admin-side-bar-menu">
+                    <p class="admin-side-bar-menu-title">THEME</p>
+                    <div class="admin-side-bar-menu-item">
+                        <a href="#" class="admin-side-bar-menu-item-control">
+                            <p><i class="bi bi-palette"></i> <span>Color</span></p>
+                        </a>
+                    </div>
+                    <div class="admin-side-bar-menu-item">
+                        <a href="#" class="admin-side-bar-menu-item-control">
+                            <p><i class="bi bi-pencil"></i> <span>Typography</span></p>
+                        </a>
+                    </div>
+                </div>
+                <div class="admin-side-bar-menu">
+                    <p class="admin-side-bar-menu-title">COMPONENTS</p>
+                    <div class="admin-side-bar-menu-item">
+                        <a href="#" class="admin-side-bar-menu-item-control">
+                            <p><i class="bi bi-database"></i> <span>Base</span></p>
+                            <i class="bi bi-chevron-down"></i>
+                        </a>
+                        <div class="admin-side-bar-menu-item-child active">
+                            <ul class="admin-side-bar-menu-item-child-list">
+                                <li><a class="admin-side-bar-menu-item-child-item" href="#"><i class="bi bi-circle"></i> Item1</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="#"><i class="bi bi-circle"></i> Item2</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="#"><i class="bi bi-circle"></i> Item3</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="#"><i class="bi bi-circle"></i> Item4</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="admin-side-bar-menu-item">
+                        <a href="#" class="admin-side-bar-menu-item-control">
+                            <p><i class="bi bi-arrow-up-right-circle"></i> <span>Button</span></p>
+                            <i class="bi bi-chevron-down"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="admin-side-bar-footer">
+                <button class="admin-side-bar-footer-btn"><i class="bi bi-arrow-left-square"></i></button>
+            </div>
+        </section>
+        <div class="wrap-content">
+            <header class="admin-header">
+            </header>
+            <div class="content">
+                @RenderBody()
+            </div>
+            <footer class="admin-footer">
+                DevT
+            </footer>
+        </div>
+
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/owl/js/owl.carousel.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $("a.admin-side-bar-menu-item-control[href='#']").each(function (index, item) {
+                $(item).on("click", function () {
+                    console.log($(this));
+                });
+            });
+        })
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

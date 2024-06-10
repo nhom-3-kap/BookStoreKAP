@@ -1,0 +1,122 @@
+﻿.app {
+    display: flex;
+}
+
+
+.admin-side-bar {
+    max-width: 255px;
+    width: 100%;
+    background-color: #212631;
+    color: #fff;
+    min-height: 100vh;
+}
+
+.admin-side-bar-header {
+    padding: 16px;
+    border-bottom: 1px solid #d6e3c7;
+    height: 70px;
+}
+
+.admin-side-bar-logo > span {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.admin-side-bar-content {
+    padding: 8px;
+    height: calc(100vh - 140px);
+}
+
+.admin-side-bar-menu {
+    margin-bottom: 24px;
+}
+
+.admin-side-bar-menu-item {
+}
+
+
+    .admin-side-bar-menu-item > .admin-side-bar-menu-item-control > p {
+        font-size: 18px;
+        color: #fff;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        column-gap: 16px;
+        width: 100%;
+    }
+
+    .admin-side-bar-menu-item > .admin-side-bar-menu-item-control:hover {
+        background-color: #2a303d;
+    }
+
+    .admin-side-bar-menu-item > a > i {
+        color: #888;
+    }
+
+.admin-side-bar-menu-title {
+    color: #75797b;
+    font-weight: 900;
+    padding: 12px 16px;
+}
+
+.admin-side-bar-menu-item-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 16px;
+    transition: 0.3s;
+}
+
+    .admin-side-bar-menu-item-control > i {
+        margin-right: 16px;
+        color: #fff;
+        font-size: 14px;
+    }
+
+.admin-side-bar-footer {
+    padding: 24px;
+    display: flex;
+    justify-content: end;
+    border-top: 1px solid #d6e3c7;
+    height: 70px;
+}
+
+.admin-side-bar-footer-btn {
+    color: #fff;
+    text-align: right;
+}
+
+.admin-side-bar-menu-item-child {
+    display: none;
+    margin-left: 20px;
+}
+
+    .admin-side-bar-menu-item-child.active {
+        display: block;
+    }
+
+.admin-side-bar-menu-item-child-item {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    column-gap: 16px;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 16px;
+    transition: 0.3s;
+}
+
+    .admin-side-bar-menu-item-child-item:hover {
+        background-color: #2a303d;
+    }
+
+    .admin-side-bar-menu-item-child-item > i {
+        font-size: 6px;
+        color: #888;
+    }
+
+
+.wrap-content {
+    padding: 24px;
+}

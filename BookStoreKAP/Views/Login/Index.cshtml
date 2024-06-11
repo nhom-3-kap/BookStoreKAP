@@ -39,8 +39,14 @@
                                 
                                 <div class="d-flex flex-wrap justify-content-between">
                                     <button id="loginBtn" type="submit" class="btn w-auto btn-primary">Login</button>
-                                    <a class="signin-google" href="https://www.oxfordbookstore.com/google"><button type="button" class="btn btn-primary google">Sign In With Google</button></a>
+                                    <script src="https://apis.google.com/js/platform.js" async defer></script>
+                                    <meta name="google-signin-client_id" content="941697731447-4fl5bpargv002rbu8ur0oped7a1sad95.apps.googleusercontent.com">
+
+                                    <div class="g-signin2" data-onsuccess="onSignIn">
+                                    </div>
                                 </div>
+                               
+                               
 
                                
 

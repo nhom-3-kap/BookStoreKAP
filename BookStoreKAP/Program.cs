@@ -1,8 +1,12 @@
+
+using Owin;
 using BookStoreKAP.Database;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Owin.Security.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +34,16 @@ builder.Services.AddIdentity<User, IdentityRole>(
     .AddDefaultTokenProviders()
     .AddDefaultUI();
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+}).AddGoogle(options =>
+{
+    options.ClientId = "941697731447-4fl5bpargv002rbu8ur0oped7a1sad95.apps.googleusercontent.com";
+    options.ClientSecret = "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";
+});
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
 
@@ -60,6 +74,10 @@ app.Use(async (context, next) =>
     }
     await next();
 });
+
+
+
+
 
 
 app.MapControllerRoute(

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Reflection.Emit;
 
 namespace BookStoreKAP.Database
@@ -24,5 +25,7 @@ namespace BookStoreKAP.Database
             builder.Entity<IdentityRoleClaim<string>>(entity => { entity.ToTable("RoleClaims"); });
             builder.Entity<IdentityUserToken<string>>(entity => { entity.ToTable("UserTokens"); });
         }
+        public DbSet<Books> Books { get; set; }
     }
+
 }

@@ -14,22 +14,24 @@
 .admin-side-bar-header {
     padding: 16px;
     border-bottom: 1px solid #d6e3c7;
-    height: 70px;
+    height: 65px;
 }
 
-.admin-side-bar-logo > span {
-    font-size: 24px;
-    font-weight: 700;
+.admin-side-bar-logo {
+    color: #fff;
 }
+
+    .admin-side-bar-logo > span {
+        font-size: 24px;
+        font-weight: 700;
+    }
 
 .admin-side-bar-content {
     padding: 8px;
-    height: calc(100vh - 140px);
+    min-height: calc(100vh - 140px);
 }
 
-.admin-side-bar-menu {
-    margin-bottom: 24px;
-}
+
 
 .admin-side-bar-menu-item {
 }
@@ -88,12 +90,14 @@
 }
 
 .admin-side-bar-menu-item-child {
-    display: none;
     margin-left: 20px;
+    height: 0;
+    overflow-y: hidden;
+    transition: 0.2s;
 }
 
     .admin-side-bar-menu-item-child.active {
-        display: block;
+        height: 80px;
     }
 
 .admin-side-bar-menu-item-child-item {
@@ -107,6 +111,7 @@
     transition: 0.3s;
 }
 
+
     .admin-side-bar-menu-item-child-item:hover {
         background-color: #2a303d;
     }
@@ -117,6 +122,14 @@
     }
 
 
-.wrap-content {
+.content {
+    padding: 24px;
+}
+
+.admin-side-bar-menu-item-control.active {
+    background-color: #2a303d;
+}
+
+.admin-footer {
     padding: 24px;
 }

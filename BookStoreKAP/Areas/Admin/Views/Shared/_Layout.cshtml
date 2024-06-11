@@ -17,61 +17,155 @@
     <div class="app">
         <section class="admin-side-bar">
             <div class="admin-side-bar-header">
-                <div class="admin-side-bar-logo">
+                <a href="/Admin" class="admin-side-bar-logo">
                     <span>Admin KAP</span>
-                </div>
+                </a>
             </div>
             <div class="admin-side-bar-content">
                 <div class="admin-side-bar-menu">
                     <div class="admin-side-bar-menu-item">
-                        <a href="#" class="admin-side-bar-menu-item-control">
+                        <a href="/Admin" class="admin-side-bar-menu-item-control">
                             <p><i class="bi bi-speedometer2"></i> <span>Dashboard</span></p>
                         </a>
                     </div>
                 </div>
                 <div class="admin-side-bar-menu">
-                    <p class="admin-side-bar-menu-title">THEME</p>
+                    <p class="admin-side-bar-menu-title">Products</p>
                     <div class="admin-side-bar-menu-item">
-                        <a href="#" class="admin-side-bar-menu-item-control">
-                            <p><i class="bi bi-palette"></i> <span>Color</span></p>
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="CM">
+                            <p><i class="bi bi-archive"></i> <span>Categories Book</span></p>
+                            <i class="bi bi-chevron-down"></i>
                         </a>
+                        <div class="admin-side-bar-menu-item-child">
+                            <ul class="admin-side-bar-menu-item-child-list">
+                                <li>
+                                    <a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager?menuKey=CM">
+                                        <i class="bi bi-circle"></i>
+                                        <span class="ml-1">List Categories</span>
+                                    </a>
+                                </li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager/Create?menuKey=CM"><i class="bi bi-circle"></i>Add Category</a></li>
+                            </ul>
+                        </div>
                     </div>
+
                     <div class="admin-side-bar-menu-item">
-                        <a href="#" class="admin-side-bar-menu-item-control">
-                            <p><i class="bi bi-pencil"></i> <span>Typography</span></p>
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="P">
+                            <p><i class="bi bi-book"></i> <span>Books</span></p>
+                            <i class="bi bi-chevron-down"></i>
                         </a>
+                        <div class="admin-side-bar-menu-item-child">
+                            <ul class="admin-side-bar-menu-item-child-list">
+                                <li>
+                                    <a class="admin-side-bar-menu-item-child-item" href="#">
+                                        <i class="bi bi-circle"></i>
+                                        <span class="ml-1">List Books</span>
+                                    </a>
+                                </li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="#"><i class="bi bi-circle"></i>Add Book</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="admin-side-bar-menu">
-                    <p class="admin-side-bar-menu-title">COMPONENTS</p>
+                    <p class="admin-side-bar-menu-title">Users</p>
                     <div class="admin-side-bar-menu-item">
-                        <a href="#" class="admin-side-bar-menu-item-control">
-                            <p><i class="bi bi-database"></i> <span>Base</span></p>
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="USER">
+                            <p><i class="bi bi-people"></i> <span>Users</span></p>
                             <i class="bi bi-chevron-down"></i>
                         </a>
-                        <div class="admin-side-bar-menu-item-child active">
+                        <div class="admin-side-bar-menu-item-child">
                             <ul class="admin-side-bar-menu-item-child-list">
-                                <li><a class="admin-side-bar-menu-item-child-item" href="#"><i class="bi bi-circle"></i> Item1</a></li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="#"><i class="bi bi-circle"></i> Item2</a></li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="#"><i class="bi bi-circle"></i> Item3</a></li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="#"><i class="bi bi-circle"></i> Item4</a></li>
+                                <li>
+                                    <a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager?menuKey=USER">
+                                        <i class="bi bi-circle"></i>
+                                        <span class="ml-1">List Users</span>
+                                    </a>
+                                </li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager/Create?menuKey=USER"><i class="bi bi-circle"></i>Add User</a></li>
                             </ul>
                         </div>
                     </div>
                     <div class="admin-side-bar-menu-item">
-                        <a href="#" class="admin-side-bar-menu-item-control">
-                            <p><i class="bi bi-arrow-up-right-circle"></i> <span>Button</span></p>
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="ROLE">
+                            <p><i class="bi bi-book"></i> <span>Roles</span></p>
                             <i class="bi bi-chevron-down"></i>
                         </a>
+                        <div class="admin-side-bar-menu-item-child">
+                            <ul class="admin-side-bar-menu-item-child-list">
+                                <li>
+                                    <a class="admin-side-bar-menu-item-child-item" href="#">
+                                        <i class="bi bi-circle"></i>
+                                        <span class="ml-1">List Roles</span>
+                                    </a>
+                                </li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="#"><i class="bi bi-circle"></i>Add Role</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-side-bar-menu">
+                    <p class="admin-side-bar-menu-title">Orders</p>
+                    <div class="admin-side-bar-menu-item">
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="ODER">
+                            <p><i class="bi bi-printer"></i> <span>Reports</span></p>
+                            <i class="bi bi-chevron-down"></i>
+                        </a>
+                        <div class="admin-side-bar-menu-item-child">
+                            <ul class="admin-side-bar-menu-item-child-list">
+                                <li>
+                                    <a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager?menuKey=ODER">
+                                        <i class="bi bi-circle"></i>
+                                        <span class="ml-1">List Reports</span>
+                                    </a>
+                                </li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager/Create?menuKey=ODER"><i class="bi bi-circle"></i>Create Report</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-side-bar-menu">
+                    <p class="admin-side-bar-menu-title">Infomation</p>
+                    <div class="admin-side-bar-menu-item">
+                        <a href="#" class="admin-side-bar-menu-item-control active" data-menu-key="INFO">
+                            <p><i class="bi bi-info-circle"></i> <span>Profile</span></p>
+                            <i class="bi bi-chevron-down"></i>
+                        </a>
+                        <div class="admin-side-bar-menu-item-child active">
+                            <ul class="admin-side-bar-menu-item-child-list">
+                                <li>
+                                    <a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager?menuKey=INFO">
+                                        <i class="bi bi-circle"></i>
+                                        <span class="ml-1">Setting</span>
+                                    </a>
+                                </li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager/Create?menuKey=INFO"><i class="bi bi-circle"></i>Logout</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="admin-side-bar-footer">
-                <button class="admin-side-bar-footer-btn"><i class="bi bi-arrow-left-square"></i></button>
             </div>
         </section>
-        <div class="wrap-content">
-            <header class="admin-header">
+        <div class="wrap-content w-100">
+            <header class="p-3 bg-dark text-white">
+                <div class="container">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between justify-content-lg-end">
+                        <div class="dropdown text-end">
+                            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                            </a>
+                            <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" style="">
+                                <li><a class="dropdown-item" href="#">New project...</a></li>
+                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </header>
             <div class="content">
                 @RenderBody()
@@ -87,15 +181,8 @@
     <script src="/lib/owl/js/owl.carousel.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        $(document).ready(function () {
-            $("a.admin-side-bar-menu-item-control[href='#']").each(function (index, item) {
-                $(item).on("click", function () {
-                    console.log($(this));
-                });
-            });
-        })
-    </script>
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

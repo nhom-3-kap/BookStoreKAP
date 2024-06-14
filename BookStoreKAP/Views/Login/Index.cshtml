@@ -2,13 +2,14 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewData["Title"] = ViewBag.Service;
 }
 <div>
     <div class="container">
         <div class="breadcrumb-wrap">
             <a href="/">Home</a>
             <span>&#10095;</span>
-            <p>LOGIN</p>
+            <p>@(ViewBag.Service)</p>
 
         </div>
         <section class="login sectiongap">
@@ -35,25 +36,24 @@
                                         <input type="checkbox" class="form-check-input" id="rem_me" name="rem_me" value="1">
                                         <label class="form-check-label" for="exampleCheck1">Remember Me</label>
                                     </div>
-                                    <a href="/ForgotPassword">Forgot Password</a>
+                                    <a href="/Login/ForgotPassword?Service=ForgotPassword">Forgot Password</a>
                                 </div>
                                 
                                 <div class="d-flex flex-wrap justify-content-between">
                                     <button id="loginBtn" type="submit" class="btn w-auto btn-primary">Login</button>
+
                                     <script src="https://apis.google.com/js/platform.js" async defer></script>
-                                    <meta name="google-signin-client_id" content="941697731447-4fl5bpargv002rbu8ur0oped7a1sad95.apps.googleusercontent.com">
+                                    <meta name="google-signin-client_id" content="1035049859968-uqqj4aahdcvu2fpem3h5sbt2tmlatf3f.apps.googleusercontent.com">
+
+                                    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v20.0&appId=448904941089327" nonce="u1ZUBG54"></script>
+                                    <div class="fb-login-button" data-width="" data-size="" data-button-type="" data-layout="" data-auto-logout-link="false" data-use-continue-as="false"></div>
 
                                     <div class="g-signin2" data-onsuccess="onSignIn">
 
                                     </div>
                                 </div>
-                               
-                               
-
-                               
-
                             </form>
-                            <p class="text-center mb-0">Don't have an Account? <a href="/Register">Sign Up</a></p>
+                            <p class="text-center mb-0">Don't have an Account? <a href="/Login/Register?Service=Register">Sign Up</a></p>
                         </div>
                     </div>
                 </div>

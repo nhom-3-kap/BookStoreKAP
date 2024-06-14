@@ -6,7 +6,6 @@ namespace BookStoreKAP.Models.Entities
     public class User : IdentityUser
     {
         [StringLength(100)]
-        [Required]
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
     }
 }

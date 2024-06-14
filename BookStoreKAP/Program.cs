@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -34,16 +35,20 @@ builder.Services.AddIdentity<User, IdentityRole>(
     .AddDefaultTokenProviders()
     .AddDefaultUI();
 
-builder.Services.AddAuthentication(options =>
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie().AddGoogle(options =>
 {
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-}).AddGoogle(options =>
-{
-    options.ClientId = "941697731447-4fl5bpargv002rbu8ur0oped7a1sad95.apps.googleusercontent.com";
-    options.ClientSecret = "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";
+    options.ClientId = configuration["Authentication:Google:ClientId"] ?? "702342811459-cbagsaprmfi0s687j6hjgllqfsi5m7rc.apps.googleusercontent.com";
+    options.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? "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";
+    options.CallbackPath = "/signin-google";
 });
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = new PathString("/Login");
+    options.LogoutPath = "/Logout";
+    options.AccessDeniedPath = "/AccessDenied";
+});
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
 
@@ -61,7 +66,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -74,11 +78,6 @@ app.Use(async (context, next) =>
     }
     await next();
 });
-
-
-
-
-
 
 app.MapControllerRoute(
     name: "MyArea",

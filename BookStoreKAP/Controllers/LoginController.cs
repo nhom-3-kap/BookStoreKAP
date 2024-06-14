@@ -10,16 +10,15 @@ namespace BookStoreKAP.Controllers
             return View();
         }
 
-        // Action method for /Login/Register
-        [Route("/Login/Register")]
+        [Route("/Register")]
         public IActionResult Register()
         {
             ViewBag.Service = "Register";
             return View();
         }
 
-        // Action method for /Login/ForgotPassword
-        [Route("/Login/ForgotPassword")]
+
+        [Route("/ForgotPassword")]
         public IActionResult ForgotPassword()
         {
             ViewBag.Service = "Forgot Password";

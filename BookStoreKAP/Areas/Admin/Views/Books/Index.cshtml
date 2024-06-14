@@ -1,0 +1,100 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="container">
+    <div id="contentSearch">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="text-primary">Search options</h3>
+            </div>
+            <hr />
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-label fw-bold" for="txtSearchTitle">Title</label>
+                    <input type="text" id="txtSearchTitle" name="txtSearchTitle" class="form-control" placeholder="Enter title..." />
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-label fw-bold" for="cboSearchCategories">Category</label>
+                    <select class="form-select" id="cboSearchCategories" name="cboSearchCategories">
+                        <option value="NaN">--- Choice Categoy ---</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-label fw-bold" for="txtSearchAuthor">Author</label>
+                    <input type="text" id="txtSearchAuthor" name="txtSearchAuthor" class="form-control" placeholder="Enter Author name..." />
+                </div>
+            </div>
+            <div class="col-lg-12 mt-2">
+                <div class="d-flex align-items-center justify-content-end">
+                    <button class="btn btn-info text-white" id="btnFindBooks">Find</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div>
+        <div>
+            <h3 class="text-primary">List books</h3>
+        </div>
+        <table id="tblBooks" class="display table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Author</th>
+                    <th>Price</th>
+                    <th>Discount Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Có chàng trai viết lên cây</td>
+                    <td>Tình cảm</td>
+                    <td>Lê Tài</td>
+                    <td>10$</td>
+                    <td>9.99$</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Tôi thấy hoa vàng trên cỏ xanh</td>
+                    <td>Tình cảm</td>
+                    <td>Lê Tài</td>
+                    <td>10$</td>
+                    <td>9.99$</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#tblBooks").DataTable({
+                select: true,
+                responsive: true,
+                searching: false,
+                lengthChange: false,
+                paging: false,
+                info: false,
+            });
+
+            $("#btnFindBooks").on("click", function () {
+                const title = $('#txtSearchTitle').val();
+
+                const tblBooks = $("#tblBooks").DataTable();
+            }); 
+
+
+        });
+    </script>
+}

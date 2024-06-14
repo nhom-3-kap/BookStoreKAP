@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>d852f671-5ec8-473d-8c45-f266bc32bf1b</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +30,10 @@
   <ItemGroup>
     <None Include="wwwroot\fonts\calibri.woff2" />
     <None Include="wwwroot\fonts\calibrib.woff2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\data-table\" />
   </ItemGroup>
 
 </Project>

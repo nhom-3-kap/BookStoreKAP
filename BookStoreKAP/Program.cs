@@ -21,7 +21,7 @@ builder.Services.AddDbContext<BookStoreKAPDBContext>(
     }
 );
 
-builder.Services.AddIdentity<User, IdentityRole>(
+builder.Services.AddIdentity<User, Role>(
         options =>
         {
             options.Password.RequiredUniqueChars = 0;

@@ -78,12 +78,12 @@
                         <div class="admin-side-bar-menu-item-child">
                             <ul class="admin-side-bar-menu-item-child-list">
                                 <li>
-                                    <a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager?menuKey=USER">
+                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_USERS)?menuKey=USER">
                                         <i class="bi bi-circle"></i>
                                         <span class="ml-1">List Users</span>
                                     </a>
                                 </li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager/Create?menuKey=USER"><i class="bi bi-circle"></i>Add User</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_USERS_CREATE)?menuKey=USER"><i class="bi bi-circle"></i>Add User</a></li>
                             </ul>
                         </div>
                     </div>
@@ -115,12 +115,12 @@
                         <div class="admin-side-bar-menu-item-child">
                             <ul class="admin-side-bar-menu-item-child-list">
                                 <li>
-                                    <a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager?menuKey=ODER">
+                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_CATEGORIES)?menuKey=ODER">
                                         <i class="bi bi-circle"></i>
                                         <span class="ml-1">List Reports</span>
                                     </a>
                                 </li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager/Create?menuKey=ODER"><i class="bi bi-circle"></i>Create Report</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_CATEGORIES_CREATE)?menuKey=ODER"><i class="bi bi-circle"></i>Create Report</a></li>
                             </ul>
                         </div>
                     </div>
@@ -128,19 +128,19 @@
                 <div class="admin-side-bar-menu">
                     <p class="admin-side-bar-menu-title">Infomation</p>
                     <div class="admin-side-bar-menu-item">
-                        <a href="#" class="admin-side-bar-menu-item-control active" data-menu-key="INFO">
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="INFO">
                             <p><i class="bi bi-info-circle"></i> <span>Profile</span></p>
                             <i class="bi bi-chevron-down"></i>
                         </a>
-                        <div class="admin-side-bar-menu-item-child active">
+                        <div class="admin-side-bar-menu-item-child">
                             <ul class="admin-side-bar-menu-item-child-list">
                                 <li>
-                                    <a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager?menuKey=INFO">
+                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_CATEGORIES)?menuKey=INFO">
                                         <i class="bi bi-circle"></i>
                                         <span class="ml-1">Setting</span>
                                     </a>
                                 </li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="/Admin/CategoriesManager/Create?menuKey=INFO"><i class="bi bi-circle"></i>Logout</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_CATEGORIES_CREATE)?menuKey=INFO"><i class="bi bi-circle"></i>Logout</a></li>
                             </ul>
                         </div>
                     </div>
@@ -162,7 +162,7 @@
                                 <li><a class="dropdown-item" href="#">Settings</a></li>
                                 <li><a class="dropdown-item" href="#">Profile</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Sign out</a></li>
+                                <li><a class="dropdown-item" asp-page="@(RouteConstant.LOGOUT)">Sign out</a></li>
                             </ul>
                         </div>
                     </div>

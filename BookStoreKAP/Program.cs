@@ -39,18 +39,23 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 {
     options.ClientId = configuration["Authentication:Google:ClientId"] ?? "702342811459-cbagsaprmfi0s687j6hjgllqfsi5m7rc.apps.googleusercontent.com";
     options.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? "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";
-    options.CallbackPath = "/signin-google";
+    options.CallbackPath = new PathString("/signin-google");
 });
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = new PathString("/Login");
-    options.LogoutPath = "/Logout";
-    options.AccessDeniedPath = "/AccessDenied";
+    options.LoginPath = new PathString("/Auth/Login");
+    options.LogoutPath = new PathString("/Auth/Logout");
+    options.AccessDeniedPath = new PathString("/Auth/AccessDenied");
 });
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
+
+#region DI
+builder.Services.AddScoped<RoleManager<Role>>();
+builder.Services.AddScoped<UserManager<User>>();
+#endregion
 
 var app = builder.Build();
 

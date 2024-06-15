@@ -2,13 +2,39 @@
 {
     public class RouteConstant
     {
+        #region Static
         public const string HOME = "/";
+        public const string LOCATION = "/Location";
+        public const string ABOUT_US = "/AboutUs";
+        public const string BLOG = "/Blog";
+        public const string CONTACT_US = "/ContactUs";
+        public const string PAY = "/Pay";
+        public const string PRODUCT_DETAIL = "/ProductDetails";
+        public const string LIST = "/List";
+        public const string BOOK_REQUEST = "/BookRequest";
+        public const string CART = "/Cart";
+        #endregion
 
-        //Admin space
+
+        #region Admin Routes
         public const string ADMIN = $"/{AreasConstant.ADMIN}";
+
         public const string ADMIN_BOOKS = $"/{AreasConstant.ADMIN}/Books";
         public const string ADMIN_BOOKS_CREATE = $"/{AreasConstant.ADMIN}/Books/Create";
-        public const string ADMIN_CATEGORIES = $"/{AreasConstant.ADMIN}/CategoriesManager";
-        public const string ADMIN_CATEGORIES_CREATE = $"/{AreasConstant.ADMIN}/CategoriesManager/Create";
+
+        public const string ADMIN_CATEGORIES = $"/{AreasConstant.ADMIN}/Categories";
+        public const string ADMIN_CATEGORIES_CREATE = $"/{AreasConstant.ADMIN}/Categories/Create";
+
+        public const string ADMIN_USERS = $"/{AreasConstant.ADMIN}/Users";
+        public const string ADMIN_USERS_CREATE = $"/{AreasConstant.ADMIN}/Users/Create";
+        #endregion
+
+        #region Auth Routes
+        public const string LOGIN = $"/{AreasConstant.AUTH}/Login";
+        public const string REGISTER = $"/{AreasConstant.AUTH}/Register";
+        public const string EXTERNALLOGIN = $"/{AreasConstant.AUTH}/ExternalLogin";
+        public const string FORGOT_PASSWORD = $"/{AreasConstant.AUTH}/ForgotPassword";
+        public const string LOGOUT = $"/{AreasConstant.AUTH}/Logout";
+        #endregion
     }
 }

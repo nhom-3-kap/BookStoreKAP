@@ -1,6 +1,12 @@
 ﻿const handleGetActiveMenuSideBar = () => {
-    var [key, value] = $(location).attr('href').split('?')[1].split('=');
-
+    const currentHref = $(location).attr('href');
+    const currentHrefSplit = currentHref.split('?');
+    let hrefValue = [];
+    if (currentHrefSplit[1]) {
+        hrefValue = currentHrefSplit[1].split('=');
+        hrefValue[1] = hrefValue[1].split('&')[0];
+    }
+    var [key, value] = hrefValue;
     if (key === "menuKey") {
         ["CM", "P", "USER", "ROLE", "ODER", "INFO"].forEach((menuKey) => {
             let menuKeyOperator = menuKey;

@@ -23,16 +23,16 @@
             <nav class="nav">
                 <ul class="nav-list">
                     <li>
-                        <a href="/Location" class="nav-item"><i class="bi bi-geo-alt"></i> <span>Store Location</span> </a>
+                        <a href="@(RouteConstant.LOCATION)" class="nav-item"><i class="bi bi-geo-alt"></i> <span>Store Location</span> </a>
                     </li>
                     <li>
-                        <a href="/AboutUs" class="nav-item">About Us</a>
+                        <a href="@(RouteConstant.ABOUT_US)" class="nav-item">About Us</a>
                     </li>
                     <li>
-                        <a href="/Blog" class="nav-item">Blog</a>
+                        <a href="@(RouteConstant.BLOG)" class="nav-item">Blog</a>
                     </li>
                     <li>
-                        <a href="/ContactUs" class="nav-item">Contact Us</a>
+                        <a href="@(RouteConstant.CONTACT_US)" class="nav-item">Contact Us</a>
                     </li>
                 </ul>
 
@@ -44,7 +44,7 @@
             <section class="header-search">
                 <div class="header-search-img">
                     <a href="#">
-                        <img src="images/Logo.png" alt="logo" />
+                        <img src="/images/Logo.png" alt="logo" />
                     </a>
                 </div>
 
@@ -59,23 +59,27 @@
                             <i class="bi bi-bag"></i>
                             <span>0</span>
                         </div>
-                        <a href="/Cart" class="header-search-wrap-cart-label" style="color:unset"> CART </a>
+                        <a href="@(RouteConstant.CART)" class="header-search-wrap-cart-label" style="color:unset"> CART </a>
                     </div>
 
-
-                    <ul class="nav-list">
-                        <li>
-                            <a href="/Login" class="nav-item">
-                                <i class="bi bi-person nav-icon"></i>
-                                <span>Login</span>
-                            </a>
-                        </li>
-                    </ul>
-                    @*<div class="header-search-wrap-btn">
-                        <a href="#" class="header-search-btn">
-                            SEE ALL OFFERS
-                    </a>
-                    </div>*@
+                    @if (User.Identity?.IsAuthenticated != null && User.Identity.IsAuthenticated)
+                    {
+                        <div class="d-flex align-items-center">
+                            <p class="mr-1">Xin chào @(User.Identity.Name)</p>
+                            <a href="@(RouteConstant.LOGOUT)?returnUrl=@(System.Web.HttpUtility.UrlEncode("/"))">Logout</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <ul class="nav-list">
+                            <li>
+                                <a href="@(RouteConstant.LOGIN)" class="nav-item text-black">
+                                    <i class="bi bi-person nav-icon"></i>
+                                    <span>Login</span>
+                                </a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </section>
         </div>
@@ -87,10 +91,10 @@
             <div class="container">
                 <div class="nav-category-inner">
                     <ul class="nav-category-list">
-                        <li><a class="nav-category-item" href="/">HOME</a></li>
-                        <li><a class="nav-category-item" href="/List?Service=NewReleases">NEW RELEASES</a></li>
-                        <li><a class="nav-category-item" href="/List?Service=BestSellers">BESTSELLERS</a></li>
-                        <li><a class="nav-category-item" href="/BookRequest">BOOK REQUEST</a></li>
+                        <li><a class="nav-category-item" href="@(RouteConstant.HOME)">HOME</a></li>
+                        <li><a class="nav-category-item" href="@(RouteConstant.LIST)?Service=NewReleases">NEW RELEASES</a></li>
+                        <li><a class="nav-category-item" href="@(RouteConstant.LIST)?Service=BestSellers">BESTSELLERS</a></li>
+                        <li><a class="nav-category-item" href="@(RouteConstant.BOOK_REQUEST)">BOOK REQUEST</a></li>
                     </ul>
                 </div>
             </div>

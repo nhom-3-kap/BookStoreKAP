@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BookStoreKAP.Common.Constants;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-    public class CategoriesManagerController : Controller
+    [Area(AreasConstant.ADMIN)]
+    public class CategoriesController : Controller
     {
         public IActionResult Index()
         {

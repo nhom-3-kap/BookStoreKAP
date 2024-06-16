@@ -36,14 +36,14 @@
                     </li>
                 </ul>
 
-               
+
             </nav>
         </div>
 
         <div class="container">
             <section class="header-search">
                 <div class="header-search-img">
-                    <a href="#">
+                    <a href="@(RouteConstant.HOME)">
                         <img src="/images/Logo.png" alt="logo" />
                     </a>
                 </div>
@@ -110,14 +110,14 @@
                         <div class="wrap-fotter-item-search">
                             <p class="fotter-item-title">FIND A STORE</p>
                             <div class="wrap-fotter-search">
-                                <input type="text" value="" class="fotter-search" placeholder="Store name, Location, or ZIP Code"/>
+                                <input type="text" value="" class="fotter-search" placeholder="Store name, Location, or ZIP Code" />
                                 <button class="fotter-btn-search"><i class="bi bi-arrow-right-short"></i></button>
                             </div>
                         </div>
                         <div class="wrap-fotter-item-search">
                             <p class="fotter-item-title">SIGN UP FOR NEWS, AND UPDATES</p>
                             <div class="wrap-fotter-search">
-                                <input type="text" value="" class="fotter-search" placeholder="Enter Your Email Address"/>
+                                <input type="text" value="" class="fotter-search" placeholder="Enter Your Email Address" />
                                 <button class="fotter-btn-search"><i class="bi bi-arrow-right-short"></i></button>
                             </div>
                         </div>
@@ -174,11 +174,12 @@
                 </div>
             </div>
         </div>
-        
+
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="/lib/owl/js/owl.carousel.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/validate.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -23,19 +23,21 @@
                     <div class="col-lg-5 col-md-6">
                         <div class="form-wrap">
                             <h5>Login</h5>
-                            <form method="POST" id="frmLoginForm" asp-action="Login" class="mb-1">
+                            <form method="POST" id="frmLogin" asp-action="Login" class="mb-1">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" id="txtUsername" placeholder="Enter Username..." name="Username">
+                                    <input type="text" class="form-control" id="txtUsername" placeholder="Enter Username..." name="Username" rules="required">
+                                    <span class="text-danger text-sm-center form-message" hidden></span>
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" class="form-control" placeholder="Enter Password" name="Password">
+                                    <input type="password" class="form-control" placeholder="Enter Password" name="Password" rules="required|min:8">
+                                    <span class="text-danger text-sm-center form-message" hidden></span>
                                 </div>
 
                                 <div class="form-group">
-                                    <button id="btnLogin" type="submit"  class="kap-btn kap-btn-primary w-100" asp-route-returnUrl="@(ViewBag.returnUrl)">Login</button>
+                                    <button id="btnLogin" type="submit" class="kap-btn kap-btn-primary w-100" asp-route-returnUrl="@(ViewBag.returnUrl)">Login</button>
                                 </div>
                             </form>
-                            <form id="external-account" asp-action="ExternalLogin" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post" class="form-horizontal">
+                            <form asp-action="ExternalLogin" asp-route-returnUrl="@ViewBag.ReturnUrl" method="POST">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <p>Other login methods</p>
                                     <div class="d-flex align-items-center justify-content-end" style="column-gap: 4px;">
@@ -56,3 +58,15 @@
         </section>
     </div>
 </div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            function init() {
+                Validator("#frmLogin");
+            }
+            init();
+        });
+    </script>
+}

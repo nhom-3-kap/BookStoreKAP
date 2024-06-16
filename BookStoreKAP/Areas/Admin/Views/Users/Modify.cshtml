@@ -1,0 +1,140 @@
+﻿@model User
+@{
+    List<Guid> roleGuids = ViewBag.RoleGuids ?? new List<Guid>();
+    List<Role> roles = ViewBag.Roles ?? new List<Role>();
+
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <a href="@(RouteConstant.ADMIN_USERS)?menuKey=USER" class="btn btn-primary btn-sm"><i class="bi bi-arrow-bar-left"></i> Back</a>
+            <h3 class="text-center text-info">Modify User</h3>
+        </div>
+        <div class="col-lg-12">
+            <form action="/" method="POST" id="frmModifyUser">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="text-info">Infomation</h3>
+                    </div>
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="txtFirstName">First name <span class="required text-danger">*</span></label>
+                                <input type="text" id="txtFirstName" name="FirstName" class="form-control" value="@(Model.FirstName)" rules="required" />
+                                <span class="text-danger text-sm-center form-message" hidden></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="txtLastName">Last name <span class="required text-danger">*</span></label>
+                                <input type="text" id="txtLastName" name="LastName" class="form-control" value="@(Model.LastName)" rules="required" />
+                                <span class="text-danger text-sm-center form-message" hidden></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mt-1">
+                            <div class="form-group">
+                                <label class="form-label" for="txtEmail">Email <span class="required text-danger">*</span></label>
+                                <input type="text" id="txtEmail" name="Email" class="form-control" value="@(Model.Email)" rules="required|email" />
+                                <span class="text-danger text-sm-center form-message" hidden></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mt-1">
+                            <div class="form-group">
+                                <label class="form-label" for="txtPhoneNumber">Phone number <span class="required text-danger">*</span></label>
+                                <input type="text" id="txtPhoneNumber" name="PhoneNumber" class="form-control" value="@(Model.PhoneNumber)" rules="required" />
+                                <span class="text-danger text-sm-center form-message" hidden></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="dtpBOD">Birth Of Date</label>
+                                <input type="text" id="dtpBOD" name="BOD" class="form-control" value="@(string.Format("{0:dd/MM/yyyy}",Model.BOD))" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 mt-3">
+                    <hr />
+                </div>
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h3 class="text-info">Auth</h3>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="txtUsername">Username <span class="required text-danger">*</span></label>
+                                        <input type="text" id="txtUsername" name="Username" class="form-control" value="@(Model.UserName)" rules="required" />
+                                        <span class="text-danger text-sm-center form-message" hidden></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="txtPassword">Password</label>
+                                        <input type="password" id="txtPassword" name="Password" class="form-control" rules="required" />
+                                        <span class="text-danger text-sm-center form-message" hidden></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="form-label" for="cboRoles">Roles <span class="required text-danger">*</span></label>
+                                        <select class="form-control select2" id="cboRoles" name="RoleIds" value="@(roleGuids)" multiple="multiple">
+                                            @foreach (var role in roles)
+                                            {
+                                                if (roleGuids != null && roleGuids.Contains(role.Id))
+                                                {
+                                                    <option value="@(role.Id)" selected>@(role.Name)</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@(role.Id)">@(role.Name)</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 mt-1">
+                    <div class="d-flex justify-content-end">
+                        <div>
+                            <button class="btn btn-success" id="btnCreateUser">
+                                Save <i class="bi bi-floppy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const initDatePicker = () => {
+                $("#dtpBOD").datepicker({
+                    uiLibrary: 'bootstrap5',
+                    format: "dd/MM/yyyy"
+                });
+            };
+
+            $("#cboRoles").select2();
+
+            function init() {
+                initDatePicker();
+                //Validator("#frmModifyUser");
+            }
+            init();
+        });
+    </script>
+}

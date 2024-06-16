@@ -105,9 +105,12 @@ namespace BookStoreKAP.Controllers
         }
 
         // Action method for /Auth/Register
-        public IActionResult Register()
+        public async Task<IActionResult> Register(string returnUrl)
         {
-            ViewBag.Service = "Register";
+            returnUrl ??= Url.Content("~/");
+            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.Service = "Login";
+            ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View();
         }
 
@@ -127,7 +130,7 @@ namespace BookStoreKAP.Controllers
             }
             else
             {
-                return RedirectToPage("Home");
+                return Redirect("/");
             }
         }
 

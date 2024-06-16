@@ -23,6 +23,21 @@ namespace BookStoreKAP.Models.DTO
 
     }
 
+    public class ReqQuerySearchUserDTO
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public DateTime? BOD { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Email { get; set; }
+        public string? Username { get; set; }
+        public List<Guid>? RoleIds { get; set; }
+
+        public string? menuKey { get; set; }
+        public int page { get; set; } = 1;
+        public int pageSize { get; set; } = 10;
+    }
+
     public class ReqCreateUserDTO
     {
         public string? FirstName { get; set; }

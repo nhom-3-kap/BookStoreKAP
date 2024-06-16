@@ -106,6 +106,24 @@ namespace BookStoreKAP.Database
             builder.Entity<Role>().Property(e => e.Id).HasDefaultValueSql("NEWID()");
             builder.Entity<Role>().Property(e => e.ConcurrencyStamp).HasDefaultValueSql("NEWID()");
 
+            builder.Entity<Book>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<Book>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
+            builder.Entity<Genre>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<Genre>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
+            builder.Entity<Sale>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<Sale>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
+            builder.Entity<Order>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<Order>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
+            builder.Entity<Rating>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<Rating>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
+            builder.Entity<Series>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<Series>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
             // Configuration Many to Many
             #region Table BookGenres
             builder.Entity<BookGenre>().HasKey(bg => new { bg.GenreID, bg.BookID });

@@ -9,9 +9,11 @@ namespace BookStoreKAP.Controllers
     public class AuthController : Controller
     {
         private readonly SignInManager<User> _signInManager;
-        public AuthController(SignInManager<User> signInManager)
+        private readonly UserManager<User> _userManager;
+        public AuthController(SignInManager<User> signInManager, UserManager<User> userManager)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
 
@@ -24,7 +26,7 @@ namespace BookStoreKAP.Controllers
         }
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl, string remoteError)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             if (remoteError != null)
             {
                 ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
@@ -43,7 +45,24 @@ namespace BookStoreKAP.Controllers
                 return LocalRedirect(returnUrl);
             }
 
-            return RedirectToAction(nameof(Index));
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var user = new User { UserName = email, Email = email };
+            var createResult = await _userManager.CreateAsync(user);
+            if (createResult.Succeeded)
+            {
+                createResult = await _userManager.AddLoginAsync(user, info);
+                if (createResult.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
+                }
+            }
+
+            foreach (var error in createResult.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View("Login");
         }
 
         [Route("/Auth/Login")]

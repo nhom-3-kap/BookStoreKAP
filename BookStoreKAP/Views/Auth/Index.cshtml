@@ -32,22 +32,22 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <button id="btnLogin" type="submit"  class="btn btn-primary" asp-route-returnUrl="@(ViewBag.returnUrl)">Login</button>
+                                    <button id="btnLogin" type="submit"  class="kap-btn kap-btn-primary w-100" asp-route-returnUrl="@(ViewBag.returnUrl)">Login</button>
                                 </div>
                             </form>
-                            @if (User.Identity?.IsAuthenticated != null && User.Identity.IsAuthenticated)
-                            {
-                                <p>Đã Login</p>
-                            }
-                            else
-                            {
-                                <form id="external-account" asp-action="ExternalLogin" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post" class="form-horizontal">
-                                    @foreach (var provider in ViewBag.ExternalLogins!)
-                                    {
-                                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name">@provider.DisplayName</button>
-                                    }
-                                </form>
-                            }
+                            <form id="external-account" asp-action="ExternalLogin" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post" class="form-horizontal">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p>Other login methods</p>
+                                    <div class="d-flex align-items-center justify-content-end" style="column-gap: 4px;">
+                                        @foreach (var provider in ViewBag.ExternalLogins!)
+                                        {
+                                            <div>
+                                                <button type="submit" class="kap-btn kap-btn-solid btn-sm" name="provider" value="@provider.Name">@provider.DisplayName +</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </form>
                             <p class="text-center mb-0">Don't have an Account? <a href="@(RouteConstant.REGISTER)?Service=Register">Sign Up</a></p>
                         </div>
                     </div>

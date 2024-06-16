@@ -1,4 +1,5 @@
 ﻿using BookStoreKAP.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookStoreKAP.Models.DTO
 {
@@ -18,5 +19,22 @@ namespace BookStoreKAP.Models.DTO
         public string Username { get; set; }
         public Guid RoleId { get; set; } = Guid.Empty;
 
+        public string menuKey { get; set; }
+
+    }
+
+    public class ReqCreateUserDTO
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public DateTime? BOD { get; set; }
+        public string Email { get; set; }
+        public string? PhoneNumber { get; set; }
+
+        [Required(ErrorMessage = "Vui lòng nhập trường này")]
+        public string Username { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập trường này")]
+        public string Password { get; set; }
+        public Guid RoleId { get; set; }
     }
 }

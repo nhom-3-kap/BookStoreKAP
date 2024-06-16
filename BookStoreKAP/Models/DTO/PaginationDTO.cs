@@ -7,5 +7,6 @@
         public int PageSize { get; set; }
         public string Action { get; set; }
         public string Controller { get; set; }
+        public ReqSearchUserDTO SearchParams { get; set; }
     }
 }

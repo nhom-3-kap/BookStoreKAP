@@ -18,15 +18,16 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(ReqSearchUserDTO req, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(ReqSearchUserDTO req, string menuKey, int page = 1, int pageSize = 2)
         {
+            req.menuKey ??= menuKey;
             var users = _userManager.Users
                                    .Where(u =>
-                                                (string.IsNullOrEmpty(req.FirstName) || u.FirstName.Contains(req.FirstName)) &&
-                                                (string.IsNullOrEmpty(req.LastName) || u.LastName.Contains(req.LastName)) &&
-                                                (string.IsNullOrEmpty(req.PhoneNumber) || u.PhoneNumber.Contains(req.PhoneNumber)) &&
-                                                (string.IsNullOrEmpty(req.Email) || u.Email.Contains(req.Email)) &&
-                                                (string.IsNullOrEmpty(req.Username) || u.UserName.Contains(req.Username)) &&
+                                                (string.IsNullOrEmpty(req.FirstName) || u.FirstName.ToUpper().Contains(req.FirstName.ToUpper())) &&
+                                                (string.IsNullOrEmpty(req.LastName) || u.LastName.ToUpper().Contains(req.LastName.ToUpper())) &&
+                                                (string.IsNullOrEmpty(req.PhoneNumber) || u.PhoneNumber.ToUpper().Contains(req.PhoneNumber.ToUpper())) &&
+                                                (string.IsNullOrEmpty(req.Email) || u.Email.ToUpper().Contains(req.Email.ToUpper())) &&
+                                                (string.IsNullOrEmpty(req.Username) || u.UserName.ToUpper().Contains(req.Username.ToUpper())) &&
                                                 (req.RoleId == Guid.Empty || (u.UserRoles != null && u.UserRoles.Any(ur => ur.RoleId == req.RoleId)))
                                          )
                                    .OrderBy(u => u.LastName)
@@ -37,7 +38,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
             var userRolesViewModel = new List<UserRolesViewModel>();
 
-            foreach (var user in users)
+            foreach (var user in pagedUsers)
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 userRolesViewModel.Add(new UserRolesViewModel
@@ -54,11 +55,56 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 TotalItems = totalItems,
                 CurrentPage = page,
                 PageSize = pageSize,
+                SearchParams = req,
                 Action = "Index",
                 Controller = "Users"
             };
 
             return View(userRolesViewModel);
+        }
+
+        public IActionResult Create()
+        {
+            var roles = _roleManager.Roles.ToList();
+            ViewBag.Roles = roles;
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(ReqCreateUserDTO req)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ErrorMessage = "Tạo user thất bại";
+                var roles = _roleManager.Roles.ToList();
+                ViewBag.Roles = roles;
+                return View();
+            }
+
+            var user = new User()
+            {
+                FirstName = req.FirstName,
+                LastName = req.LastName,
+                Email = req.Email,
+                BOD = req.BOD,
+                PhoneNumber = req.PhoneNumber,
+                UserName = req.Username,
+
+            };
+
+            var userCreated = await _userManager.CreateAsync(user, req.Password);
+
+            if (userCreated.Succeeded)
+            {
+                var role = await _roleManager.FindByIdAsync(req.RoleId.ToString());
+                if (role != null)
+                {
+                    await _userManager.AddToRoleAsync(user, role.Name);
+                }
+            }
+
+            return View();
         }
     }
 }

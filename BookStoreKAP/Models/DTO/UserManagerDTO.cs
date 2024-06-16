@@ -10,7 +10,13 @@ namespace BookStoreKAP.Models.DTO
 
     public class ReqSearchUserDTO
     {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime BOD { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
         public string Username { get; set; }
-        public Guid RoleId { get; set; }
+        public Guid RoleId { get; set; } = Guid.Empty;
+
     }
 }

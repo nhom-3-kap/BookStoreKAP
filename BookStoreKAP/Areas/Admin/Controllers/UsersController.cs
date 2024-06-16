@@ -18,21 +18,22 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(ReqSearchUserDTO req)
+        public async Task<IActionResult> Index(ReqSearchUserDTO req, int page = 1, int pageSize = 10)
         {
-            ViewBag.ReqSearch = req;
-            ViewBag.Roles = _roleManager.Roles.ToList();
+            var users = _userManager.Users
+                                   .Where(u =>
+                                                (string.IsNullOrEmpty(req.FirstName) || u.FirstName.Contains(req.FirstName)) &&
+                                                (string.IsNullOrEmpty(req.LastName) || u.LastName.Contains(req.LastName)) &&
+                                                (string.IsNullOrEmpty(req.PhoneNumber) || u.PhoneNumber.Contains(req.PhoneNumber)) &&
+                                                (string.IsNullOrEmpty(req.Email) || u.Email.Contains(req.Email)) &&
+                                                (string.IsNullOrEmpty(req.Username) || u.UserName.Contains(req.Username)) &&
+                                                (req.RoleId == Guid.Empty || (u.UserRoles != null && u.UserRoles.Any(ur => ur.RoleId == req.RoleId)))
+                                         )
+                                   .OrderBy(u => u.LastName)
+                                   .ToList();
 
-
-            var users = new List<User>();
-            if (req != null && req.RoleId != Guid.Empty)
-            {
-                users = _userManager.Users.Where(u => u.UserName == req.Username || (u.UserRoles != null && u.UserRoles.Any(ur => ur.RoleId == req.RoleId))).ToList();
-            }
-            else
-            {
-                users = _userManager.Users.ToList();
-            }
+            var totalItems = users.Count;
+            var pagedUsers = users.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var userRolesViewModel = new List<UserRolesViewModel>();
 
@@ -45,6 +46,17 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     Roles = roles.ToList()
                 });
             }
+
+            ViewBag.ReqSearch = req;
+            ViewBag.Roles = _roleManager.Roles.ToList();
+            ViewBag.Pagination = new PaginationModel()
+            {
+                TotalItems = totalItems,
+                CurrentPage = page,
+                PageSize = pageSize,
+                Action = "Index",
+                Controller = "Users"
+            };
 
             return View(userRolesViewModel);
         }

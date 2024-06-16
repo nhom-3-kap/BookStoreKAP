@@ -34,6 +34,10 @@
             const regexPhoneNumber = /^\+?[0-9]{1,3}?[-. ]?([0-9]{2,4}[-. ]?){2,4}[0-9]{1,4}$/;
             return regexPhoneNumber.test(value) ? undefined : errorMessage;
         },
+        confirmPassword: function (value, errorMessage = `Trường Password không khớp!`) {
+            const passwordValue = $("input[name='Password']").val();
+            return value === passwordValue ? undefined : errorMessage;
+        }
     };
 
     const formElement = $(formSelector);
@@ -95,7 +99,7 @@
                     }
                 }
             }
-            isInvalidData = !!errorMessage;
+            return !!errorMessage;
         }
 
         function handleClearError(event) {
@@ -117,12 +121,24 @@
     }
 
     $(formElement).on("submit", function (e) {
-        if (isInvalidData) {
+        const inputs = $("[name][rules]");
+        let isInvalid = false;
+        let firstInvalidElement = null;
+        $(inputs).each(function () {
+            if (handleValidate({ target: $(this) })) {
+                if (!firstInvalidElement) {
+                    firstInvalidElement = $(this);
+                }
+                isInvalid = true;
+            } else {
+            }
+        });
+
+        if (isInvalid) {
             e.preventDefault();
-            const inputs = $("[name][rules]");
-            $(inputs).each(function () {
-                handleValidate({ target: $(this) });
-            });
+            if (firstInvalidElement) {
+                firstInvalidElement.focus();
+            }
         }
     });
 }

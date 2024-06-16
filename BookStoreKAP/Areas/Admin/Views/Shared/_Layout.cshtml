@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="~/lib/data-table/datatables.min.css" asp-append-version="true" />
     <link href="~/lib/gijgo/gijgo.min.css" rel="stylesheet" />
     <link href="~/lib/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -159,12 +160,10 @@
                             <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
                             </a>
-                            <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" style="">
-                                <li><a class="dropdown-item" href="#">New project...</a></li>
-                                <li><a class="dropdown-item" href="#">Settings</a></li>
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <ul class="dropdown-menu text-small" style="">
+                                <li><a class="dropdown-item d-flex align-items-center" style="column-gap:4px" href="@(RouteConstant.HOME)"><i class="bi bi-arrow-bar-left"></i> Back Home</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" asp-page="@(RouteConstant.LOGOUT)">Sign out</a></li>
+                                <li><a class="dropdown-item" href="@(RouteConstant.LOGOUT)" >Sign out</a></li>
                             </ul>
                         </div>
                     </div>
@@ -182,6 +181,8 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/gijgo/gijgo.min.js" type="text/javascript"></script>
     <script src="~/lib/data-table/datatables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/validate.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

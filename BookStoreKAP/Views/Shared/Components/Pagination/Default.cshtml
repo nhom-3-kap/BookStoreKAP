@@ -2,7 +2,7 @@
 @{
     int totalPages = (int)Math.Ceiling(Model.TotalItems / (double)Model.PageSize);
     int currentPage = Model.CurrentPage;
-    var searchParams = (BookStoreKAP.Models.DTO.ReqSearchUserDTO)Model.SearchParams ?? new BookStoreKAP.Models.DTO.ReqSearchUserDTO();
+    var searchParams = (BookStoreKAP.Models.DTO.ReqQuerySearchUserDTO)Model.SearchParams ?? new BookStoreKAP.Models.DTO.ReqQuerySearchUserDTO();
     string action = Model.Action ?? "Index";
     string controller = Model.Controller ?? ViewContext.RouteData.Values["controller"].ToString();
 
@@ -26,7 +26,8 @@
         }
     }
 
-    searchParamsDict.Add("page", currentPage);
+
+    //searchParamsDict.Add("page", currentPage);
 }
 
 <nav aria-label="Page navigation">

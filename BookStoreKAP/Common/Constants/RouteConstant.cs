@@ -27,6 +27,7 @@
 
         public const string ADMIN_USERS = $"/{AreasConstant.ADMIN}/Users";
         public const string ADMIN_USERS_CREATE = $"/{AreasConstant.ADMIN}/Users/Create";
+        public const string ADMIN_USERS_MODIFY = $"/{AreasConstant.ADMIN}/Users/Modify";
         #endregion
 
         #region Auth Routes
@@ -36,5 +37,6 @@
         public const string FORGOT_PASSWORD = $"/{AreasConstant.AUTH}/ForgotPassword";
         public const string LOGOUT = $"/{AreasConstant.AUTH}/Logout";
         #endregion
+
     }
 }

@@ -1,8 +1,11 @@
 ﻿using BookStoreKAP.Common.Constants;
+using BookStoreKAP.Database;
+using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
@@ -11,15 +14,18 @@ namespace BookStoreKAP.Areas.Admin.Controllers
     {
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
-        public UsersController(RoleManager<Role> roleManager, UserManager<User> userManager)
+        private readonly BookStoreKAPDBContext _context;
+        public UsersController(RoleManager<Role> roleManager, UserManager<User> userManager, BookStoreKAPDBContext context)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _context = context;
         }
 
-        public async Task<IActionResult> Index(ReqSearchUserDTO req, string menuKey, int page = 1, int pageSize = 2)
+        public async Task<IActionResult> Index([FromQuery] ReqQuerySearchUserDTO req)
         {
-            req.menuKey ??= menuKey;
+
+            req.menuKey ??= req.menuKey;
             var users = _userManager.Users
                                    .Where(u =>
                                                 (string.IsNullOrEmpty(req.FirstName) || u.FirstName.ToUpper().Contains(req.FirstName.ToUpper())) &&
@@ -27,13 +33,13 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                                                 (string.IsNullOrEmpty(req.PhoneNumber) || u.PhoneNumber.ToUpper().Contains(req.PhoneNumber.ToUpper())) &&
                                                 (string.IsNullOrEmpty(req.Email) || u.Email.ToUpper().Contains(req.Email.ToUpper())) &&
                                                 (string.IsNullOrEmpty(req.Username) || u.UserName.ToUpper().Contains(req.Username.ToUpper())) &&
-                                                (req.RoleId == Guid.Empty || (u.UserRoles != null && u.UserRoles.Any(ur => ur.RoleId == req.RoleId)))
+                                                (req.RoleIds == null || req.RoleIds.Count == 0 || (u.UserRoles != null && u.UserRoles.Any(ur => req.RoleIds.Contains(ur.RoleId))))
                                          )
                                    .OrderBy(u => u.LastName)
                                    .ToList();
 
             var totalItems = users.Count;
-            var pagedUsers = users.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var pagedUsers = users.Skip((req.page - 1) * req.pageSize).Take(req.pageSize).ToList();
 
             var userRolesViewModel = new List<UserRolesViewModel>();
 
@@ -52,8 +58,8 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             ViewBag.Pagination = new PaginationModel()
             {
                 TotalItems = totalItems,
-                CurrentPage = page,
-                PageSize = pageSize,
+                CurrentPage = req.page,
+                PageSize = req.pageSize,
                 SearchParams = req,
                 Action = "Index",
                 Controller = "Users"
@@ -68,6 +74,24 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             ViewBag.Roles = roles;
 
             return View();
+        }
+
+        public async Task<IActionResult> Modify(Guid userID)
+        {
+            var user = _userManager.Users.Where(x => x.Id.Equals(userID)).FirstOrDefault();
+            var roles = _roleManager.Roles.ToList();
+            var rolesNames = new List<string>();
+            if (user != null)
+            {
+                var resRoles = await _userManager.GetRolesAsync(user);
+                rolesNames = resRoles.ToList();
+            }
+            var roleGuids = _roleManager.Roles.Where(x => rolesNames.Contains(x.NormalizedName)).Select(x => x.Id).ToList();
+
+            user ??= new User();
+            ViewBag.RoleGuids = roleGuids;
+            ViewBag.Roles = roles;
+            return View(user);
         }
 
         [HttpPost]
@@ -105,5 +129,43 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
             return View();
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveUserByIDAPI(Guid userID)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userID.ToString()) ?? throw new Exception("User Is Not Found");
+
+                // Lấy tất cả các UserRoles liên quan đến người dùng
+                var userRoles = await _context.UserRoles.Where(ur => ur.UserId == userID).ToListAsync();
+
+                // Xóa tất cả các UserRoles liên quan
+                _context.UserRoles.RemoveRange(userRoles);
+                await _context.SaveChangesAsync();
+
+                // Xóa người dùng
+                var result = await _userManager.DeleteAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    var errors = result.Errors.Select(e => e.Description).ToArray();
+                    throw new Exception("Delete user failed! Errors: " + string.Join(", ", errors));
+                }
+
+                // Commit transaction
+                await transaction.CommitAsync();
+
+                return Ok(new ResponseAPI<string>() { Success = true, Message = "Remove Success" });
+            }
+            catch (Exception ex)
+            {
+                // Rollback transaction nếu có lỗi
+                await transaction.RollbackAsync();
+                return Ok(new ResponseAPI<string>() { Success = false, Message = ex.Message });
+            }
+        }
+
     }
 }

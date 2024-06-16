@@ -103,6 +103,8 @@ namespace BookStoreKAP.Database
             builder.Entity<Order>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Rating>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Series>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<Role>().Property(e => e.Id).HasDefaultValueSql("NEWID()");
+            builder.Entity<Role>().Property(e => e.ConcurrencyStamp).HasDefaultValueSql("NEWID()");
 
             // Configuration Many to Many
             #region Table BookGenres

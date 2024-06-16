@@ -2,7 +2,7 @@
 @using BookStoreKAP.Models.Entities;
 @model List<UserRolesViewModel>;
 @{
-    ReqSearchUserDTO searchValue = (ReqSearchUserDTO)ViewBag.ReqSearch ?? new ReqSearchUserDTO();
+    ReqQuerySearchUserDTO searchValue = (ReqQuerySearchUserDTO)ViewBag.ReqSearch ?? new ReqQuerySearchUserDTO();
     List<Role> roles = (List<Role>)ViewBag.Roles ?? new List<Role>();
     PaginationModel paginationModel = ViewBag.Pagination ?? new PaginationModel();
 }
@@ -55,11 +55,10 @@
                             <div class="col-lg-3">
                                 <div class="form-group">
                                     <label class="form-label" for="cboSRoles">Roles</label>
-                                    <select class="form-select" id="cboSRoles" name="RoleId" value="@(searchValue.RoleId)">
-                                        <option value="*" selected>All Roles</option>
+                                    <select class="form-control select2" id="cboSRoles" name="RoleIds" value="@(searchValue.RoleIds)" multiple="multiple">
                                         @foreach (var role in roles)
                                         {
-                                            if (searchValue.RoleId == role.Id)
+                                            if (searchValue.RoleIds != null && searchValue.RoleIds.Contains(role.Id))
                                             {
                                                 <option value="@(role.Id)" selected>@(role.Name)</option>
                                             }
@@ -123,6 +122,9 @@
                                     <th>
                                         Role
                                     </th>
+                                    <th>
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -132,12 +134,25 @@
                                         <td>@(i+1)</td>
                                         <td>@(Model[i].User.FirstName)</td>
                                         <td>@(Model[i].User.LastName)</td>
-                                        <td>@(Model[i].User.BOD)</td>
+                                        <td>@(string.Format("{0:dd/MM/yyyy}", Model[i].User.BOD))</td>
                                         <td>@(Model[i].User.ShipAddress)</td>
                                         <td>@(Model[i].User.UserName)</td>
                                         <td>@(Model[i].User.Email)</td>
                                         <td>@(Model[i].User.PhoneNumber)</td>
                                         <td>@string.Join(", ", Model[i].Roles)</td>
+                                        <td>
+                                            <div class="d-flex align-items-center" style="column-gap: 4px;">
+                                                @if (User!.Identity!.Name != Model[i].User.UserName)
+                                                {
+                                                    <button class="btn btn-danger btn-sm btnDeleteUser" data-userId="@(Model[i].User.Id)"><i class="bi bi-trash"></i></button>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn btn-secondary btn-sm btnDeleteUser" disabled><i class="bi bi-trash"></i></button>
+                                                }
+                                                <a href="@(RouteConstant.ADMIN_USERS_MODIFY)?menuKey=USER&userID=@(Model[i].User.Id)" class="btn btn-info btn-sm btnEditUser"><i class="bi bi-pencil-square"></i></a>
+                                            </div>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
@@ -165,8 +180,52 @@
                 });
             }
 
+            $("select[name='RoleIds']").select2();
+
+            const handleRemoveUserByID = () => {
+                $(".btnDeleteUser").each(function () {
+                    $(this).on("click", function () {
+
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "You will not be able to recover this data!!!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, delete it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const userId = $(this).attr("data-userId");
+                                handleAjax(`/Admin/Users/RemoveUserByIDAPI?userID=${userId}`, {}, (res) => {
+                                    if (res.success) {
+                                        Swal.fire({
+                                            title: "Deleted!",
+                                            text: "Deleted Successfully",
+                                            icon: "success"
+                                        }).then((result) => {
+                                            location.href = location.href;
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: "Error Delete!",
+                                            text: "Delete Failed",
+                                            icon: "error"
+                                        });
+                                    }
+                                }, {type: "DELETE"});
+
+                                
+                            }
+                        });
+
+                    });
+                });
+            }
+
             function init() {
                 handleClickClearFilter();
+                handleRemoveUserByID();
             }
             init();
         });

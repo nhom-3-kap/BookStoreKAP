@@ -2,7 +2,7 @@
 
 namespace BookStoreKAP.Models
 {
-    public class ReposeApi<T>
+    public class ResponseAPI<T>
     {
         [JsonProperty("success")]
         public bool Success { get; set; }

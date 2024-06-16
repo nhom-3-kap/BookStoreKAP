@@ -40,7 +40,15 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.ClientId = configuration["Authentication:Google:ClientId"] ?? "702342811459-cbagsaprmfi0s687j6hjgllqfsi5m7rc.apps.googleusercontent.com";
     options.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? "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";
     options.CallbackPath = new PathString("/signin-google");
+}).AddFacebook(options =>
+{
+    options.AppId = configuration["Authentication:Facebook:AppId"] ?? "1453111265578357";
+    options.AppSecret = configuration["Authentication:Facebook:AppSecret"] ?? "f187eed2b0b76a2c49049c43eb5d80e8";
+    options.CallbackPath = new PathString("/signin-facebook");
+    options.Scope.Add("email");
+    options.Fields.Add("email");
 });
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -55,6 +63,7 @@ builder.Services.AddMvc();
 #region DI
 builder.Services.AddScoped<RoleManager<Role>>();
 builder.Services.AddScoped<UserManager<User>>();
+builder.Services.AddScoped<BookStoreKAPDBContext>();
 #endregion
 
 var app = builder.Build();

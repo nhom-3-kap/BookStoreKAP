@@ -2,7 +2,6 @@
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStoreKAP.Areas.Admin.Controllers

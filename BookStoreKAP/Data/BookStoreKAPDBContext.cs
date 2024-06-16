@@ -96,8 +96,13 @@ namespace BookStoreKAP.Database
                 .HasForeignKey(rc => rc.RoleId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Configure Book entity
+            // Configure Identity Guid
             builder.Entity<Book>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<Genre>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<Sale>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<Order>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<Rating>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<Series>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
 
             // Configuration Many to Many
             #region Table BookGenres

@@ -6,7 +6,7 @@
 <div>
     <div class="container">
         <div class="breadcrumb-wrap">
-            <a href="/">Home</a>
+            <a href="@(RouteConstant.HOME)">Home</a>
             <span>&#10095;</span>
             <p>Cart</p>
 
@@ -16,7 +16,7 @@
                 <div class="d-flex mb-4 justify-content-between align-items-center">
                     <div class="title-cart" id="cart-itms"><h1><span>Your Cart</span> (1 items)</h1></div>
                     <div class="con-spoping">
-                        <a class="con-spoping-btn" href="/Home">Continue Shopping</a>
+                        <a class="con-spoping-btn" href="@(RouteConstant.HOME)">Continue Shopping</a>
                     </div>
                 </div>
                 <div class="row">
@@ -110,7 +110,7 @@
 
 
 
-                            <a href="/Pay" class="chakeout-btn">
+                            <a href="@(RouteConstant.PAY)" class="chakeout-btn">
                                 <button class="btn chakeout-btn w-100">Proceed To Address Select</button>
                             </a>
                             

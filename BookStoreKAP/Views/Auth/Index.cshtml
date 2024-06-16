@@ -7,7 +7,7 @@
 <div>
     <div class="container">
         <div class="breadcrumb-wrap">
-            <a href="/">Home</a>
+            <a href="@(RouteConstant.HOME)">Home</a>
             <span>&#10095;</span>
             <p>@(ViewBag.Service)</p>
 
@@ -23,8 +23,8 @@
                     <div class="col-lg-5 col-md-6">
                         <div class="form-wrap">
                             <h5>Login</h5>
-                            <form  method="post" id="loginform" novalidate="novalidate">
-                                <input type="hidden" name="_token" value="YkfMKlXTfxOWSl5YCTd6AKrQCL9SJ2UKYGexWApR"> 
+                            <form method="post" id="loginform" novalidate="novalidate" class="mb-1">
+                                <input type="hidden" name="_token" value="YkfMKlXTfxOWSl5YCTd6AKrQCL9SJ2UKYGexWApR">
                                 <div class="form-group">
                                     <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email id" name="email">
                                 </div>
@@ -36,15 +36,11 @@
                                         <input type="checkbox" class="form-check-input" id="rem_me" name="rem_me" value="1">
                                         <label class="form-check-label" for="exampleCheck1">Remember Me</label>
                                     </div>
-                                    <a href="/ForgotPassword?Service=ForgotPassword">Forgot Password</a>
+                                    <a href="@(RouteConstant.FORGOT_PASSWORD)?Service=ForgotPassword">Forgot Password</a>
                                 </div>
-                                
+
                                 <div class="d-flex flex-wrap justify-content-between">
                                     <button id="loginBtn" type="submit" class="btn w-auto btn-primary">Login</button>
-
-                                    <script src="https://apis.google.com/js/platform.js" async defer></script>
-                                    <meta name="google-signin-client_id" content="1035049859968-uqqj4aahdcvu2fpem3h5sbt2tmlatf3f.apps.googleusercontent.com">
-
                                     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v20.0&appId=448904941089327" nonce="u1ZUBG54"></script>
                                     <div class="fb-login-button" data-width="" data-size="" data-button-type="" data-layout="" data-auto-logout-link="false" data-use-continue-as="false"></div>
 
@@ -53,7 +49,20 @@
                                     </div>
                                 </div>
                             </form>
-                            <p class="text-center mb-0">Don't have an Account? <a href="/Register?Service=Register">Sign Up</a></p>
+                            @if (User.Identity?.IsAuthenticated != null && User.Identity.IsAuthenticated)
+                            {
+                                <p>Đã Login</p>
+                            }
+                            else
+                            {
+                                <form id="external-account" asp-action="ExternalLogin" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post" class="form-horizontal">
+                                    @foreach (var provider in ViewBag.ExternalLogins!)
+                                    {
+                                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name">@provider.DisplayName</button>
+                                    }
+                                </form>
+                            }
+                            <p class="text-center mb-0">Don't have an Account? <a href="@(RouteConstant.REGISTER)?Service=Register">Sign Up</a></p>
                         </div>
                     </div>
                 </div>

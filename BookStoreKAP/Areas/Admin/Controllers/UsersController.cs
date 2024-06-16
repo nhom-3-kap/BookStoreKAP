@@ -95,6 +95,90 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> Modify(ReqModifyUserDTO req)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var user = await _userManager.FindByIdAsync(req.Id.ToString());
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                if (!string.IsNullOrEmpty(req.FirstName)) user.FirstName = req.FirstName;
+                if (!string.IsNullOrEmpty(req.LastName)) user.LastName = req.LastName;
+                if (!string.IsNullOrEmpty(req.Email)) user.Email = req.Email;
+                if (!string.IsNullOrEmpty(req.PhoneNumber)) user.PhoneNumber = req.PhoneNumber;
+                if (req.BOD != default) user.BOD = req.BOD;
+                if (!string.IsNullOrEmpty(req.Username)) user.UserName = req.Username;
+
+                if (!string.IsNullOrEmpty(req.Password))
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await _userManager.ResetPasswordAsync(user, token, req.Password);
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception("Password reset failed");
+                    }
+                }
+
+                var resultUpdate = await _userManager.UpdateAsync(user);
+                if (!resultUpdate.Succeeded)
+                {
+                    throw new Exception("User update failed");
+                }
+
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var rolesToRemove = userRoles.Where(r => req.RoleIds == null || !req.RoleIds.Any(g => _roleManager.Roles.Any(role => role.Id == g && role.Name == r))).ToList();
+                var rolesToAdd = req.RoleIds?.Where(g => _roleManager.Roles.Any(role => role.Id == g && !userRoles.Contains(role.Name))).Select(g => _roleManager.Roles.First(role => role.Id == g).Name).ToList();
+
+                if (rolesToRemove.Any())
+                {
+                    var resultRemove = await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+                    if (!resultRemove.Succeeded)
+                    {
+                        throw new Exception("Failed to remove roles");
+                    }
+                }
+
+                if (rolesToAdd != null && rolesToAdd.Any())
+                {
+                    var resultAdd = await _userManager.AddToRolesAsync(user, rolesToAdd);
+                    if (!resultAdd.Succeeded)
+                    {
+                        throw new Exception("Failed to add roles");
+                    }
+                }
+
+                await transaction.CommitAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+
+                var user = await _userManager.FindByIdAsync(req.Id.ToString());
+                var roles = _roleManager.Roles.ToList();
+                var rolesNames = new List<string>();
+
+                if (user != null)
+                {
+                    var resRoles = await _userManager.GetRolesAsync(user);
+                    rolesNames = resRoles.ToList();
+                }
+
+                var roleGuids = _roleManager.Roles.Where(x => rolesNames.Contains(x.NormalizedName)).Select(x => x.Id).ToList();
+
+                user ??= new User();
+                ViewBag.RoleGuids = roleGuids;
+                ViewBag.Roles = roles;
+                return View(user);
+            }
+        }
+
+
+        [HttpPost]
         public async Task<IActionResult> Create(ReqCreateUserDTO req)
         {
             if (!ModelState.IsValid)

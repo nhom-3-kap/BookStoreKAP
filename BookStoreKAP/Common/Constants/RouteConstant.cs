@@ -36,5 +36,6 @@
         public const string FORGOT_PASSWORD = $"/{AreasConstant.AUTH}/ForgotPassword";
         public const string LOGOUT = $"/{AreasConstant.AUTH}/Logout";
         #endregion
+
     }
 }

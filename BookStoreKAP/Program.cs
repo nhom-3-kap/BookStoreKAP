@@ -55,6 +55,7 @@ builder.Services.AddMvc();
 #region DI
 builder.Services.AddScoped<RoleManager<Role>>();
 builder.Services.AddScoped<UserManager<User>>();
+builder.Services.AddScoped<BookStoreKAPDBContext>();
 #endregion
 
 var app = builder.Build();

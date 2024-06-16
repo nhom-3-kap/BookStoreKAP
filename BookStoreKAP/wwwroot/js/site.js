@@ -1,4 +1,20 @@
-﻿$(document).ready(function () {
+﻿const handleAjaxError = (xhr, status, error) => console.error('Error: ' + error.message);
+const handleAjax = (url, data, successCallback, options = {}) => {
+    const { type, async, ...others } = options;
+
+    $.ajax({
+        url: url,
+        type: type || 'POST',
+        ...others,
+        async: async || false,
+        data: data,
+        success: successCallback,
+        error: handleAjaxError
+    });
+};
+
+
+$(document).ready(function () {
     $(".card-heading[data-url]").each(function (index, item) {
         $(item).on("click", function () {
             const url = $(this).attr("data-url")
@@ -7,11 +23,11 @@
     })
 })
 
-    
-    src = "https://code.jquery.com/jquery-3.6.0.min.js" 
+
+src = "https://code.jquery.com/jquery-3.6.0.min.js"
 $(document).ready(function () {
-     var rotation = 0;
-    $(".side-bar-item").each(function (index,item) {
+    var rotation = 0;
+    $(".side-bar-item").each(function (index, item) {
 
         $(item).on("click", function () {
             if ($(this).find(".wrap-icon").hasClass("rotate")) {
@@ -29,4 +45,3 @@ $(document).ready(function () {
 
     })
 });
-                 

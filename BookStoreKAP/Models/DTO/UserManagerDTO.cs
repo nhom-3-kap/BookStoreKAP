@@ -37,4 +37,9 @@ namespace BookStoreKAP.Models.DTO
         public string Password { get; set; }
         public Guid RoleId { get; set; }
     }
+
+    public class ReqDeleteUserDTO
+    {
+        public Guid UserID { get; set; }
+    }
 }

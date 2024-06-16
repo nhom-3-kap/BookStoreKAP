@@ -1,4 +1,6 @@
-﻿using BookStoreKAP.Models.DTO;
+﻿using BookStoreKAP.Common.Constants;
+using BookStoreKAP.Database;
+using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +12,14 @@ namespace BookStoreKAP.Controllers
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        public AuthController(SignInManager<User> signInManager, UserManager<User> userManager)
+        private readonly RoleManager<Role> _roleManager;
+        private readonly BookStoreKAPDBContext _context;
+        public AuthController(SignInManager<User> signInManager, UserManager<User> userManager, RoleManager<Role> roleManager, BookStoreKAPDBContext context)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _roleManager = roleManager;
+            _context = context;
         }
 
 
@@ -113,6 +119,80 @@ namespace BookStoreKAP.Controllers
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View();
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Register(ReqRegisterDTO req, string returnUrl = "/")
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ReturnUrl = returnUrl ?? Url.Content("~/");
+                ViewBag.Service = "Login";
+                ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                return View(req);
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var user = new User()
+                {
+                    FirstName = req.FirstName,
+                    LastName = req.LastName,
+                    Email = req.Email,
+                    PhoneNumber = req.PhoneNumber,
+                    UserName = req.Username
+                };
+
+                var result = await _userManager.CreateAsync(user, req.Password);
+
+                if (!result.Succeeded)
+                {
+                    AddErrors(result);
+                    throw new Exception("User creation failed.");
+                }
+
+                var userAfterCreated = await _userManager.FindByEmailAsync(req.Email);
+                if (userAfterCreated == null)
+                {
+                    throw new Exception("User not found after creation.");
+                }
+
+                var userRole = new UserRole()
+                {
+                    RoleId = Guid.Parse("74102ea6-5a0d-4638-9790-02936b857022"),
+                    UserId = userAfterCreated.Id,
+                };
+
+                _context.Add(userRole);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                await _signInManager.PasswordSignInAsync(req.Username, req.Password, false, lockoutOnFailure: false);
+                return Redirect(RouteConstant.HOME);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                ModelState.AddModelError("", "An error occurred while processing your request. Please try again.");
+                ModelState.AddModelError("", ex.Message);
+
+                ViewBag.ReturnUrl = returnUrl ?? Url.Content("~/");
+                ViewBag.Service = "Login";
+                ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                return View(req);
+            }
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
 
         // Action method for /Auth/ForgotPassword
         public IActionResult ForgotPassword()

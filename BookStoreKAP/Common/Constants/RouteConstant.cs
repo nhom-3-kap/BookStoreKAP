@@ -24,6 +24,7 @@
 
         public const string ADMIN_CATEGORIES = $"/{AreasConstant.ADMIN}/Categories";
         public const string ADMIN_CATEGORIES_CREATE = $"/{AreasConstant.ADMIN}/Categories/Create";
+        public const string ADMIN_CATEGORIES_MODIFY = $"/{AreasConstant.ADMIN}/Categories/Modify";
 
         public const string ADMIN_USERS = $"/{AreasConstant.ADMIN}/Users";
         public const string ADMIN_USERS_CREATE = $"/{AreasConstant.ADMIN}/Users/Create";

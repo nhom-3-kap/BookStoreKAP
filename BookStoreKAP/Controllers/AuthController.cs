@@ -56,6 +56,35 @@ namespace BookStoreKAP.Controllers
             return View();
         }
 
+        [Route("/Auth/Login")]
+        [HttpPost]
+        public async Task<IActionResult> Index(ReqLoginDTO req, string returnUrl = "~/")
+        {
+            returnUrl ??= Url.Content("~/");
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    throw new Exception();
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(req.UserName, req.Password, false, lockoutOnFailure: false);
+                if (!result.Succeeded)
+                {
+                    throw new Exception();
+                }
+
+                return Redirect(returnUrl);
+            }
+            catch (Exception)
+            {
+                ViewBag.ReturnUrl = returnUrl;
+                ViewBag.Service = "Login";
+                ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
         // Action method for /Auth/Register
         public IActionResult Register()
         {

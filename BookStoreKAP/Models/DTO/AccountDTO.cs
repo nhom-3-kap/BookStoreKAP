@@ -8,4 +8,12 @@ namespace BookStoreKAP.Models.DTO
         [EmailAddress]
         public string Email { get; set; }
     }
+
+    public class ReqLoginDTO
+    {
+        [Required]
+        public string UserName { get; set; }
+        [Required]
+        public string Password { get; set; }
+    }
 }

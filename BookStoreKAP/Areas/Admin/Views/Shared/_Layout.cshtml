@@ -158,12 +158,12 @@
                     <div class="d-flex flex-wrap align-items-center justify-content-between justify-content-lg-end">
                         <div class="dropdown text-end">
                             <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                                <img src="@(User.GetAvatar())" alt="mdo" width="32" height="32" class="rounded-circle">
                             </a>
                             <ul class="dropdown-menu text-small" style="">
                                 <li><a class="dropdown-item d-flex align-items-center" style="column-gap:4px" href="@(RouteConstant.HOME)"><i class="bi bi-arrow-bar-left"></i> Back Home</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="@(RouteConstant.LOGOUT)" >Sign out</a></li>
+                                <li><a class="dropdown-item" href="@(RouteConstant.LOGOUT)">Sign out</a></li>
                             </ul>
                         </div>
                     </div>
@@ -189,5 +189,40 @@
     <script src="~/js/admin.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+<script>
+        $(document).ready(function () {
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "700",
+                "timeOut": "1500",
+                "extendedTimeOut": "700",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            // Hiển thị thông báo từ TempData
+            @if (TempData[ToastrConstant.SUCCESS_MSG] != null)
+            {
+                <text>toastr.success('@(TempData[ToastrConstant.SUCCESS_MSG])');</text>
+            }
+            @if (TempData[ToastrConstant.ERROR_MSG] != null)
+            {
+                <text>toastr.error('@(TempData[ToastrConstant.ERROR_MSG])');</text>
+            }
+            @if (TempData[ToastrConstant.WARN_MSG] != null)
+            {
+                <text>toastr.error('@(TempData[ToastrConstant.WARN_MSG])');</text>
+            }
+        });
+</script>
 </body>
 </html>

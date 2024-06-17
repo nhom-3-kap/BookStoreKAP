@@ -21,6 +21,9 @@ namespace BookStoreKAP.Models.Entities
         [AllowNull]
         public string? ShipAddress { get; set; }
 
+        [AllowNull]
+        public string? Avatar { get; set; }
+
         public ICollection<Favorite>? Favorites { get; set; }
 
         #region Custom Identity

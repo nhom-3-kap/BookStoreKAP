@@ -11,6 +11,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         [Authorize]
         public IActionResult Index()
         {
+            TempData[ToastrConstant.SUCCESS_MSG] = "Welcome Back 🙋‍";
             return View();
         }
     }

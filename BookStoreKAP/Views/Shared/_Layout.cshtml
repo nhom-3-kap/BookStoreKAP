@@ -64,9 +64,16 @@
 
                     @if (User.Identity?.IsAuthenticated != null && User.Identity.IsAuthenticated)
                     {
-                        <div class="d-flex align-items-center">
-                            <p class="mr-1">Xin chào @(User.Identity.Name)</p>
-                            <a href="@(RouteConstant.LOGOUT)?returnUrl=@(System.Web.HttpUtility.UrlEncode("/"))">Logout</a>
+                        <div class="d-flex flex-wrap align-items-center justify-content-between justify-content-lg-end">
+                            <div class="dropdown text-end">
+                                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="@(User.GetAvatar())" alt="avt" width="32" height="32" class="rounded-circle">
+                                </a>
+                                <ul class="dropdown-menu text-small" style="">
+                                    <li><a class="dropdown-item">Profile</a></li>
+                                    <li><a class="dropdown-item" href="@(RouteConstant.LOGOUT)">Sign out</a></li>
+                                </ul>
+                            </div>
                         </div>
                     }
                     else

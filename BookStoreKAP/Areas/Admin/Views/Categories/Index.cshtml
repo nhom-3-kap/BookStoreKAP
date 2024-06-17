@@ -1,5 +1,6 @@
 ﻿@model List<Series>
 @{
+    ReqQuerySearchSeries searchValue = ViewBag.SearchValue ?? new ReqQuerySearchSeries();
 }
 <div class="container">
     <div class="row">
@@ -13,13 +14,13 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label class="form-label" for="txtSName">Name</label>
-                            <input type="text" id="txtSName" name="Name" class="form-control" />
+                            <input type="text" id="txtSName" name="Name" class="form-control" value="@(searchValue.Name)" />
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label class="form-label" for="txtSVolumns">Volumns</label>
-                            <input type="number" id="txtSVolumns" name="Volumns" class="form-control" />
+                            <input type="number" id="txtSVolumns" name="Volumns" class="form-control" value="@(searchValue.Volumns)" />
                         </div>
                     </div>
                     <div class="col-lg-12 mt-2">
@@ -62,7 +63,7 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center" style="column-gap: 4px;">
-                                            <button class="btn btn-danger btn-sm" data-seriesID="@(Model[i].ID)" ><i class="bi bi-trash"></i></button>
+                                            <button class="btn btn-danger btn-sm btnDeleteCategory" data-seriesID="@(Model[i].ID)" ><i class="bi bi-trash"></i></button>
                                             <a href="@(RouteConstant.ADMIN_CATEGORIES_MODIFY)?menuKey=CM&seriesID=@(Model[i].ID)" class="btn btn-info btn-sm text-white"><i class="bi bi-pencil-square"></i></a>
                                         </div>
                                     </td>
@@ -75,3 +76,51 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const handleClickDeleteCategory = () => {
+                $(".btnDeleteCategory").each(function () {
+                    $(this).on("click", function () {
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "You will not be able to recover this data!!!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, delete it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                var categoryId = $(this).attr("data-seriesID");
+                                handleAjax(`/Admin/Categories/DeleteCategoryByIdAPI?categoryId=${categoryId}`, {}, (res) => {
+                                    if (res.success) {
+                                        Swal.fire({
+                                            title: "Deleted!",
+                                            text: "Deleted Successfully",
+                                            icon: "success"
+                                        }).then((result) => {
+                                            location.href = location.href;
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: "Error Delete!",
+                                            text: "Delete Failed",
+                                            icon: "error"
+                                        });
+                                    }
+                                }, { type: "DELETE" });
+                            }
+                        });
+                    });
+                });
+            };
+            function init() {
+                handleClickDeleteCategory();
+            }
+
+            init();
+        });
+    </script>
+}

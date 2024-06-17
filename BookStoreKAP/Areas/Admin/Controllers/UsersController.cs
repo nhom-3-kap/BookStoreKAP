@@ -3,9 +3,11 @@ using BookStoreKAP.Database;
 using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
@@ -15,11 +17,13 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly BookStoreKAPDBContext _context;
-        public UsersController(RoleManager<Role> roleManager, UserManager<User> userManager, BookStoreKAPDBContext context)
+        private readonly SignInManager<User> _signInManager;
+        public UsersController(RoleManager<Role> roleManager, UserManager<User> userManager, BookStoreKAPDBContext context, SignInManager<User> signInManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _context = context;
+            _signInManager = signInManager;
         }
 
         public async Task<IActionResult> Index([FromQuery] ReqQuerySearchUserDTO req)
@@ -95,7 +99,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Modify(ReqModifyUserDTO req)
+        public async Task<IActionResult> Modify(ReqModifyUserDTO req, IFormFile Avatar)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -122,11 +126,39 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                         throw new Exception("Password reset failed");
                     }
                 }
+                string? oldAvatarPath = null;
+                if (Avatar != null && Avatar.Length > 0) // Nếu người dùng chọn file ảnh mới
+                {
+                    var fileNameRemove = !string.IsNullOrEmpty(user.Avatar) ? user.Avatar.Split("/").LastOrDefault() ?? "" : "";
+                    // Lưu đường dẫn avatar cũ
+                    oldAvatarPath = !string.IsNullOrEmpty(user.Avatar) ? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "images", "avatars", fileNameRemove) : null;
 
-                var resultUpdate = await _userManager.UpdateAsync(user);
+                    var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "images", "avatars");// Đường dẫn thư mục lưu trữ ảnh
+                    if (!Directory.Exists(uploads)) // Kiểm tra nếu thư mục chưa tồn tại
+                    {
+                        Directory.CreateDirectory(uploads); // Tạo thư mục nếu chưa tồn tại
+                    }
+                    var fileExtension = Path.GetExtension(Avatar.FileName); // Lấy phần mở rộng của file ảnh
+                    var fileName = $"{Guid.NewGuid()}{fileExtension}"; // Tạo tên file mới sử dụng GUID
+                    var filePath = Path.Combine(uploads, fileName); // Đường dẫn đầy đủ của file ảnh
+                    using (var fileStream = new FileStream(filePath, FileMode.Create)) // Mở stream để lưu file
+                    {
+                        await Avatar.CopyToAsync(fileStream); // Sao chép nội dung file vào stream
+                    }
+                    // Lấy thông tin protocol và host từ request
+                    var request = HttpContext.Request;
+                    user.Avatar = $"/uploads/images/avatars/{fileName}"; // Lưu đường dẫn đầy đủ vào thuộc tính Avatar của user
+                }
+
+                var resultUpdate = await _userManager.UpdateAsync(user); // Cập nhật thông tin user
                 if (!resultUpdate.Succeeded)
                 {
                     throw new Exception("User update failed");
+                }
+
+                if (!string.IsNullOrEmpty(oldAvatarPath) && System.IO.File.Exists(oldAvatarPath))
+                {
+                    System.IO.File.Delete(oldAvatarPath); // Xóa avatar cũ
                 }
 
                 var userRoles = await _userManager.GetRolesAsync(user);
@@ -151,7 +183,32 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     }
                 }
 
+                // Cập nhật claims của người dùng hiện tại nếu là người dùng hiện tại
+                if (User.Identity?.Name == user.UserName)
+                {
+                    var additionalClaims = new List<Claim>
+                    {
+                        new("Avatar", user.Avatar ?? "https://placehold.co/200x200") // Thêm claim Avatar
+                    };
+
+                    var claimsIdentity = User.Identity as ClaimsIdentity;
+                    if (claimsIdentity != null)
+                    {
+                        // Xóa claim cũ
+                        var existingClaim = claimsIdentity.FindFirst("Avatar");
+                        if (existingClaim != null)
+                        {
+                            claimsIdentity.RemoveClaim(existingClaim);
+                        }
+                        // Thêm claim mới
+                        claimsIdentity.AddClaims(additionalClaims);
+                    }
+                    await _signInManager.SignOutAsync();
+                    await _signInManager.Context.SignInAsync(IdentityConstants.ApplicationScheme, new ClaimsPrincipal(claimsIdentity));
+                }
+
                 await transaction.CommitAsync();
+                TempData[ToastrConstant.SUCCESS_MSG] = "Modify user is successfully";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception)
@@ -173,6 +230,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 user ??= new User();
                 ViewBag.RoleGuids = roleGuids;
                 ViewBag.Roles = roles;
+                TempData[ToastrConstant.ERROR_MSG] = "Modify user is error!!!";
                 return View(user);
             }
         }
@@ -181,37 +239,47 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateUserDTO req)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                ViewBag.ErrorMessage = "Tạo user thất bại";
-                var roles = _roleManager.Roles.ToList();
-                ViewBag.Roles = roles;
-                return View();
-            }
+                if (!ModelState.IsValid)
+                {
+                    throw new Exception();
+                }
 
-            var user = new User()
-            {
-                FirstName = req.FirstName,
-                LastName = req.LastName,
-                Email = req.Email,
-                BOD = req.BOD,
-                PhoneNumber = req.PhoneNumber,
-                UserName = req.Username,
+                var user = new User()
+                {
+                    FirstName = req.FirstName,
+                    LastName = req.LastName,
+                    Email = req.Email,
+                    BOD = req.BOD,
+                    PhoneNumber = req.PhoneNumber,
+                    UserName = req.Username,
 
-            };
+                };
 
-            var userCreated = await _userManager.CreateAsync(user, req.Password);
+                var userCreated = await _userManager.CreateAsync(user, req.Password);
 
-            if (userCreated.Succeeded)
-            {
+                if (!userCreated.Succeeded)
+                {
+                    throw new Exception();
+                }
+
                 var role = await _roleManager.FindByIdAsync(req.RoleId.ToString());
                 if (role != null)
                 {
                     await _userManager.AddToRoleAsync(user, role.Name);
                 }
-            }
 
-            return View();
+                TempData[ToastrConstant.SUCCESS_MSG] = "Create user successfully";
+                return View();
+            }
+            catch (Exception)
+            {
+                TempData[ToastrConstant.ERROR_MSG] = "Create user is error!!!";
+                var roles = _roleManager.Roles.ToList();
+                ViewBag.Roles = roles;
+                return View();
+            }
         }
 
         [HttpDelete]

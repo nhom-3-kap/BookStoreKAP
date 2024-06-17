@@ -185,7 +185,6 @@
             const handleRemoveUserByID = () => {
                 $(".btnDeleteUser").each(function () {
                     $(this).on("click", function () {
-
                         Swal.fire({
                             title: "Are you sure?",
                             text: "You will not be able to recover this data!!!",
@@ -214,8 +213,6 @@
                                         });
                                     }
                                 }, {type: "DELETE"});
-
-                                
                             }
                         });
 

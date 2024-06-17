@@ -3,16 +3,18 @@ using BookStoreKAP.Database;
 using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
     [Area(AreasConstant.ADMIN)]
-    public class CategoriesController : Controller
+    [Authorize(Roles = RolesConstant.ADMIN)]
+    public class SeriesController : Controller
     {
         private readonly BookStoreKAPDBContext _context;
-        public CategoriesController(BookStoreKAPDBContext context)
+        public SeriesController(BookStoreKAPDBContext context)
         {
             _context = context;
         }
@@ -64,19 +66,19 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteCategoryByIdAPI(Guid categoryId)
+        public async Task<IActionResult> DeleteSeriesByIdAPI(Guid seriesID)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                if (categoryId.Equals(Guid.Empty))
+                if (seriesID.Equals(Guid.Empty))
                 {
-                    throw new Exception("Category is not exsits");
+                    throw new Exception("Series is not exsits");
                 }
 
-                var category = await _context.Series.FindAsync(categoryId) ?? throw new Exception("Category is not exsits");
+                var series = await _context.Series.FindAsync(seriesID) ?? throw new Exception("Series is not exsits");
 
-                _context.Remove(category);
+                _context.Remove(series);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
@@ -92,44 +94,44 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
         public IActionResult Modify(Guid seriesID)
         {
-            var category = _context.Series.Find(seriesID) ?? new Series();
+            var series = _context.Series.Find(seriesID) ?? new Series();
 
-            return View(category);
+            return View(series);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Modify(ReqModifyCategory req)
+        public async Task<IActionResult> Modify(ReqModifySeries req)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var category = await _context.Series.FindAsync(req.SeriesID);
-                if (category == null)
+                var series = await _context.Series.FindAsync(req.SeriesID);
+                if (series == null)
                 {
                     return NotFound();
                 }
 
-                // Cập nhật thông tin category
+                // Cập nhật thông tin series
                 if (!string.IsNullOrEmpty(req.Name))
                 {
-                    category.Name = req.Name;
+                    series.Name = req.Name;
                 }
-                category.Volumns = req.Volumns;
-                category.UpdatedAt = DateTime.UtcNow;
+                series.Volumns = req.Volumns;
+                series.UpdatedAt = DateTime.UtcNow;
 
-                _context.Series.Update(category);
+                _context.Series.Update(series);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
-                TempData[ToastrConstant.SUCCESS_MSG] = "Category updated successfully.";
-                return Redirect($"{RouteConstant.ADMIN_CATEGORIES}?menuKey=CM");
+                TempData[ToastrConstant.SUCCESS_MSG] = "Series updated successfully.";
+                return Redirect($"{RouteConstant.ADMIN_SERIES}?menuKey=CM");
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
                 ModelState.AddModelError("", ex.Message);
-                TempData[ToastrConstant.ERROR_MSG] = "An error occurred while updating the category.";
-                var category = await _context.Series.FindAsync(req.SeriesID) ?? new Series();
-                return View(category);
+                TempData[ToastrConstant.ERROR_MSG] = "An error occurred while updating the series.";
+                var series = await _context.Series.FindAsync(req.SeriesID) ?? new Series();
+                return View(series);
             }
         }
 

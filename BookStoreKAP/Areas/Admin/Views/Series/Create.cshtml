@@ -6,15 +6,15 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <h3 class="text-center">Create Category</h3>
+            <h3 class="text-center">Create Series</h3>
         </div>
         <div class="col-lg-12">
-            <form asp-action="Create" method="POST" id="frmCreateCategory">
+            <form asp-action="Create" method="POST" id="frmCreateSeries">
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label class="form-label" for="txtName">Name <span class="required text-danger">*</span></label>
-                            <input type="text" class="form-control" id="txtName" name="Name" rules="required"/>
+                            <input type="text" class="form-control" id="txtName" name="Name" rules="required" placeholder="Enter series name..."/>
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
 @section Scripts {
     <script>
         function init() {
-            Validator("#frmCreateCategory");
+            Validator("#frmCreateSeries");
         }
         init();
     </script>

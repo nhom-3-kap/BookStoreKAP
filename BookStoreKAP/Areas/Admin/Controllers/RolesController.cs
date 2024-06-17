@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
     [Area(AreasConstant.ADMIN)]
-    [Authorize(RolesConstant.ADMIN)]
+    [Authorize(Roles = RolesConstant.ADMIN)]
     public class RolesController : Controller
     {
         public IActionResult Index()

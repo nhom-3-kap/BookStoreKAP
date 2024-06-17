@@ -6,7 +6,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 {
     [Area(AreasConstant.ADMIN)]
     [Authorize(Roles = RolesConstant.ADMIN)]
-    public class BooksController : Controller
+    public class GenreController : Controller
     {
         public IActionResult Index()
         {
@@ -14,6 +14,11 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
         public IActionResult Create()
+        {
+            return View();
+        }
+
+        public IActionResult Modify(Guid genreID)
         {
             return View();
         }

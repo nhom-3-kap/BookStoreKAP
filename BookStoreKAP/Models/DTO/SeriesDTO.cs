@@ -17,7 +17,7 @@ namespace BookStoreKAP.Models.DTO
         public int Volumns { get; set; } = -1;
     }
 
-    public class ReqModifyCategory
+    public class ReqModifySeries
     {
         public Guid SeriesID { get; set; }
         public string? Name { get; set; }

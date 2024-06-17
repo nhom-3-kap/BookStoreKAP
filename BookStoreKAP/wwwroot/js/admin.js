@@ -1,4 +1,10 @@
 ﻿const handleGetActiveMenuSideBar = () => {
+    let actives = [];
+
+    $("[data-menu-key]").each(function () {
+        actives.push($(this).attr("data-menu-key"));
+    });
+
     const currentHref = $(location).attr('href');
     const currentHrefSplit = currentHref.split('?');
     let hrefValue = [];
@@ -8,7 +14,7 @@
     }
     var [key, value] = hrefValue;
     if (key === "menuKey") {
-        ["CM", "P", "USER", "ROLE", "ODER", "INFO"].forEach((menuKey) => {
+        actives.forEach((menuKey) => {
             let menuKeyOperator = menuKey;
             if (key === "menuKey" && value.endsWith("#")) {
                 menuKeyOperator = `${menuKey}#`;

@@ -15,16 +15,19 @@
         public const string CART = "/Cart";
         #endregion
 
-
         #region Admin Routes
         public const string ADMIN = $"/{AreasConstant.ADMIN}";
 
+        public const string ADMIN_SERIES = $"/{AreasConstant.ADMIN}/Series";
+        public const string ADMIN_SERIES_CREATE = $"/{AreasConstant.ADMIN}/Series/Create";
+        public const string ADMIN_SERIES_MODIFY = $"/{AreasConstant.ADMIN}/Series/Modify";
+
+        public const string ADMIN_GENRE = $"/{AreasConstant.ADMIN}/Genre";
+        public const string ADMIN_GENRE_CREATE = $"/{AreasConstant.ADMIN}/Genre/Create";
+        public const string ADMIN_GENRE_MODIFY = $"/{AreasConstant.ADMIN}/Genre/Modify";
+
         public const string ADMIN_BOOKS = $"/{AreasConstant.ADMIN}/Books";
         public const string ADMIN_BOOKS_CREATE = $"/{AreasConstant.ADMIN}/Books/Create";
-
-        public const string ADMIN_CATEGORIES = $"/{AreasConstant.ADMIN}/Categories";
-        public const string ADMIN_CATEGORIES_CREATE = $"/{AreasConstant.ADMIN}/Categories/Create";
-        public const string ADMIN_CATEGORIES_MODIFY = $"/{AreasConstant.ADMIN}/Categories/Modify";
 
         public const string ADMIN_USERS = $"/{AreasConstant.ADMIN}/Users";
         public const string ADMIN_USERS_CREATE = $"/{AreasConstant.ADMIN}/Users/Create";

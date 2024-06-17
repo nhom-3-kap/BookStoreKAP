@@ -37,18 +37,36 @@
                     <p class="admin-side-bar-menu-title">Products</p>
                     <div class="admin-side-bar-menu-item">
                         <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="CM">
-                            <p><i class="bi bi-archive"></i> <span>Categories Book</span></p>
+                            <p><i class="bi bi-123"></i> <span>Series</span></p>
                             <i class="bi bi-chevron-down"></i>
                         </a>
                         <div class="admin-side-bar-menu-item-child">
                             <ul class="admin-side-bar-menu-item-child-list">
                                 <li>
-                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_CATEGORIES)?menuKey=CM">
+                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_SERIES)?menuKey=CM">
                                         <i class="bi bi-circle"></i>
-                                        <span class="ml-1">List Categories</span>
+                                        <span class="ml-1">List Series</span>
                                     </a>
                                 </li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_CATEGORIES_CREATE)?menuKey=CM"><i class="bi bi-circle"></i>Add Category</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_SERIES_CREATE)?menuKey=CM"><i class="bi bi-circle"></i>Add Series</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="admin-side-bar-menu-item">
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="GM">
+                            <p><i class="bi bi-archive"></i> <span>Genres</span></p>
+                            <i class="bi bi-chevron-down"></i>
+                        </a>
+                        <div class="admin-side-bar-menu-item-child">
+                            <ul class="admin-side-bar-menu-item-child-list">
+                                <li>
+                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_GENRE)?menuKey=GM">
+                                        <i class="bi bi-circle"></i>
+                                        <span class="ml-1">List Genres</span>
+                                    </a>
+                                </li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_GENRE_CREATE)?menuKey=GM"><i class="bi bi-circle"></i>Add Genres</a></li>
                             </ul>
                         </div>
                     </div>
@@ -92,7 +110,7 @@
                     </div>
                     <div class="admin-side-bar-menu-item">
                         <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="ROLE">
-                            <p><i class="bi bi-book"></i> <span>Roles</span></p>
+                            <p><i class="bi bi-shield-lock"></i> <span>Roles</span></p>
                             <i class="bi bi-chevron-down"></i>
                         </a>
                         <div class="admin-side-bar-menu-item-child">
@@ -118,32 +136,12 @@
                         <div class="admin-side-bar-menu-item-child">
                             <ul class="admin-side-bar-menu-item-child-list">
                                 <li>
-                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_CATEGORIES)?menuKey=ODER">
+                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_SERIES)?menuKey=ODER">
                                         <i class="bi bi-circle"></i>
                                         <span class="ml-1">List Reports</span>
                                     </a>
                                 </li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_CATEGORIES_CREATE)?menuKey=ODER"><i class="bi bi-circle"></i>Create Report</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="admin-side-bar-menu">
-                    <p class="admin-side-bar-menu-title">Infomation</p>
-                    <div class="admin-side-bar-menu-item">
-                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="INFO">
-                            <p><i class="bi bi-info-circle"></i> <span>Profile</span></p>
-                            <i class="bi bi-chevron-down"></i>
-                        </a>
-                        <div class="admin-side-bar-menu-item-child">
-                            <ul class="admin-side-bar-menu-item-child-list">
-                                <li>
-                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_CATEGORIES)?menuKey=INFO">
-                                        <i class="bi bi-circle"></i>
-                                        <span class="ml-1">Setting</span>
-                                    </a>
-                                </li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_CATEGORIES_CREATE)?menuKey=INFO"><i class="bi bi-circle"></i>Logout</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_SERIES_CREATE)?menuKey=ODER"><i class="bi bi-circle"></i>Create Report</a></li>
                             </ul>
                         </div>
                     </div>

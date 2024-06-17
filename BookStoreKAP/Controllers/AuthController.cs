@@ -2,6 +2,7 @@
 using BookStoreKAP.Database;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Plugins;
@@ -48,6 +49,26 @@ namespace BookStoreKAP.Controllers
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
+                // Lấy thông tin người dùng
+                var userExists = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                if (userExists != null)
+                {
+                    // Tạo danh sách các claims bổ sung
+                    var additionalClaims = new List<Claim>
+                    {
+                        new Claim("Avatar", userExists.Avatar ?? "https://placehold.co/200x200") // Thêm claim Avatar
+                    };
+
+                    // Tạo ClaimsPrincipal mới
+                    var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(userExists);
+                    var identity = claimsPrincipal.Identity as ClaimsIdentity;
+                    identity?.AddClaims(additionalClaims);
+
+                    // Đăng nhập người dùng với ClaimsPrincipal mới
+                    await _signInManager.SignOutAsync(); // Đảm bảo đăng xuất người dùng trước khi đăng nhập lại với claims mới
+                    await _signInManager.Context.SignInAsync(IdentityConstants.ApplicationScheme, claimsPrincipal); // Đăng nhập với claims mới
+                }
+
                 return LocalRedirect(returnUrl);
             }
 
@@ -98,6 +119,27 @@ namespace BookStoreKAP.Controllers
                 {
                     throw new Exception();
                 }
+                // Lấy thông tin người dùng
+                var user = await _userManager.FindByNameAsync(req.UserName);
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                // Tạo danh sách các claims bổ sung
+                var additionalClaims = new List<Claim>
+                {
+                    new Claim("Avatar", user.Avatar ?? "https://placehold.co/200x200") // Thêm claim Avatar
+                };
+
+                // Tạo ClaimsPrincipal mới
+                var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
+                var identity = claimsPrincipal.Identity as ClaimsIdentity;
+                identity?.AddClaims(additionalClaims);
+
+                // Đăng nhập người dùng với ClaimsPrincipal mới
+                await _signInManager.SignOutAsync(); // Đảm bảo đăng xuất người dùng trước khi đăng nhập lại với claims mới
+                await _signInManager.SignInAsync(user, new AuthenticationProperties { IsPersistent = false }, identity.AuthenticationType);
 
                 return Redirect(returnUrl);
             }
@@ -141,7 +183,8 @@ namespace BookStoreKAP.Controllers
                     LastName = req.LastName,
                     Email = req.Email,
                     PhoneNumber = req.PhoneNumber,
-                    UserName = req.Username
+                    UserName = req.Username,
+                    Avatar = "https://placehold.co/200x200",
                 };
 
                 var result = await _userManager.CreateAsync(user, req.Password);

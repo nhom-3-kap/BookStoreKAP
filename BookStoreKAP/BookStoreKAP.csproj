@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\lib\data-table\" />
+    <Folder Include="wwwroot\uploads\images\avatars\" />
   </ItemGroup>
 
 </Project>

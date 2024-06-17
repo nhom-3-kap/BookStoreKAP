@@ -1,7 +1,8 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
+@model List<Genre>
 @{
+    ReqQuerySearchGenre searchValue = ViewBag.SearchValue ?? new ReqQuerySearchGenre();
+    PaginationModel pagination = ViewBag.Pagination ?? new PaginationModel();
 }
 <div class="container">
     <div class="row">
@@ -12,9 +13,10 @@
                 </div>
                 <div class="col-lg-12">
                     <form asp-action="Index" method="GET" id="frmSearchGenre">
+                        <input type="text" name="menuKey" value="GM" hidden/>
                         <div class="form-group">
                             <label class="form-label" for="txtSName">Name</label>
-                            <input type="text" value="" class="form-control" id="txtSName" name="Name" />
+                            <input type="text" value="@(searchValue.Name)" class="form-control" id="txtSName" name="Name" />
                         </div>
                         <div class="form-group mt-2">
                             <div class="d-flex justify-content-end"><button class="btn btn-info text-white"><i class="bi bi-search"></i></button></div>
@@ -40,20 +42,28 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Test</td>
-                                <td>11/01/2003</td>
-                                <td>11/01/2003</td>
-                                <td>
-                                    <div class="d-flex align-items-center" style="column-gap: 4px;">
-                                        <button class="btn btn-danger btn-sm btnDeleteGenre" data-genreID=""><i class="bi bi-trash"></i></button>
-                                        <a href="@(RouteConstant.ADMIN_GENRE_MODIFY)?menuKey=GM&genreID=" class="btn btn-info btn-sm text-white"><i class="bi bi-pencil-square"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
+                            @for (int i = 0; i < Model.Count; i++)
+                            {
+                                <tr>
+                                    <td>@(i+1)</td>
+                                    <td>@(Model[i].Name)</td>
+                                    <td>@(string.Format("{0:dd/MM/yyyy}", Model[i].CreatedAt))</td>
+                                    <td>@(string.Format("{0:dd/MM/yyyy}", Model[i].UpdatedAt))</td>
+                                    <td>
+                                        <div class="d-flex align-items-center" style="column-gap: 4px;">
+                                            <button class="btn btn-danger btn-sm btnDeleteGenre" data-genreID=""><i class="bi bi-trash"></i></button>
+                                            <a href="@(RouteConstant.ADMIN_GENRE_MODIFY)?menuKey=GM&genreID=" class="btn btn-info btn-sm text-white"><i class="bi bi-pencil-square"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
+                </div>
+                <div class="col-lg-12">
+                    <div class="d-flex justify-content-end">
+                        @await Component.InvokeAsync("Pagination", pagination)
+                    </div>
                 </div>
             </div>
         </div>

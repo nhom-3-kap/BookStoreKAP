@@ -28,24 +28,24 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _signInManager = signInManager;
         }
 
-        public async Task<IActionResult> Index([FromQuery] ReqQuerySearchUserDTO req)
+        public async Task<IActionResult> Index([FromQuery] ReqQuerySearchUserDTO q)
         {
 
-            req.menuKey ??= req.menuKey;
+            q.menuKey ??= q.menuKey;
             var users = _userManager.Users
                                    .Where(u =>
-                                                (string.IsNullOrEmpty(req.FirstName) || u.FirstName.ToUpper().Contains(req.FirstName.ToUpper())) &&
-                                                (string.IsNullOrEmpty(req.LastName) || u.LastName.ToUpper().Contains(req.LastName.ToUpper())) &&
-                                                (string.IsNullOrEmpty(req.PhoneNumber) || u.PhoneNumber.ToUpper().Contains(req.PhoneNumber.ToUpper())) &&
-                                                (string.IsNullOrEmpty(req.Email) || u.Email.ToUpper().Contains(req.Email.ToUpper())) &&
-                                                (string.IsNullOrEmpty(req.Username) || u.UserName.ToUpper().Contains(req.Username.ToUpper())) &&
-                                                (req.RoleIds == null || req.RoleIds.Count == 0 || (u.UserRoles != null && u.UserRoles.Any(ur => req.RoleIds.Contains(ur.RoleId))))
+                                                (string.IsNullOrEmpty(q.FirstName) || u.FirstName.ToUpper().Contains(q.FirstName.ToUpper())) &&
+                                                (string.IsNullOrEmpty(q.LastName) || u.LastName.ToUpper().Contains(q.LastName.ToUpper())) &&
+                                                (string.IsNullOrEmpty(q.PhoneNumber) || u.PhoneNumber.ToUpper().Contains(q.PhoneNumber.ToUpper())) &&
+                                                (string.IsNullOrEmpty(q.Email) || u.Email.ToUpper().Contains(q.Email.ToUpper())) &&
+                                                (string.IsNullOrEmpty(q.Username) || u.UserName.ToUpper().Contains(q.Username.ToUpper())) &&
+                                                (q.RoleIds == null || q.RoleIds.Count == 0 || (u.UserRoles != null && u.UserRoles.Any(ur => q.RoleIds.Contains(ur.RoleId))))
                                          )
                                    .OrderBy(u => u.LastName)
                                    .ToList();
 
             var totalItems = users.Count;
-            var pagedUsers = users.Skip((req.page - 1) * req.pageSize).Take(req.pageSize).ToList();
+            var pagedUsers = users.Skip((q.page - 1) * q.pageSize).Take(q.pageSize).ToList();
 
             var userRolesViewModel = new List<UserRolesViewModel>();
 
@@ -59,14 +59,14 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 });
             }
 
-            ViewBag.ReqSearch = req;
+            ViewBag.ReqSearch = q;
             ViewBag.Roles = _roleManager.Roles.ToList();
             ViewBag.Pagination = new PaginationModel()
             {
                 TotalItems = totalItems,
-                CurrentPage = req.page,
-                PageSize = req.pageSize,
-                SearchParams = req,
+                CurrentPage = q.page,
+                PageSize = q.pageSize,
+                SearchParams = q,
                 Action = "Index",
                 Controller = "Users"
             };

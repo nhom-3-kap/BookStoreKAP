@@ -5,7 +5,6 @@ using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
@@ -24,17 +23,17 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         {
             var genres = _context.Genres.Where(x => (string.IsNullOrEmpty(q.Name) || x.Name.Trim().ToUpper().Contains(q.Name.Trim().ToUpper()))).OrderBy(x => x.UpdatedAt).ToList();
             var totalItems = genres.Count;
-            var paged = genres.Skip((q.page - 1) * q.pageSize).Take(q.pageSize).ToList();
+            var paged = genres.Skip((q.Page - 1) * q.PageSize).Take(q.PageSize).ToList();
 
             ViewBag.SearchValue = q;
             ViewBag.Pagination = new PaginationModel()
             {
                 TotalItems = totalItems,
-                CurrentPage = q.page,
-                PageSize = q.pageSize,
+                CurrentPage = q.Page,
+                PageSize = q.PageSize,
                 SearchParams = q,
                 Action = "Index",
-                Controller = "Users"
+                Controller = "Genre"
             };
             return View(genres);
         }

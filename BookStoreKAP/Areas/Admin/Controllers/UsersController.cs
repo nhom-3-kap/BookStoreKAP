@@ -28,7 +28,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _signInManager = signInManager;
         }
 
-        public async Task<IActionResult> Index([FromQuery] ReqQuerySearchUserDTO q)
+        public async Task<IActionResult> Index([FromQuery] ReqQuerySearchUser q)
         {
 
             q.menuKey ??= q.menuKey;
@@ -45,7 +45,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                                    .ToList();
 
             var totalItems = users.Count;
-            var pagedUsers = users.Skip((q.page - 1) * q.pageSize).Take(q.pageSize).ToList();
+            var pagedUsers = users.Skip((q.Page - 1) * q.PageSize).Take(q.PageSize).ToList();
 
             var userRolesViewModel = new List<UserRolesViewModel>();
 
@@ -64,8 +64,8 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             ViewBag.Pagination = new PaginationModel()
             {
                 TotalItems = totalItems,
-                CurrentPage = q.page,
-                PageSize = q.pageSize,
+                CurrentPage = q.Page,
+                PageSize = q.PageSize,
                 SearchParams = q,
                 Action = "Index",
                 Controller = "Users"
@@ -101,7 +101,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Modify(ReqModifyUserDTO req, IFormFile Avatar)
+        public async Task<IActionResult> Modify(ReqModifyUser req, IFormFile Avatar)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -239,7 +239,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(ReqCreateUserDTO req)
+        public async Task<IActionResult> Create(ReqCreateUser req)
         {
             try
             {

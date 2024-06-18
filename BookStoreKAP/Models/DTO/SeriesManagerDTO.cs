@@ -11,7 +11,7 @@ namespace BookStoreKAP.Models.DTO
         public int Volumns { get; set; }
     }
 
-    public class ReqQuerySearchSeries
+    public class ReqQuerySearchSeries : BaseRequestQueryManagerDTO
     {
         public string? Name { get; set; }
         public int Volumns { get; set; } = -1;

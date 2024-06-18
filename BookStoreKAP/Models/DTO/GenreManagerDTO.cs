@@ -8,13 +8,9 @@ namespace BookStoreKAP.Models.DTO
         public string Name { get; set; }
     }
 
-    public class ReqQuerySearchGenre
+    public class ReqQuerySearchGenre : BaseRequestQueryManagerDTO
     {
         public string Name { get; set; }
-
-        public int page { get; set; } = 1;
-        public int pageSize { get; set; } = 10;
-        public string menuKey { get; set; }
     }
 
     public class ReqGenreModify

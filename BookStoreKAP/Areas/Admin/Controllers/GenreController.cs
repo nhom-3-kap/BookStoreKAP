@@ -35,7 +35,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 Action = "Index",
                 Controller = "Genre"
             };
-            return View(genres);
+            return View(paged);
         }
 
         public IActionResult Create()

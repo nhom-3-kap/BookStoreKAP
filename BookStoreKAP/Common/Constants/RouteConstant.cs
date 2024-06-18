@@ -26,6 +26,10 @@
         public const string ADMIN_GENRE_CREATE = $"/{AreasConstant.ADMIN}/Genre/Create";
         public const string ADMIN_GENRE_MODIFY = $"/{AreasConstant.ADMIN}/Genre/Modify";
 
+        public const string ADMIN_TAGS = $"/{AreasConstant.ADMIN}/Tags";
+        public const string ADMIN_TAGS_CREATE = $"/{AreasConstant.ADMIN}/Tags/Create";
+        public const string ADMIN_TAGS_MODIFY = $"/{AreasConstant.ADMIN}/Tags/Modify";
+
         public const string ADMIN_BOOKS = $"/{AreasConstant.ADMIN}/Books";
         public const string ADMIN_BOOKS_CREATE = $"/{AreasConstant.ADMIN}/Books/Create";
 

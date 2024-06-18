@@ -2,15 +2,14 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    List<Tag> tags = ViewBag.Tags;
-    List<Series> series = ViewBag.Series;
-    List<Genre> genres = ViewBag.Genres;
-    ViewBag.Title = "Create Product";
+    ViewBag.Title = "Modify Product";
 }
 <div class="container">
     <div class="row">
+
         <div class="col-lg-12">
-            <h3 class="text-center">Create Book</h3>
+            <a href="@(RouteConstant.ADMIN_BOOKS)?menuKey=BM" class="btn btn-primary btn-sm"><i class="bi bi-arrow-bar-left"></i> Back</a>
+            <h3 class="text-center">Modify Book</h3>
         </div>
         <div class="col-lg-12">
             <form asp-action="Create" method="POST" id="frmCreateBook" enctype="multipart/form-data">
@@ -28,28 +27,28 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label" for="txtTitle">Title <span class="required text-danger">*</span></label>
-                            <input type="text" class="form-control" id="txtTitle" name="Title" rules="required"/>
+                            <input type="text" class="form-control" id="txtTitle" name="Title" />
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label class="form-label" for="txtPublisher">Publisher <span class="required text-danger">*</span></label>
-                            <input type="text" class="form-control" id="txtPublisher" name="Publisher" rules="required"/>
+                            <label class="form-label" for="txtPushlisher">Pushlisher <span class="required text-danger">*</span></label>
+                            <input type="text" class="form-control" id="txtPushlisher" name="Pushlisher" />
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label" for="txtAuthor">Author <span class="required text-danger">*</span></label>
-                            <input type="text" class="form-control" id="txtAuthor" name="Author" rules="required"/>
+                            <input type="text" class="form-control" id="txtAuthor" name="Author" />
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label" for="txtPublicationYear">Publication Year <span class="required text-danger">*</span></label>
-                            <input type="number" value="2024" class="form-control" id="txtPublicationYear" name="PublicationYear" rules="min:4"/>
+                            <input type="number" value="2024" class="form-control" id="txtPublicationYear" name="PublicationYear" />
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
@@ -78,11 +77,7 @@
                         <div class="form-group">
                             <label class="form-label" for="cboSeries">Series <span class="required text-danger">*</span></label>
                             <select class="form-select" id="cboSeries" name="SeriesID">
-                                <option value="@(Guid.Empty)">--- Choose Series ---</option>
-                                @foreach (var seriesItem in series)
-                                {
-                                    <option value="@(seriesItem.ID)">@(seriesItem.Name)</option>
-                                }
+                                <option value="">--- Choose Series ---</option>
                             </select>
                         </div>
                     </div>
@@ -90,22 +85,7 @@
                         <div class="form-group">
                             <label class="form-label" for="cboTag">Tags <span class="required text-danger">*</span></label>
                             <select class="form-select" id="cboTag" name="TagID">
-                                <option value="@(Guid.Empty)">--- Choose Tag ---</option>
-                                @foreach (var tag in tags)
-                                {
-                                    <option value="@(tag.ID)">@(tag.Name)</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-12 mt-2">
-                        <div class="form-group">
-                            <label class="form-label" for="cboGenre">Genre <span class="required text-danger">*</span></label>
-                            <select class="form-control select2" id="cboGenre" name="GenreIds" multiple="multiple">
-                                @foreach (var genre in genres)
-                                {
-                                    <option value="@(genre.ID)">@(genre.Name)</option>
-                                }
+                                <option value="">--- Choose Tag ---</option>
                             </select>
                         </div>
                     </div>
@@ -120,7 +100,7 @@
                         <div class="d-flex justify-content-end">
                             <div>
                                 <button class="btn btn-success" id="btnCreateUser">
-                                    Create
+                                    Save <i class="bi bi-floppy"></i>
                                 </button>
                             </div>
                         </div>
@@ -147,28 +127,10 @@
                 });
             };
 
-            const initSelect2 = () => {
-                $("#cboGenre").select2();
-            }
-
-            const handleChangeThumbnail = () => {
-                $('#imgThumbnail').on('change', function () {
-                    var file = this.files[0];
-                    if (file) {
-                        var reader = new FileReader();
-                        reader.onload = function (e) {
-                            $('#previewThumbnail').attr('src', e.target.result);
-                        }
-                        reader.readAsDataURL(file);
-                    }
-                });
-            };
 
             function init() {
-                handleChangeThumbnail();
                 Validator("#frmCreateBook");
                 initTinyMCE();
-                initSelect2();
             }
             init();
         });

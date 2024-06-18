@@ -1,9 +1,6 @@
 ﻿using BookStoreKAP.Models.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
-using System.Reflection.Emit;
 
 namespace BookStoreKAP.Database
 {
@@ -98,33 +95,35 @@ namespace BookStoreKAP.Database
 
             // Configure Identity Guid
             builder.Entity<Book>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
-            builder.Entity<Genre>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
-            builder.Entity<Sale>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
-            builder.Entity<Tag>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
-            builder.Entity<Order>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
-            builder.Entity<Rating>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
-            builder.Entity<Series>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
-            builder.Entity<Role>().Property(e => e.Id).HasDefaultValueSql("NEWID()");
-            builder.Entity<Role>().Property(e => e.ConcurrencyStamp).HasDefaultValueSql("NEWID()");
-
             builder.Entity<Book>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
             builder.Entity<Book>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
 
+            builder.Entity<Genre>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Genre>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
             builder.Entity<Genre>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
 
+            builder.Entity<Sale>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Sale>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
             builder.Entity<Sale>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
 
+            builder.Entity<Order>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Order>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
             builder.Entity<Order>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
 
+            builder.Entity<Rating>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Rating>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
             builder.Entity<Rating>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
 
+            builder.Entity<Series>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Series>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
             builder.Entity<Series>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
 
+            builder.Entity<Tag>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<Tag>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<Tag>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
+            builder.Entity<Role>().Property(e => e.Id).HasDefaultValueSql("NEWID()");
+            builder.Entity<Role>().Property(e => e.ConcurrencyStamp).HasDefaultValueSql("NEWID()");
             // Configuration Many to Many
             #region Table BookGenres
             builder.Entity<BookGenre>().HasKey(bg => new { bg.GenreID, bg.BookID });

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreKAP.Migrations
 {
     [DbContext(typeof(BookStoreKAPDBContext))]
-    [Migration("20240616190329_AddAutoGenDatetimeAllTable")]
-    partial class AddAutoGenDatetimeAllTable
+    [Migration("20240618091434_AlterTableBookColumnSynopsis")]
+    partial class AlterTableBookColumnSynopsis
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,10 +75,12 @@ namespace BookStoreKAP.Migrations
 
                     b.Property<string>("Synopsis")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("TagID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Thumbnail")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -90,6 +92,9 @@ namespace BookStoreKAP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("ViewCount")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -383,6 +388,42 @@ namespace BookStoreKAP.Migrations
                     b.ToTable("Series");
                 });
 
+            modelBuilder.Entity("BookStoreKAP.Models.Entities.Tag", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<Guid?>("BookID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Thumbnail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("BookID");
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("BookStoreKAP.Models.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -392,6 +433,9 @@ namespace BookStoreKAP.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("BOD")
                         .HasColumnType("datetime2");
@@ -656,6 +700,13 @@ namespace BookStoreKAP.Migrations
                         .HasForeignKey("BookID");
                 });
 
+            modelBuilder.Entity("BookStoreKAP.Models.Entities.Tag", b =>
+                {
+                    b.HasOne("BookStoreKAP.Models.Entities.Book", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("BookID");
+                });
+
             modelBuilder.Entity("BookStoreKAP.Models.Entities.User", b =>
                 {
                     b.HasOne("BookStoreKAP.Models.Entities.Order", null)
@@ -732,6 +783,8 @@ namespace BookStoreKAP.Migrations
                     b.Navigation("Sales");
 
                     b.Navigation("Series");
+
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Genre", b =>

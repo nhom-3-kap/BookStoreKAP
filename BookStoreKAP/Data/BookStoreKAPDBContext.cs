@@ -100,6 +100,7 @@ namespace BookStoreKAP.Database
             builder.Entity<Book>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Genre>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Sale>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<Tag>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Order>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Rating>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
             builder.Entity<Series>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
@@ -162,5 +163,6 @@ namespace BookStoreKAP.Database
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Series> Series { get; set; }
+        public DbSet<Tag> Tags { get; set; }
     }
 }

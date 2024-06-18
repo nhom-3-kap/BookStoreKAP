@@ -26,6 +26,10 @@ namespace BookStoreKAP.Models.Entities
         public string Synopsis { get; set; }
         public string Feedback { get; set; }
 
+        [ForeignKey(nameof(TagID))]
+        public Guid TagID { get; set; }
+        public ICollection<Tag> Tags { get; set; }
+
         [ForeignKey(nameof(SeriesID))]
         public Guid SeriesID { get; set; }
         public ICollection<Series> Series { get; set; }

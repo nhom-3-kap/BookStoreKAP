@@ -89,6 +89,7 @@ namespace BookStoreKAP.Controllers
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+
             return View("Login");
         }
 
@@ -148,6 +149,7 @@ namespace BookStoreKAP.Controllers
                 ViewBag.ReturnUrl = returnUrl;
                 ViewBag.Service = "Login";
                 ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                TempData[ToastrConstant.ERROR_MSG] = "Username and password is valid!";
                 return RedirectToAction(nameof(Index));
             }
         }

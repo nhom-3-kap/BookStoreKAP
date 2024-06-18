@@ -1,7 +1,7 @@
 ﻿
 @model List<UserRolesViewModel>;
 @{
-    ReqQuerySearchUserDTO searchValue = (ReqQuerySearchUserDTO)ViewBag.ReqSearch ?? new ReqQuerySearchUserDTO();
+    ReqQuerySearchUser searchValue = (ReqQuerySearchUser)ViewBag.ReqSearch ?? new ReqQuerySearchUser();
     List<Role> roles = (List<Role>)ViewBag.Roles ?? new List<Role>();
     PaginationModel paginationModel = ViewBag.Pagination ?? new PaginationModel();
 }

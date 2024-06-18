@@ -12,7 +12,14 @@ const handleAjax = (url, data, successCallback, options = {}) => {
         error: handleAjaxError
     });
 };
-
+function stringFormat(template, ...args) {
+    return template.replace(/{(\d+)}/g, function (match, number) {
+        return typeof args[number] !== 'undefined'
+            ? args[number]
+            : match
+            ;
+    });
+}
 
 $(document).ready(function () {
     $(".card-heading[data-url]").each(function (index, item) {
@@ -24,7 +31,6 @@ $(document).ready(function () {
 })
 
 
-src = "https://code.jquery.com/jquery-3.6.0.min.js"
 $(document).ready(function () {
     var rotation = 0;
     $(".side-bar-item").each(function (index, item) {

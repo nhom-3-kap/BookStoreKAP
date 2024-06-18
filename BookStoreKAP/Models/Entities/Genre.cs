@@ -7,6 +7,8 @@ namespace BookStoreKAP.Models.Entities
         [StringLength(20)]
         public string Name { get; set; }
 
+        //Thumbnail
+
         public ICollection<BookGenre> BookGenres { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using BookStoreKAP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreKAP.Migrations
 {
     [DbContext(typeof(BookStoreKAPDBContext))]
-    partial class BookStoreKAPDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240618024722_AddTableTags")]
+    partial class AddTableTags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,9 +76,6 @@ namespace BookStoreKAP.Migrations
                     b.Property<string>("Synopsis")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("TagID")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Thumbnail")
                         .IsRequired()
@@ -390,9 +390,6 @@ namespace BookStoreKAP.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<Guid?>("BookID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -409,8 +406,6 @@ namespace BookStoreKAP.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("BookID");
 
                     b.ToTable("Tags");
                 });
@@ -691,13 +686,6 @@ namespace BookStoreKAP.Migrations
                         .HasForeignKey("BookID");
                 });
 
-            modelBuilder.Entity("BookStoreKAP.Models.Entities.Tag", b =>
-                {
-                    b.HasOne("BookStoreKAP.Models.Entities.Book", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("BookID");
-                });
-
             modelBuilder.Entity("BookStoreKAP.Models.Entities.User", b =>
                 {
                     b.HasOne("BookStoreKAP.Models.Entities.Order", null)
@@ -774,8 +762,6 @@ namespace BookStoreKAP.Migrations
                     b.Navigation("Sales");
 
                     b.Navigation("Series");
-
-                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Genre", b =>

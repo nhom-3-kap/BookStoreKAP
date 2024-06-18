@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="/lib/owl/css/owl.carousel.min.css" rel="stylesheet" />
     <link href="/lib/owl/css/owl.theme.default.min.css" rel="stylesheet" />
+    <link href="~/lib/toastr/toastr.min.css" rel="stylesheet" />
+
 </head>
 <body>
     <header class="header">
@@ -186,8 +188,45 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="/lib/owl/js/owl.carousel.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/validate.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "700",
+                "timeOut": "1500",
+                "extendedTimeOut": "700",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            // Hiển thị thông báo từ TempData
+            @if (TempData[ToastrConstant.SUCCESS_MSG] != null)
+            {
+                <text>toastr.success('@(TempData[ToastrConstant.SUCCESS_MSG])');</text>
+            }
+            @if (TempData[ToastrConstant.ERROR_MSG] != null)
+            {
+                <text>toastr.error('@(TempData[ToastrConstant.ERROR_MSG])');</text>
+            }
+            @if (TempData[ToastrConstant.WARN_MSG] != null)
+            {
+                <text>toastr.error('@(TempData[ToastrConstant.WARN_MSG])');</text>
+            }
+        });
+    </script>
 </body>
 </html>

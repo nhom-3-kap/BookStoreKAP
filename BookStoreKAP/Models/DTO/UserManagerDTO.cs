@@ -9,21 +9,7 @@ namespace BookStoreKAP.Models.DTO
         public List<string> Roles { get; set; }
     }
 
-    public class ReqSearchUserDTO
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime BOD { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-        public string Username { get; set; }
-        public Guid RoleId { get; set; } = Guid.Empty;
-
-        public string menuKey { get; set; }
-
-    }
-
-    public class ReqQuerySearchUserDTO
+    public class ReqQuerySearchUser : BaseRequestQueryManagerDTO
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
@@ -32,13 +18,9 @@ namespace BookStoreKAP.Models.DTO
         public string? Email { get; set; }
         public string? Username { get; set; }
         public List<Guid>? RoleIds { get; set; }
-
-        public string? menuKey { get; set; }
-        public int page { get; set; } = 1;
-        public int pageSize { get; set; } = 10;
     }
 
-    public class ReqCreateUserDTO
+    public class ReqCreateUser
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
@@ -53,11 +35,11 @@ namespace BookStoreKAP.Models.DTO
         public Guid RoleId { get; set; }
     }
 
-    public class ReqDeleteUserDTO
+    public class ReqDeleteUser
     {
         public Guid UserID { get; set; }
     }
-    public class ReqModifyUserDTO
+    public class ReqModifyUser
     {
         public Guid Id { get; set; }
         public string? FirstName { get; set; }

@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div class="admin-side-bar-menu">
-                    <p class="admin-side-bar-menu-title">Products</p>
+                    <p class="admin-side-bar-menu-title">Product</p>
                     <div class="admin-side-bar-menu-item">
                         <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="CM">
                             <p><i class="bi bi-123"></i> <span>Series</span></p>
@@ -66,25 +66,43 @@
                                         <span class="ml-1">List Genres</span>
                                     </a>
                                 </li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_GENRE_CREATE)?menuKey=GM"><i class="bi bi-circle"></i>Add Genres</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_GENRE_CREATE)?menuKey=GM"><i class="bi bi-circle"></i>Add Genre</a></li>
                             </ul>
                         </div>
                     </div>
 
                     <div class="admin-side-bar-menu-item">
-                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="P">
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="TM">
+                            <p><i class="bi bi-archive"></i> <span>Tags</span></p>
+                            <i class="bi bi-chevron-down"></i>
+                        </a>
+                        <div class="admin-side-bar-menu-item-child">
+                            <ul class="admin-side-bar-menu-item-child-list">
+                                <li>
+                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_TAGS)?menuKey=TM">
+                                        <i class="bi bi-circle"></i>
+                                        <span class="ml-1">List Tags</span>
+                                    </a>
+                                </li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_TAGS_CREATE)?menuKey=TM"><i class="bi bi-circle"></i>Add Tag</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="admin-side-bar-menu-item">
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="BM">
                             <p><i class="bi bi-book"></i> <span>Books</span></p>
                             <i class="bi bi-chevron-down"></i>
                         </a>
                         <div class="admin-side-bar-menu-item-child">
                             <ul class="admin-side-bar-menu-item-child-list">
                                 <li>
-                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_BOOKS)?menuKey=P">
+                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_BOOKS)?menuKey=BM">
                                         <i class="bi bi-circle"></i>
                                         <span class="ml-1">List Books</span>
                                     </a>
                                 </li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_BOOKS_CREATE)?menuKey=P"><i class="bi bi-circle"></i>Add Book</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_BOOKS_CREATE)?menuKey=BM"><i class="bi bi-circle"></i>Add Book</a></li>
                             </ul>
                         </div>
                     </div>
@@ -92,24 +110,24 @@
                 <div class="admin-side-bar-menu">
                     <p class="admin-side-bar-menu-title">Users</p>
                     <div class="admin-side-bar-menu-item">
-                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="USER">
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="UM">
                             <p><i class="bi bi-people"></i> <span>Users</span></p>
                             <i class="bi bi-chevron-down"></i>
                         </a>
                         <div class="admin-side-bar-menu-item-child">
                             <ul class="admin-side-bar-menu-item-child-list">
                                 <li>
-                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_USERS)?menuKey=USER">
+                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_USERS)?menuKey=UM">
                                         <i class="bi bi-circle"></i>
                                         <span class="ml-1">List Users</span>
                                     </a>
                                 </li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_USERS_CREATE)?menuKey=USER"><i class="bi bi-circle"></i>Add User</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_USERS_CREATE)?menuKey=UM"><i class="bi bi-circle"></i>Add User</a></li>
                             </ul>
                         </div>
                     </div>
                     <div class="admin-side-bar-menu-item">
-                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="ROLE">
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="RM">
                             <p><i class="bi bi-shield-lock"></i> <span>Roles</span></p>
                             <i class="bi bi-chevron-down"></i>
                         </a>
@@ -129,19 +147,19 @@
                 <div class="admin-side-bar-menu">
                     <p class="admin-side-bar-menu-title">Orders</p>
                     <div class="admin-side-bar-menu-item">
-                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="ODER">
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="OM">
                             <p><i class="bi bi-printer"></i> <span>Reports</span></p>
                             <i class="bi bi-chevron-down"></i>
                         </a>
                         <div class="admin-side-bar-menu-item-child">
                             <ul class="admin-side-bar-menu-item-child-list">
                                 <li>
-                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_SERIES)?menuKey=ODER">
+                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_SERIES)?menuKey=OM">
                                         <i class="bi bi-circle"></i>
                                         <span class="ml-1">List Reports</span>
                                     </a>
                                 </li>
-                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_SERIES_CREATE)?menuKey=ODER"><i class="bi bi-circle"></i>Create Report</a></li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_SERIES_CREATE)?menuKey=OM"><i class="bi bi-circle"></i>Create Report</a></li>
                             </ul>
                         </div>
                     </div>

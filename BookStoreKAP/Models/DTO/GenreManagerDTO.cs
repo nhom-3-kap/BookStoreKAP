@@ -15,6 +15,11 @@ namespace BookStoreKAP.Models.DTO
         public int page { get; set; } = 1;
         public int pageSize { get; set; } = 10;
         public string menuKey { get; set; }
+    }
 
+    public class ReqGenreModify
+    {
+        public Guid GenreID { get; set; }
+        public string? Name { get; set; }
     }
 }

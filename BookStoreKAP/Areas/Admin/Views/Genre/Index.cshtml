@@ -51,8 +51,8 @@
                                     <td>@(string.Format("{0:dd/MM/yyyy}", Model[i].UpdatedAt))</td>
                                     <td>
                                         <div class="d-flex align-items-center" style="column-gap: 4px;">
-                                            <button class="btn btn-danger btn-sm btnDeleteGenre" data-genreID=""><i class="bi bi-trash"></i></button>
-                                            <a href="@(RouteConstant.ADMIN_GENRE_MODIFY)?menuKey=GM&genreID=" class="btn btn-info btn-sm text-white"><i class="bi bi-pencil-square"></i></a>
+                                            <button class="btn btn-danger btn-sm btnDeleteGenre" data-genreID="@(Model[i].ID)"><i class="bi bi-trash"></i></button>
+                                            <a href="@(RouteConstant.ADMIN_GENRE_MODIFY)?menuKey=GM&genreID=@(Model[i].ID)" class="btn btn-info btn-sm text-white"><i class="bi bi-pencil-square"></i></a>
                                         </div>
                                     </td>
                                 </tr>
@@ -76,6 +76,7 @@
             const handleClickDeleteGenre = () => {
                 $(".btnDeleteGenre").each(function () {
                     $(this).on("click", function () {
+                        const genreID = $(this).attr("data-genreID");
                         Swal.fire({
                             title: "Are you sure?",
                             text: "You will not be able to recover this data!!!",
@@ -86,24 +87,23 @@
                             confirmButtonText: "Yes, delete it!"
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                //var genreID = $(this).attr("data-genreID");
-                                //handleAjax(`/Admin/Series/DeleteGenreByIdAPI?genreID=${genreID}`, {}, (res) => {
-                                //    if (res.success) {
-                                //        Swal.fire({
-                                //            title: "Deleted!",
-                                //            text: "Deleted Successfully",
-                                //            icon: "success"
-                                //        }).then((result) => {
-                                //            location.href = location.href;
-                                //        });
-                                //    } else {
-                                //        Swal.fire({
-                                //            title: "Error Delete!",
-                                //            text: "Delete Failed",
-                                //            icon: "error"
-                                //        });
-                                //    }
-                                //}, { type: "DELETE" });
+                                handleAjax(`/Admin/Genre/DeleteGenreByIdAPI?genreID=${genreID}`, {}, (res) => {
+                                    if (res.success) {
+                                        Swal.fire({
+                                            title: "Deleted!",
+                                            text: "Deleted Successfully",
+                                            icon: "success"
+                                        }).then(() => {
+                                            location.reload(); // Tải lại trang sau khi xóa thành công
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: "Error Delete!",
+                                            text: res.message,
+                                            icon: "error"
+                                        });
+                                    }
+                                }, { type: "DELETE" });
                             }
                         });
                     });

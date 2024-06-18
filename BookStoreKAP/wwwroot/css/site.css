@@ -199,8 +199,8 @@ button {
 }
 
 .card-product-wrap-btn {
-    display:flex;
-    align-items:center;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
     column-gap: 8px;
 }
@@ -266,4 +266,8 @@ button {
 .carousel-btn-more {
     display: block;
     margin: 20px auto 0 auto;
+}
+
+.tox-statusbar {
+    display: none !important;
 }

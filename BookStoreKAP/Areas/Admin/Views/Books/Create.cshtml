@@ -2,7 +2,135 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewBag.Title = "Create Product";
 }
-<div>
-    <p class="text-center">CREATE BOOKS</p>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="text-center">Create Book</h3>
+        </div>
+        <div class="col-lg-12">
+            <form asp-action="Create" method="POST" id="frmCreateBook" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-lg-12 mb-4">
+                        <div class="d-flex justify-content-start">
+                            <div class="form-group">
+                                <label for="imgThumbnail">
+                                    <img id="previewThumbnail" src="https://placehold.co/200x200" width="200" height="200" class="img-thumbnail" />
+                                </label>
+                                <input type="file" id="imgThumbnail" name="Thumbnail" hidden />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="txtTitle">Title <span class="required text-danger">*</span></label>
+                            <input type="text" class="form-control" id="txtTitle" name="Title" />
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="txtPushlisher">Pushlisher <span class="required text-danger">*</span></label>
+                            <input type="text" class="form-control" id="txtPushlisher" name="Pushlisher" />
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="txtAuthor">Author <span class="required text-danger">*</span></label>
+                            <input type="text" class="form-control" id="txtAuthor" name="Author" />
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="txtPublicationYear">Publication Year <span class="required text-danger">*</span></label>
+                            <input type="number" value="2024" class="form-control" id="txtPublicationYear" name="PublicationYear" />
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="txtPrice">Price($) <span class="required text-danger">*</span></label>
+                            <input type="number" value="1" class="form-control" id="txtPrice" name="Price" />
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="txtDiscount">Discount($) <span class="required text-danger">*</span></label>
+                            <input type="number" value="1" class="form-control" id="txtDiscount" name="Discount" />
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="txtQuantity">Quantity <span class="required text-danger">*</span></label>
+                            <input type="number" value="1" class="form-control" id="txtQuantity" name="Quantity" />
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="cboSeries">Series <span class="required text-danger">*</span></label>
+                            <select class="form-select" id="cboSeries" name="SeriesID">
+                                <option value="">--- Choose Series ---</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-label" for="cboTag">Tags <span class="required text-danger">*</span></label>
+                            <select class="form-select" id="cboTag" name="TagID">
+                                <option value="">--- Choose Tag ---</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mt-2">
+                        <div class="form-group">
+                            <label class="form-label" for="txtSynopsis">Synopsis <span class="required text-danger">*</span></label>
+                            <textarea id="txtSynopsis" Name="Synopsis"></textarea>
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mt-1">
+                        <div class="d-flex justify-content-end">
+                            <div>
+                                <button class="btn btn-success" id="btnCreateUser">
+                                    Create
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            const initTinyMCE = () => {
+                tinymce.init({
+                    selector: 'textarea#txtSynopsis',
+                    height: 500,
+                    plugins: ['link', 'autolink', 'image', 'searchreplace', 'lists', 'advlist', 'fullscreen', 'table','code'],
+                    link_default_target: '_blank',
+                    toolbar: 'undo redo | fontfamily fontsize blocks | link image | bold italic underline | forecolor backcolor | table | alignleft aligncenter alignright alignjustify numlist bullist |fullscreen',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+                });
+            };
+
+
+            function init() {
+                Validator("#frmCreateBook");
+                initTinyMCE();
+            }
+            init();
+        });
+    </script>
+}

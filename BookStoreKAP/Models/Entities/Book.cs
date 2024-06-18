@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BookStoreKAP.Models.Entities
 {
@@ -7,24 +8,23 @@ namespace BookStoreKAP.Models.Entities
     {
 
         public string Images { get; set; }
-        [Required]
-        public string Thumbnail { get; set; }
-        [MaxLength(50)]
+        [AllowNull]
+        public string? Thumbnail { get; set; }
+        [StringLength(50)]
         public string Title { get; set; }
-        [MaxLength(50)]
+        [StringLength(50)]
         public string Publisher { get; set; }
-        [MaxLength(50)]
+        [StringLength(50)]
         public string Author { get; set; }
-        [Required]
-        public int PublicationYear { get; set; }
-        [Required]
-        public double Price { get; set; }
-        [Required]
-        public double Discount { get; set; }
-        [Required]
-        public int Quantity { get; set; }
+        public int PublicationYear { get; set; } = 0;
+        public double Price { get; set; } = 0;
+        public double Discount { get; set; } = 0;
+        public int Quantity { get; set; } = 0;
+
+        [Column(TypeName = "text")]
         public string Synopsis { get; set; }
         public string Feedback { get; set; }
+        public int ViewCount { get; set; } = 0;
 
         [ForeignKey(nameof(TagID))]
         public Guid TagID { get; set; }

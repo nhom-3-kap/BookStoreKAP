@@ -22,7 +22,8 @@ namespace BookStoreKAP.Models.Entities
         public int Quantity { get; set; } = 0;
 
         [Column(TypeName = "text")]
-        public string Synopsis { get; set; }
+        [AllowNull]
+        public string? Synopsis { get; set; }
         public string Feedback { get; set; }
         public int ViewCount { get; set; } = 0;
 

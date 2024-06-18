@@ -1,6 +1,7 @@
 ﻿using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Database;
 using BookStoreKAP.Models.DTO;
+using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -69,11 +70,87 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
         public IActionResult Create()
         {
+            var tags = _context.Tags.ToList();
+            var series = _context.Series.ToList();
+            var genres = _context.Genres.ToList();
+
+            ViewBag.Tags = tags;
+            ViewBag.Series = series;
+            ViewBag.Genres = genres;
             return View();
         }
 
+        // POST: Books/Create
+        // Phương thức POST để xử lý việc lưu Book mới vào cơ sở dữ liệu
         [HttpPost]
-        public async Task<IActionResult> Create(ReqCreateBook req)
+        public async Task<IActionResult> Create(ReqCreateBook req, IFormFile Thumbnail)
+        {
+            if (!ModelState.IsValid) // Kiểm tra tính hợp lệ của dữ liệu
+            {
+                TempData[ToastrConstant.ERROR_MSG] = "Invalid data."; // Thông báo lỗi nếu dữ liệu không hợp lệ
+                ViewBag.Series = _context.Series.ToList(); // Truyền lại danh sách Series, Tags và Genres vào ViewBag
+                ViewBag.Tags = _context.Tags.ToList();
+                ViewBag.Genres = _context.Genres.ToList();
+                return View(req); // Trả về view với dữ liệu không hợp lệ
+            }
+
+            string thumbnailPath = null; // Biến lưu đường dẫn thumbnail
+
+            if (Thumbnail != null && Thumbnail.Length > 0) // Kiểm tra nếu người dùng đã chọn file ảnh
+            {
+                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "images", "products"); // Đường dẫn thư mục lưu trữ ảnh
+                if (!Directory.Exists(uploads)) // Kiểm tra nếu thư mục chưa tồn tại
+                {
+                    Directory.CreateDirectory(uploads); // Tạo thư mục nếu chưa tồn tại
+                }
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(Thumbnail.FileName)}"; // Tạo tên file mới sử dụng GUID
+                var filePath = Path.Combine(uploads, fileName); // Đường dẫn đầy đủ của file ảnh
+                using (var fileStream = new FileStream(filePath, FileMode.Create)) // Mở stream để lưu file
+                {
+                    await Thumbnail.CopyToAsync(fileStream); // Sao chép nội dung file vào stream
+                }
+                thumbnailPath = $"/uploads/images/products/{fileName}"; // Lưu đường dẫn đầy đủ vào biến thumbnailPath
+            }
+
+            // Tạo đối tượng Book từ ReqCreateBook
+            var book = new Book
+            {
+                Title = req.Title,
+                Publisher = req.Publisher,
+                Author = req.Author,
+                PublicationYear = req.PublicationYear,
+                Price = req.Price,
+                Discount = req.Discount,
+                Quantity = req.Quantity,
+                Synopsis = req.Synopsis,
+                TagID = req.TagID,
+                SeriesID = req.SeriesID,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                Thumbnail = thumbnailPath // Lưu đường dẫn thumbnail vào đối tượng Book
+            };
+
+            _context.Books.Add(book); // Thêm đối tượng Book vào DbSet Books
+            await _context.SaveChangesAsync(); // Lưu các thay đổi vào cơ sở dữ liệu
+
+            // Thêm các liên kết BookGenres vào cơ sở dữ liệu
+            foreach (var genreId in req.GenreIds)
+            {
+                var bookGenre = new BookGenre
+                {
+                    BookID = book.ID,
+                    GenreID = genreId
+                };
+                _context.BookGenres.Add(bookGenre);
+            }
+
+            await _context.SaveChangesAsync(); // Lưu các thay đổi vào cơ sở dữ liệu
+
+            TempData[ToastrConstant.SUCCESS_MSG] = "Book created successfully."; // Thông báo thành công
+            return Redirect($"{RouteConstant.ADMIN_BOOKS}?menuKey=BM"); // Chuyển hướng về trang Index
+        }
+
+        public IActionResult Modify(Guid bookID)
         {
             return View();
         }

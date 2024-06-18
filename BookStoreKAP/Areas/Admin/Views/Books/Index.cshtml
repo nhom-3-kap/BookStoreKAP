@@ -116,23 +116,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for (int i = 0; i < Model.Count(); i++)
+                        @if (Model.Count > 0)
+                        {
+                            for (int i = 0; i < Model.Count; i++)
+                            {
+                                <tr>
+                                    <td>@(i + 1 + (pagination.CurrentPage - 1) * pagination.PageSize)</td>
+                                    <td>@(Model[i].Title)</td>
+                                    <td>@(string.Join(", ", Model[i].BookGenres.Select(bg => bg.Genre.Name)))</td>
+                                    <td>@(Model[i].Series.FirstOrDefault()?.Name)</td>
+                                    <td>@(Model[i].Author)</td>
+                                    <td>@(Model[i].PublicationYear)</td>
+                                    <td>@(Model[i].ViewCount)</td>
+                                    <td>@(Model[i].Price.ToString("C"))</td>
+                                    <td>@((Model[i].Price - Model[i].Discount).ToString("C"))</td>
+                                    <td>
+                                        <div class="d-flex align-items-center" style="column-gap: 4px;">
+                                            <button class="btn btn-danger btn-sm btnDeleteBook" data-bookID="@(Model[i].ID)"><i class="bi bi-trash"></i></button>
+                                            <a href="@(RouteConstant.ADMIN_BOOKS_MODIFY)?menuKey=GM&bookID=@(Model[i].ID)" class="btn btn-info btn-sm text-white"><i class="bi bi-pencil-square"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td>@(i + 1 + (pagination.CurrentPage - 1) * pagination.PageSize)</td>
-                                <td>@(Model[i].Title)</td>
-                                <td>@(string.Join(", ", Model[i].BookGenres.Select(bg => bg.Genre.Name)))</td>
-                                <td>@(Model[i].Series.FirstOrDefault()?.Name)</td>
-                                <td>@(Model[i].Author)</td>
-                                <td>@(Model[i].PublicationYear)</td>
-                                <td>@(Model[i].ViewCount)</td>
-                                <td>@(Model[i].Price.ToString("C"))</td>
-                                <td>@((Model[i].Price - Model[i].Discount).ToString("C"))</td>
-                                <td>
-                                    <div class="d-flex align-items-center" style="column-gap: 4px;">
-                                        <button class="btn btn-danger btn-sm btnDeleteBook" data-bookID="@(Model[i].ID)"><i class="bi bi-trash"></i></button>
-                                        <a href="@(RouteConstant.ADMIN_BOOKS_MODIFY)?menuKey=GM&bookID=@(Model[i].ID)" class="btn btn-info btn-sm text-white"><i class="bi bi-pencil-square"></i></a>
-                                    </div>
+                                <td colspan="10">
+                                    <p class="text-center">List Book is empty!!</p>
                                 </td>
                             </tr>
                         }

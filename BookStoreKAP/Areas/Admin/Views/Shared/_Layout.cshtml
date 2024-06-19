@@ -200,13 +200,14 @@
     <script src="~/lib/data-table/datatables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/validate.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/admin.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
-<script>
+    <script>
         $(document).ready(function () {
             toastr.options = {
                 "closeButton": false,
@@ -240,6 +241,6 @@
                 <text>toastr.error('@(TempData[ToastrConstant.WARN_MSG])');</text>
             }
         });
-</script>
+    </script>
 </body>
 </html>

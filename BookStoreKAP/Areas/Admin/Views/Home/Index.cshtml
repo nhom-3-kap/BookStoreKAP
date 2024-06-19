@@ -1,9 +1,103 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@{ }
 
-<div>
-    <p class="text-center">ADMIN PAGE</p>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="d-flex align-items-center justify-content-center" style="column-gap: 8px;">
+                        <h5 class="text-center fw-bold">Thống kê tiền theo tháng, quý, năm</h5>
+                        <div>
+                            <select id="cboChoiceYear" name="choiceYear" class="form-control form-control-sm">
+                                <option value="2024" selected>2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2021">2020</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <canvas id="combinedChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h5 class="text-center fw-bold">Thống kê số liệu lượt truy cập sách</h5>
+                </div>
+                <div class="col-lg-12">
+                    <canvas id="canChartBookViewCount"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5 class="text-center fw-bold">Thống kê số liệu lượt sách tồn kho</h5>
+                        </div>
+                        <div class="col-lg-12">
+                            <canvas id="canChartBookAmount"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+
+        const handleViewChartCountViewBook = () => {
+            handleAjax("/Api/Charts/GetChartCountViewBook", {}, (res) => {
+                if (res.success) {
+                    createChart("#canChartBookViewCount", "bar", res.data);
+                } else {
+
+                }
+            }, {
+                type: "GET"
+            });
+        };
+
+        const handleViewChartBookAmount = () => {
+            handleAjax("/Api/Charts/GetChartBookAmount", {}, (res) => {
+                if (res.success) {
+                    createChart("#canChartBookAmount", "bar", res.data);
+                }
+            }, {
+                type: "GET"
+            });
+        };
+
+        const handleChoiceYear = () => {
+            $("#cboChoiceYear").on("change", function () {
+                handleViewChartCombine(Number($(this).val()));
+            });
+        }
+
+        const handleViewChartCombine = (year = 2024) => {
+            handleAjax(`/Api/Charts/GetChartTotalPriceForMQY?year=${year}`, {}, (res) => {
+                if (res.success) {
+                    createChart("#combinedChart", "bar", res.data);
+                }
+            }, {
+                type: "GET"
+            });
+        };
+
+        function init() {
+            handleViewChartCountViewBook();
+            handleViewChartBookAmount();
+            handleViewChartCombine();
+            handleChoiceYear();
+        }
+        init();
+        
+    </script>
+}

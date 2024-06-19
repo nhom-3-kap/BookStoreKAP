@@ -30,6 +30,29 @@
 };
 handleGetActiveMenuSideBar();
 
+let chartInstances = {};
+
+const createChart = (chartElement, type, data = {}, options = {}) => {
+    const ctx = document.querySelector(chartElement).getContext('2d');
+
+    // Destroy existing chart if it exists
+    if (chartInstances[chartElement]) {
+        chartInstances[chartElement].destroy();
+    }
+
+    chartInstances[chartElement] = new Chart(ctx, {
+        type: type,
+        data: data,
+        options: {
+            ...options,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
 $(document).ready(function () {
     const handleToggleMultipleMenu = () => {
         $(".admin-side-bar-menu-item-control").on("click", function () {

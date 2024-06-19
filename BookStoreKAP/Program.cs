@@ -68,6 +68,8 @@ builder.Services.AddScoped<BookStoreKAPDBContext>();
 
 var app = builder.Build();
 
+app.UseStatusCodePagesWithRedirects("Home/Error?statusCode={0}");
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

@@ -32,7 +32,7 @@ namespace BookStoreKAP.Models.DTO
         public string Username { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập trường này")]
         public string Password { get; set; }
-        public Guid RoleId { get; set; }
+        public List<Guid> RoleIds { get; set; }
     }
 
     public class ReqDeleteUser

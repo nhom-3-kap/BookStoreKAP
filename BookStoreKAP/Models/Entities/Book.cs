@@ -7,7 +7,9 @@ namespace BookStoreKAP.Models.Entities
     public class Book : BaseEntity
     {
 
-        public string Images { get; set; }
+        [AllowNull]
+        public string? Images { get; set; }
+
         [AllowNull]
         public string? Thumbnail { get; set; }
         [StringLength(50)]
@@ -24,7 +26,9 @@ namespace BookStoreKAP.Models.Entities
         [Column(TypeName = "text")]
         [AllowNull]
         public string? Synopsis { get; set; }
-        public string Feedback { get; set; }
+
+        [AllowNull]
+        public string? Feedback { get; set; }
         public int ViewCount { get; set; } = 0;
 
         [ForeignKey(nameof(TagID))]
@@ -33,7 +37,7 @@ namespace BookStoreKAP.Models.Entities
 
         [ForeignKey(nameof(SeriesID))]
         public Guid SeriesID { get; set; }
-        public ICollection<Series> Series { get; set; }
+        public Series Series { get; set; }
 
         public ICollection<OrderDetail> OrderDetails { get; set; }
 

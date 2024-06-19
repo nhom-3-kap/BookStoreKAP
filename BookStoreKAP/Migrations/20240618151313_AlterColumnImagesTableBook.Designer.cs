@@ -4,6 +4,7 @@ using BookStoreKAP.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreKAP.Migrations
 {
     [DbContext(typeof(BookStoreKAPDBContext))]
-    partial class BookStoreKAPDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240618151313_AlterColumnImagesTableBook")]
+    partial class AlterColumnImagesTableBook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,28 +97,18 @@ namespace BookStoreKAP.Migrations
 
                     b.HasIndex("RatingID");
 
-                    b.HasIndex("SeriesID");
-
                     b.ToTable("Books");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.BookGenre", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    b.Property<Guid>("GenreID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BookID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("GenreID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ID");
-
-                    b.HasAlternateKey("GenreID", "BookID");
+                    b.HasKey("GenreID", "BookID");
 
                     b.HasIndex("BookID");
 
@@ -364,6 +357,9 @@ namespace BookStoreKAP.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
+                    b.Property<Guid?>("BookID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -383,6 +379,8 @@ namespace BookStoreKAP.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("BookID");
 
                     b.ToTable("Series");
                 });
@@ -611,14 +609,6 @@ namespace BookStoreKAP.Migrations
                     b.HasOne("BookStoreKAP.Models.Entities.Rating", null)
                         .WithMany("Books")
                         .HasForeignKey("RatingID");
-
-                    b.HasOne("BookStoreKAP.Models.Entities.Series", "Series")
-                        .WithMany("Books")
-                        .HasForeignKey("SeriesID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Series");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.BookGenre", b =>
@@ -698,6 +688,13 @@ namespace BookStoreKAP.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("BookStoreKAP.Models.Entities.Series", b =>
+                {
+                    b.HasOne("BookStoreKAP.Models.Entities.Book", null)
+                        .WithMany("Series")
+                        .HasForeignKey("BookID");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Tag", b =>
@@ -782,6 +779,8 @@ namespace BookStoreKAP.Migrations
 
                     b.Navigation("Sales");
 
+                    b.Navigation("Series");
+
                     b.Navigation("Tags");
                 });
 
@@ -807,11 +806,6 @@ namespace BookStoreKAP.Migrations
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Role", b =>
                 {
                     b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("BookStoreKAP.Models.Entities.Series", b =>
-                {
-                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.User", b =>

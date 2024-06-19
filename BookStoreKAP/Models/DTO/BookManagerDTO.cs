@@ -27,7 +27,7 @@ namespace BookStoreKAP.Models.DTO
         [Required]
         public List<Guid> GenreIds { get; set; }
 
-        public string Synopsis { get; set; }
+        public string? Synopsis { get; set; }
     }
 
     public class ReqQuerySearchBook : BaseRequestQueryManagerDTO

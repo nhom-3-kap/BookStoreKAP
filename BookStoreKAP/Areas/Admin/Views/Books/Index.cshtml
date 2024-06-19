@@ -121,10 +121,10 @@
                             for (int i = 0; i < Model.Count; i++)
                             {
                                 <tr>
-                                    <td>@(i + 1 + (pagination.CurrentPage - 1) * pagination.PageSize)</td>
+                                    <td>@(i+1)</td>
                                     <td>@(Model[i].Title)</td>
-                                    <td>@(string.Join(", ", Model[i].BookGenres.Select(bg => bg.Genre.Name)))</td>
-                                    <td>@(Model[i].Series.FirstOrDefault()?.Name)</td>
+                                    <td>@(string.Join(", ", Model[i].BookGenres?.Select(bg => bg.Genre.Name) ?? new List<string>()))</td>
+                                    <td>@(Model[i].Series.Name)</td>
                                     <td>@(Model[i].Author)</td>
                                     <td>@(Model[i].PublicationYear)</td>
                                     <td>@(Model[i].ViewCount)</td>

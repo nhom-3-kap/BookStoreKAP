@@ -126,7 +126,7 @@ namespace BookStoreKAP.Database
             builder.Entity<Role>().Property(e => e.ConcurrencyStamp).HasDefaultValueSql("NEWID()");
             // Configuration Many to Many
             #region Table BookGenres
-            builder.Entity<BookGenre>().HasKey(bg => new { bg.GenreID, bg.BookID });
+            builder.Entity<BookGenre>().HasAlternateKey(bg => new { bg.GenreID, bg.BookID });
             builder.Entity<BookGenre>().HasOne(bg => bg.Book).WithMany(b => b.BookGenres).HasForeignKey(bg => bg.BookID);
             builder.Entity<BookGenre>().HasOne(bg => bg.Genre).WithMany(g => g.BookGenres).HasForeignKey(bg => bg.GenreID);
             #endregion

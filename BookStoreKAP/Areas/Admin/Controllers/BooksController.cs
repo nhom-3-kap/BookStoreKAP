@@ -4,6 +4,7 @@ using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
@@ -20,7 +21,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         // GET: Books/Index
         public IActionResult Index([FromQuery] ReqQuerySearchBook q)
         {
-            var booksQuery = _context.Books.AsQueryable();
+            var booksQuery = _context.Books.Include(x => x.Series).Include(x => x.BookGenres).ThenInclude(x => x.Genre).AsQueryable();
 
             if (!string.IsNullOrEmpty(q.Title))
             {

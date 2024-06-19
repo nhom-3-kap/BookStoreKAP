@@ -10,5 +10,7 @@ namespace BookStoreKAP.Models.Entities
 
         public int Volumns { get; set; }
 
+        public ICollection<Book> Books { get; set; }
+
     }
 }

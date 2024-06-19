@@ -32,17 +32,16 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         {
 
             q.menuKey ??= q.menuKey;
-            var users = _userManager.Users
+            var users = _userManager.Users.Include(x => x.UserRoles)
                                    .Where(u =>
                                                 (string.IsNullOrEmpty(q.FirstName) || u.FirstName.ToUpper().Contains(q.FirstName.ToUpper())) &&
                                                 (string.IsNullOrEmpty(q.LastName) || u.LastName.ToUpper().Contains(q.LastName.ToUpper())) &&
                                                 (string.IsNullOrEmpty(q.PhoneNumber) || u.PhoneNumber.ToUpper().Contains(q.PhoneNumber.ToUpper())) &&
                                                 (string.IsNullOrEmpty(q.Email) || u.Email.ToUpper().Contains(q.Email.ToUpper())) &&
-                                                (string.IsNullOrEmpty(q.Username) || u.UserName.ToUpper().Contains(q.Username.ToUpper())) &&
-                                                (q.RoleIds == null || q.RoleIds.Count == 0 || (u.UserRoles != null && u.UserRoles.Any(ur => q.RoleIds.Contains(ur.RoleId))))
+                                                (string.IsNullOrEmpty(q.Username) || u.UserName.ToUpper().Contains(q.Username.ToUpper()))
                                          )
                                    .OrderBy(u => u.LastName)
-                                   .ToList();
+                                   .ToList().Where(u => (q.RoleIds == null || q.RoleIds.Count == 0 || (u.UserRoles != null && u.UserRoles.Count != 0 && q.RoleIds.All(rid => u.UserRoles.Any(ur => ur.RoleId == rid))))).ToList();
 
             var totalItems = users.Count;
             var pagedUsers = users.Skip((q.Page - 1) * q.PageSize).Take(q.PageSize).ToList();
@@ -266,10 +265,13 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     throw new Exception();
                 }
 
-                var role = await _roleManager.FindByIdAsync(req.RoleId.ToString());
-                if (role != null)
+                foreach (var roleId in req.RoleIds)
                 {
-                    await _userManager.AddToRoleAsync(user, role.Name);
+                    var role = await _roleManager.FindByIdAsync(roleId.ToString());
+                    if (role != null)
+                    {
+                        await _userManager.AddToRoleAsync(user, role.Name);
+                    }
                 }
 
                 TempData[ToastrConstant.SUCCESS_MSG] = "Create user successfully";

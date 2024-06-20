@@ -37,6 +37,19 @@
         public const string ADMIN_USERS = $"/{AreasConstant.ADMIN}/Users";
         public const string ADMIN_USERS_CREATE = $"/{AreasConstant.ADMIN}/Users/Create";
         public const string ADMIN_USERS_MODIFY = $"/{AreasConstant.ADMIN}/Users/Modify";
+
+        public const string ADMIN_ROLES = $"/{AreasConstant.ADMIN}/Roles";
+        public const string ADMIN_ROLES_CREATE = $"/{AreasConstant.ADMIN}/Roles/Create";
+        public const string ADMIN_ROLES_MODIFY = $"/{AreasConstant.ADMIN}/Roles/Modify";
+
+        public const string ADMIN_ACCESS_CONTROLLER = $"/{AreasConstant.ADMIN}/AccessController";
+        public const string ADMIN_ACCESS_CONTROLLER_REFRESH_LIST = $"/{AreasConstant.ADMIN}/AccessController/RefreshList";
+        public const string ADMIN_ACCESS_CONTROLLER_CREATE = $"/{AreasConstant.ADMIN}/AccessController/Create";
+        public const string ADMIN_ACCESS_CONTROLLER_MODIFY = $"/{AreasConstant.ADMIN}/AccessController/Modify";
+
+        public const string ADMIN_DOMAIN = $"/{AreasConstant.ADMIN}/Domain";
+        public const string ADMIN_DOMAIN_CREATE = $"/{AreasConstant.ADMIN}/Domain/Create";
+        public const string ADMIN_DOMAIN_MODIFY = $"/{AreasConstant.ADMIN}/Domain/Modify";
         #endregion
 
         #region Auth Routes

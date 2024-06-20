@@ -90,14 +90,14 @@
 
 .admin-side-bar-menu-item-child {
     margin-left: 20px;
-    height: 0;
-    overflow-y: hidden;
-    transition: 0.2s;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s;
 }
 
-    .admin-side-bar-menu-item-child.active {
-        height: 80px;
-    }
+.admin-side-bar-menu-item-control.active + .admin-side-bar-menu-item-child {
+    max-height: 500px;
+}
 
 .admin-side-bar-menu-item-child-item {
     color: #fff;

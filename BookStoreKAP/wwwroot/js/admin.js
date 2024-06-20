@@ -57,9 +57,9 @@ $(document).ready(function () {
     const handleToggleMultipleMenu = () => {
         $(".admin-side-bar-menu-item-control").on("click", function () {
             $(this).toggleClass("active");
-            $(this).next(".admin-side-bar-menu-item-child").toggleClass("active");
         });
     };
+
 
     function init() {
         handleToggleMultipleMenu();

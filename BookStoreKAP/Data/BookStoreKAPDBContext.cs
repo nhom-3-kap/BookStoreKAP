@@ -1,8 +1,9 @@
-﻿using BookStoreKAP.Models.Entities;
+﻿using BookStoreKAP.Configurations;
+using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStoreKAP.Database
+namespace BookStoreKAP.Data
 {
     public class BookStoreKAPDBContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
@@ -122,6 +123,14 @@ namespace BookStoreKAP.Database
             builder.Entity<Tag>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
             builder.Entity<Tag>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
 
+            builder.Entity<Domain>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<Domain>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<Domain>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
+            builder.Entity<AccessController>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<AccessController>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<AccessController>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
             builder.Entity<Role>().Property(e => e.Id).HasDefaultValueSql("NEWID()");
             builder.Entity<Role>().Property(e => e.ConcurrencyStamp).HasDefaultValueSql("NEWID()");
             // Configuration Many to Many
@@ -151,6 +160,7 @@ namespace BookStoreKAP.Database
             #region Table Orders
             builder.Entity<Order>().Property(o => o.Status).HasDefaultValue(StatusType.WAITING_FOR_PROGRESSING);
             #endregion
+
         }
 
         public DbSet<Book> Books { get; set; }
@@ -163,5 +173,8 @@ namespace BookStoreKAP.Database
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Series> Series { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<Domain> Domains { get; set; }
+        public DbSet<AccessController> AccessControllers { get; set; }
+
     }
 }

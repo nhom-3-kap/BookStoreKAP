@@ -1,0 +1,25 @@
+﻿@model List<AccessController>
+@{
+
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Controller name</th>
+            <th scope="col">Domain</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var aController in Model)
+        {
+            <tr>
+                <th scope="row">@(aController.Name)</th>
+                <td>
+                    <a asp-controller="Domain" asp-action="Create" asp-route-accessControllerID="@(aController.ID)" class="btn btn-warning">Domain List</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="@(RouteConstant.ADMIN_ACCESS_CONTROLLER_REFRESH_LIST)" class="btn btn-warning">Refresh List</a>

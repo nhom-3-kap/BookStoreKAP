@@ -1,5 +1,5 @@
 ﻿using BookStoreKAP.Common.Constants;
-using BookStoreKAP.Database;
+using BookStoreKAP.Data;
 using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
@@ -11,8 +11,7 @@ using NuGet.Protocol;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
-    [Area(AreasConstant.ADMIN)]
-    [Authorize(Roles = RolesConstant.ADMIN)]
+    [Area(AreasConstant.ADMIN), Authorize(Roles = RolesConstant.ADMIN)]
     public class BooksController : Controller
     {
         private readonly BookStoreKAPDBContext _context;

@@ -1,0 +1,25 @@
+﻿@model List<Role>
+
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Controller Name</th>
+            <th scope="col">Manipulation</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model)
+        {
+            <tr>
+                <th scope="row">@(role.Id)</th>
+                <td>@(role.Name)</td>
+                <td>
+                    <a href="@(RouteConstant.ADMIN_DOMAIN)?roleID=@(role.Id)" class="btn btn-warning">Controllers</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

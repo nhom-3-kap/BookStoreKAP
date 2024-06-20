@@ -1,12 +1,12 @@
 
 using Owin;
-using BookStoreKAP.Database;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Owin.Security.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using BookStoreKAP.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -68,7 +68,7 @@ builder.Services.AddScoped<BookStoreKAPDBContext>();
 
 var app = builder.Build();
 
-app.UseStatusCodePagesWithRedirects("Home/Error?statusCode={0}");
+app.UseStatusCodePagesWithRedirects("/Home/Error?statusCode={0}");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -89,7 +89,7 @@ app.Use(async (context, next) =>
 {
     if (context.Request.Path.StartsWithSegments("/Admin") && context.Request.Path == "/Admin")
     {
-        context.Response.Redirect("/Admin/Home");
+        context.Response.Redirect("/Admin/HomeAdmin");
         return;
     }
     await next();

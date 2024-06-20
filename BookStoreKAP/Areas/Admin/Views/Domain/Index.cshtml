@@ -1,0 +1,22 @@
+﻿@model List<Domain>
+@{
+
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Controller Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var domain in Model)
+        {
+            <tr>
+                <th scope="row">@(domain.ID)</th>
+                <td>@(domain.AccessController.Name)</td>
+            </tr>
+        }
+    </tbody>
+</table>

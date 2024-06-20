@@ -1,6 +1,6 @@
 ﻿using BookStoreKAP.Areas.Api.Models;
 using BookStoreKAP.Common.Constants;
-using BookStoreKAP.Database;
+using BookStoreKAP.Data;
 using BookStoreKAP.Models;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Mvc;

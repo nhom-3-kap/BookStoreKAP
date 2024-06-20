@@ -23,7 +23,6 @@ namespace BookStoreKAP.Models.Entities
         public double Discount { get; set; } = 0;
         public int Quantity { get; set; } = 0;
 
-        [Column(TypeName = "text")]
         [AllowNull]
         public string? Synopsis { get; set; }
 

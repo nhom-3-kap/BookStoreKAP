@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BookStoreKAP.Models.DTO
 {
@@ -38,5 +39,25 @@ namespace BookStoreKAP.Models.DTO
         public string? Author { get; set; }
         public Guid? SeriesID { get; set; }
         public Guid? TagID { get; set; }
+    }
+
+    public class ReqModifyBook
+    {
+        [Required]
+        public Guid ID { get; set; }
+
+        [Required]
+        public string Title { get; set; }
+
+        public string? Publisher { get; set; }
+        public int PublicationYear { get; set; }
+        public string? Author { get; set; }
+        public double Price { get; set; }
+        public double Discount { get; set; }
+        public int Quantity { get; set; }
+        public Guid SeriesID { get; set; }
+        public Guid TagID { get; set; }
+        public List<Guid> GenreIds { get; set; }
+        public string? Synopsis { get; set; }
     }
 }

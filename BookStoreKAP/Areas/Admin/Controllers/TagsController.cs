@@ -46,7 +46,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
         // POST: Tags/Create
         [HttpPost]
-        public async Task<IActionResult> Create(ReqCreateTag req, IFormFile Thumbnail)
+        public async Task<IActionResult> Create(ReqCreateTag req, IFormFile? Thumbnail)
         {
             try
             {

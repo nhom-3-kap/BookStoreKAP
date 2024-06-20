@@ -1,3 +1,4 @@
+using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -24,9 +25,20 @@ namespace BookStoreKAP.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int statusCode)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (statusCode == HttpStatusCodeConstant.NOT_FOUND)
+            {
+                return View("NotFound");
+            }
+            else if (statusCode == HttpStatusCodeConstant.INTERNAL_ERROR)
+            {
+                return View("InternalError");
+            }
+            else
+            {
+                return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
         }
     }
 }

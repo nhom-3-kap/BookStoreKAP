@@ -1,8 +1,11 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Book
+
 @{
     ViewBag.Title = "Modify Product";
+    List<Series> series = ViewBag.Series ?? new List<Series>();
+    List<Tag> tags = ViewBag.Tags ?? new List<Tag>();
+    List<Genre> genres = ViewBag.Genres ?? new List<Genre>();
+    List<Guid> selectedGenres = ViewBag.SelectedGenres ?? new List<Guid>();
 }
 <div class="container">
     <div class="row">
@@ -12,13 +15,14 @@
             <h3 class="text-center">Modify Book</h3>
         </div>
         <div class="col-lg-12">
-            <form asp-action="Create" method="POST" id="frmCreateBook" enctype="multipart/form-data">
+            <form asp-action="Modify" method="POST" id="frmModifyBook" enctype="multipart/form-data">
+                <input type="hidden" name="ID" value="@(Model.ID)" />
                 <div class="row">
                     <div class="col-lg-12 mb-4">
                         <div class="d-flex justify-content-start">
                             <div class="form-group">
                                 <label for="imgThumbnail">
-                                    <img id="previewThumbnail" src="https://placehold.co/200x200" width="200" height="200" class="img-thumbnail" />
+                                    <img id="previewThumbnail" src="@(Model.Thumbnail)" width="200" height="200" class="img-thumbnail" />
                                 </label>
                                 <input type="file" id="imgThumbnail" name="Thumbnail" hidden />
                             </div>
@@ -27,49 +31,49 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label" for="txtTitle">Title <span class="required text-danger">*</span></label>
-                            <input type="text" class="form-control" id="txtTitle" name="Title" />
+                            <input type="text" class="form-control" id="txtTitle" name="Title" value="@(Model.Title)" rules="required"/>
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label class="form-label" for="txtPushlisher">Pushlisher <span class="required text-danger">*</span></label>
-                            <input type="text" class="form-control" id="txtPushlisher" name="Pushlisher" />
+                            <label class="form-label" for="txtPublisher">Publisher <span class="required text-danger">*</span></label>
+                            <input type="text" class="form-control" id="txtPublisher" name="Publisher" value="@(Model.Publisher)" rules="required"/>
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label" for="txtAuthor">Author <span class="required text-danger">*</span></label>
-                            <input type="text" class="form-control" id="txtAuthor" name="Author" />
+                            <input type="text" class="form-control" id="txtAuthor" name="Author" value="@(Model.Author)" rules="required"/>
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label" for="txtPublicationYear">Publication Year <span class="required text-danger">*</span></label>
-                            <input type="number" value="2024" class="form-control" id="txtPublicationYear" name="PublicationYear" />
+                            <input type="number" class="form-control" id="txtPublicationYear" name="PublicationYear" value="@(Model.PublicationYear)" rules="required|min:4"/>
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label" for="txtPrice">Price($) <span class="required text-danger">*</span></label>
-                            <input type="number" value="1" class="form-control" id="txtPrice" name="Price" />
+                            <input type="number" class="form-control" id="txtPrice" name="Price"  value="@(Model.Price)" rules="required"/>
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label" for="txtDiscount">Discount($) <span class="required text-danger">*</span></label>
-                            <input type="number" value="1" class="form-control" id="txtDiscount" name="Discount" />
+                            <input type="number" class="form-control" id="txtDiscount" name="Discount" value="@(Model.Discount)" rules="required"/>
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label class="form-label" for="txtQuantity">Quantity <span class="required text-danger">*</span></label>
-                            <input type="number" value="1" class="form-control" id="txtQuantity" name="Quantity" />
+                            <input type="number" class="form-control" id="txtQuantity" name="Quantity" value="@(Model.Quantity)" rules="required"/>
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
@@ -77,7 +81,18 @@
                         <div class="form-group">
                             <label class="form-label" for="cboSeries">Series <span class="required text-danger">*</span></label>
                             <select class="form-select" id="cboSeries" name="SeriesID">
-                                <option value="">--- Choose Series ---</option>
+                                @foreach (var seriesItem in series)
+                                {
+                                    if (seriesItem.ID == Model.SeriesID)
+                                    {
+
+                                        <option value="@(seriesItem.ID)" selected>@(seriesItem.Name)</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@(seriesItem.ID)">@(seriesItem.Name)</option>
+                                    }
+                                }
                             </select>
                         </div>
                     </div>
@@ -85,21 +100,52 @@
                         <div class="form-group">
                             <label class="form-label" for="cboTag">Tags <span class="required text-danger">*</span></label>
                             <select class="form-select" id="cboTag" name="TagID">
-                                <option value="">--- Choose Tag ---</option>
+                                @foreach (var tag in tags)
+                                {
+                                    if (tag.ID == Model.TagID)
+                                    {
+                                        <option value="@(tag.ID)" selected>@(tag.Name)</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@(tag.ID)">@(tag.Name)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mt-2">
+                        <div class="form-group">
+                            <label class="form-label" for="cboGenre">Genre <span class="required text-danger">*</span></label>
+                            <select class="form-control select2" id="cboGenre" name="GenreIds" multiple="multiple">
+                                @foreach (var genre in genres)
+                                {
+                                    bool isSelected = ViewBag.SelectedGenres != null && ((List<Guid>)ViewBag.SelectedGenres).Contains(genre.ID);
+                                    if (isSelected)
+                                    {
+                                        <option value="@(genre.ID)" selected>@(genre.Name)</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@(genre.ID)">@(genre.Name)</option>
+                                    }
+                                }
                             </select>
                         </div>
                     </div>
                     <div class="col-lg-12 mt-2">
                         <div class="form-group">
                             <label class="form-label" for="txtSynopsis">Synopsis <span class="required text-danger">*</span></label>
-                            <textarea id="txtSynopsis" Name="Synopsis"></textarea>
+                            <textarea id="txtSynopsis" Name="Synopsis">
+                                @(Model.Synopsis)
+                            </textarea>
                             <span class="text-danger text-sm-center form-message" hidden></span>
                         </div>
                     </div>
                     <div class="col-lg-12 mt-1">
                         <div class="d-flex justify-content-end">
                             <div>
-                                <button class="btn btn-success" id="btnCreateUser">
+                                <button class="btn btn-success" id="btnModifyUser">
                                     Save <i class="bi bi-floppy"></i>
                                 </button>
                             </div>
@@ -129,7 +175,8 @@
 
 
             function init() {
-                Validator("#frmCreateBook");
+                Validator("#frmModifyBook");
+                $("#cboGenre").select2();
                 initTinyMCE();
             }
             init();

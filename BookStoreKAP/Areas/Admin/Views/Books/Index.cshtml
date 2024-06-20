@@ -163,60 +163,50 @@
     <script>
         $(document).ready(function () {
             // Function to handle delete button click
-            $(".btnDeleteBook").click(function () {
-                const bookID = $(this).attr("data-bookID");
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "You will not be able to recover this data!!!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, delete it!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        handleAjax(`/Admin/Books/DeleteBookByIdAPI?bookID=${bookID}`, {}, (res) => {
-                            if (res.success) {
-                                Swal.fire({
-                                    title: "Deleted!",
-                                    text: "Deleted Successfully",
-                                    icon: "success"
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: "Error Delete!",
-                                    text: res.message,
-                                    icon: "error"
-                                });
+            const handleClickDeleteBook = () => {
+                $(".btnDeleteBook").each(function () {
+                    $(this).on("click", function () {
+                        const bookID = $(this).attr("data-bookID");
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "You will not be able to recover this data!!!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, delete it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                handleAjax(`/Admin/Books/RemoveBookByIDAPI?bookID=${bookID}`, {}, (res) => {
+                                    if (res.success) {
+                                        Swal.fire({
+                                            title: "Deleted!",
+                                            text: "Deleted Successfully",
+                                            icon: "success"
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: "Error Delete!",
+                                            text: res.message,
+                                            icon: "error"
+                                        });
+                                    }
+                                }, { type: "DELETE" });
                             }
-                        }, { type: "DELETE" });
-                    }
+                        });
+                    });
                 });
-            });
+            };
+
 
             function init() {
                 Validator("#frmSearchBook");
+                handleClickDeleteBook();
             }
 
             init();
         });
-
-        // AJAX handler function
-        const handleAjaxError = (xhr, status, error) => console.error('Error: ' + error.message);
-        const handleAjax = (url, data, successCallback, options = {}) => {
-            const { type, async, ...others } = options;
-
-            $.ajax({
-                url: url,
-                type: type || 'POST',
-                ...others,
-                async: async || false,
-                data: data,
-                success: successCallback,
-                error: handleAjaxError
-            });
-        };
     </script>
 }

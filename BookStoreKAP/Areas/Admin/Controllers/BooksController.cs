@@ -1,10 +1,13 @@
 ﻿using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Database;
+using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
@@ -151,9 +154,165 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return Redirect($"{RouteConstant.ADMIN_BOOKS}?menuKey=BM"); // Chuyển hướng về trang Index
         }
 
-        public IActionResult Modify(Guid bookID)
+        public async Task<IActionResult> Modify(Guid bookID)
         {
-            return View();
+            try
+            {
+                var book = await _context.Books.Include(b => b.BookGenres).ThenInclude(bg => bg.Genre).FirstOrDefaultAsync(x => x.ID == bookID) ?? throw new Exception("Book is not exists!");
+                ViewBag.Series = _context.Series.ToList();
+                ViewBag.Tags = _context.Tags.ToList();
+                ViewBag.Genres = _context.Genres.ToList();
+                ViewBag.SelectedGenres = book.BookGenres.Select(bg => bg.GenreID).ToList();
+                return View(book);
+            }
+            catch (Exception ex)
+            {
+                TempData[ToastrConstant.ERROR_MSG] = ex.Message;
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Modify(ReqModifyBook req, IFormFile? Thumbnail)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    throw new Exception("Values invalid");
+                }
+
+                var book = await _context.Books.Include(b => b.BookGenres).ThenInclude(bg => bg.Genre).FirstOrDefaultAsync(x => x.ID == req.ID);
+
+
+                if (book == null)
+                {
+                    throw new Exception("Book not found");
+                }
+
+                book.Title = req.Title;
+                book.Publisher = req.Publisher;
+                book.PublicationYear = req.PublicationYear;
+                book.Author = req.Author;
+                book.Price = req.Price;
+                book.Discount = req.Discount;
+                book.Quantity = req.Quantity;
+                book.SeriesID = req.SeriesID;
+                book.TagID = req.TagID;
+                book.Synopsis = req.Synopsis;
+
+                string oldThumbnailPath = string.Empty;
+
+                // Cập nhật lưu ảnh nếu như có ảnh mới
+                if (Thumbnail != null && Thumbnail.Length > 0)
+                {
+                    if (!string.IsNullOrEmpty(book.Thumbnail))
+                    {
+                        oldThumbnailPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", book.Thumbnail.TrimStart('/'));
+                    }
+
+                    var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "images", "products");
+                    if (!Directory.Exists(uploads))
+                    {
+                        Directory.CreateDirectory(uploads);
+                    }
+                    var fileExtension = Path.GetExtension(Thumbnail.FileName);
+                    var fileName = $"{Guid.NewGuid()}{fileExtension}";
+                    var filePath = Path.Combine(uploads, fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await Thumbnail.CopyToAsync(fileStream);
+                    }
+                    book.Thumbnail = $"/uploads/images/products/{fileName}";
+                }
+
+                // Cập nhật BookGenres
+                var existingBookGenres = book.BookGenres.Select(bg => bg.GenreID).ToList();
+                var newBookGenres = req.GenreIds.Except(existingBookGenres).ToList();
+                var removedBookGenres = existingBookGenres.Except(req.GenreIds).ToList();
+
+                if (removedBookGenres.Any())
+                {
+                    var bookGenresToRemove = _context.BookGenres
+                        .Where(bg => bg.BookID == req.ID && removedBookGenres.Contains(bg.GenreID))
+                        .ToList();
+                    _context.BookGenres.RemoveRange(bookGenresToRemove);
+                }
+
+                if (newBookGenres.Any())
+                {
+                    var bookGenresToAdd = newBookGenres.Select(genreId => new BookGenre
+                    {
+                        BookID = req.ID,
+                        GenreID = genreId
+                    }).ToList();
+                    await _context.BookGenres.AddRangeAsync(bookGenresToAdd);
+                }
+
+                // Save changes
+                _context.Books.Update(book);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                if (System.IO.File.Exists(oldThumbnailPath))
+                {
+                    System.IO.File.Delete(oldThumbnailPath);
+                }
+
+                TempData[ToastrConstant.SUCCESS_MSG] = "Modify Success";
+                return Redirect($"{RouteConstant.ADMIN_BOOKS}?menuKey=BM");
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                TempData[ToastrConstant.ERROR_MSG] = ex.Message;
+                var book = await _context.Books.Include(b => b.BookGenres).ThenInclude(bg => bg.Genre).FirstOrDefaultAsync(x => x.ID == req.ID);
+                ViewBag.Series = _context.Series.ToList();
+                ViewBag.Tags = _context.Tags.ToList();
+                ViewBag.Genres = _context.Genres.ToList();
+
+                return View(book);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveBookByIDAPI(Guid bookID)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var book = await _context.Books
+                    .Include(b => b.BookGenres)
+                    .Include(b => b.OrderDetails)
+                    .FirstOrDefaultAsync(b => b.ID == bookID);
+
+                if (book == null)
+                {
+                    throw new Exception("Book not found");
+                }
+
+                // Xóa các liên kết BookGenres
+                _context.BookGenres.RemoveRange(book.BookGenres);
+
+                // Xóa các liên kết OrderDetails
+                _context.OrderDetails.RemoveRange(book.OrderDetails);
+
+                // Xóa sách
+                _context.Books.Remove(book);
+
+                // Lưu thay đổi
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Ok(new ResponseAPI<string>() { Success = true, Message = "Remove Success" });
+            }
+            catch (Exception ex)
+            {
+                // Rollback transaction nếu có lỗi
+                await transaction.RollbackAsync();
+                return Ok(new ResponseAPI<string>() { Success = false, Message = ex.Message });
+            }
         }
     }
 }

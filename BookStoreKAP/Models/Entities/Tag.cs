@@ -9,7 +9,6 @@ namespace BookStoreKAP.Models.Entities
         [StringLength(150)]
         public string Name { get; set; }
 
-        [Required]
         [AllowNull]
         public string? Thumbnail { get; set; }
     }

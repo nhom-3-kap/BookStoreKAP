@@ -18,7 +18,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
-        [Authorize(Policy = "CanView")]
+        //[Authorize(Policy = "CanView")]
         public IActionResult Index([FromQuery] ReqQuerySearchSeries q)
         {
             var series = _context.Series.Where(x =>
@@ -29,13 +29,13 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(series);
         }
 
-        [Authorize(Policy = "CanCreate")]
+        //[Authorize(Policy = "CanCreate")]
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize(Policy = "CanCreate")]
+        //[Authorize(Policy = "CanCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateSeries req)
         {
@@ -67,7 +67,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        [Authorize(Policy = "CanDelete")]
+        //[Authorize(Policy = "CanDelete")]
         [HttpDelete]
         public async Task<IActionResult> DeleteSeriesByIdAPI(Guid seriesID)
         {
@@ -95,7 +95,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
         }
 
-        [Authorize(Policy = "CanEdit")]
+        //[Authorize(Policy = "CanEdit")]
         public IActionResult Modify(Guid seriesID)
         {
             var series = _context.Series.Find(seriesID) ?? new Series();
@@ -103,7 +103,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(series);
         }
 
-        [Authorize(Policy = "CanEdit")]
+        //[Authorize(Policy = "CanEdit")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqModifySeries req)
         {

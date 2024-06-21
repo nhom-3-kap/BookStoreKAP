@@ -9,5 +9,6 @@ namespace BookStoreKAP.Models.Entities
         [AllowNull]
         public string? AreaName { get; set; } // Thêm trường AreaName
         public ICollection<Domain> Domains { get; set; }
+        public ICollection<Policy> Policies { get; set; }
     }
 }

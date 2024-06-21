@@ -68,19 +68,19 @@ builder.Services.AddScoped<BookStoreKAPDBContext>();
 //builder.Services.AddScoped<AccessControlMiddleware>();
 #endregion
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("CanCreate", policy =>
-        policy.RequireClaim("Permission", "CanCreate"));
-    options.AddPolicy("CanEdit", policy =>
-        policy.RequireClaim("Permission", "CanEdit"));
-    options.AddPolicy("CanDelete", policy =>
-        policy.RequireClaim("Permission", "CanDelete"));
-    options.AddPolicy("CanView", policy =>
-        policy.RequireClaim("Permission", "CanView"));
-    options.AddPolicy("All", policy =>
-        policy.RequireClaim("Permission", "All"));
-});
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("CanCreate", policy =>
+//        policy.RequireClaim("Permission", "CanCreate"));
+//    options.AddPolicy("CanEdit", policy =>
+//        policy.RequireClaim("Permission", "CanEdit"));
+//    options.AddPolicy("CanDelete", policy =>
+//        policy.RequireClaim("Permission", "CanDelete"));
+//    options.AddPolicy("CanView", policy =>
+//        policy.RequireClaim("Permission", "CanView"));
+//    options.AddPolicy("All", policy =>
+//        policy.RequireClaim("Permission", "All"));
+//});
 
 var app = builder.Build();
 
@@ -102,7 +102,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Đăng ký middleware kiểm tra quyền truy cập
-app.UseMiddleware<AccessControlMiddleware>();
+//app.UseMiddleware<AccessControlMiddleware>();
 
 app.Use(async (context, next) =>
 {

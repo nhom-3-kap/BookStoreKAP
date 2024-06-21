@@ -17,7 +17,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
-        [Authorize(Policy = "CanView")]
+        //[Authorize(Policy = "CanView")]
         public IActionResult Index()
         {
             var controllerList = _context.AccessControllers.OrderByDescending(x => x.AreaName).ToList();
@@ -25,7 +25,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(controllerList);
         }
 
-        [Authorize(Policy = "CanView")]
+        //[Authorize(Policy = "CanView")]
         public IActionResult RefreshList()
         {
             var controllerListOnProject = Assembly.GetExecutingAssembly()

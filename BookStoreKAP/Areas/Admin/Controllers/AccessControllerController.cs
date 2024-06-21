@@ -19,20 +19,23 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            var controllerList = _context.AccessControllers.ToList();
+            var controllerList = _context.AccessControllers.OrderByDescending(x => x.AreaName).ToList();
 
             return View(controllerList);
         }
-
 
         public IActionResult RefreshList()
         {
             var controllerListOnProject = Assembly.GetExecutingAssembly()
                                                     .GetTypes()
-                                                    .Where(type => typeof(Controller)
-                                                    .IsAssignableFrom(type) || typeof(ControllerBase)
-                                                    .IsAssignableFrom(type))
-                                                    .ToDictionary(x => x.Name[..x.Name.LastIndexOf("Controller")]);
+                                                    .Where(type => typeof(Controller).IsAssignableFrom(type) || typeof(ControllerBase).IsAssignableFrom(type))
+                                                    .Select(type => new
+                                                    {
+                                                        Name = type.Name[..type.Name.LastIndexOf("Controller")],
+                                                        AreaName = type.GetCustomAttribute<AreaAttribute>()?.RouteValue
+                                                    })
+                                                    .ToDictionary(x => x.Name);
+
             var accessControllerListOnDB = _context.AccessControllers.ToList();
 
             foreach (var accessController in accessControllerListOnDB)
@@ -54,12 +57,13 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 _context.AccessControllers.Add(new AccessController()
                 {
                     Name = controller.Key,
+                    AreaName = controller.Value.AreaName
                 });
             }
 
             _context.SaveChanges();
 
-
+            TempData[ToastrConstant.SUCCESS_MSG] = "Refresh Successfully";
             return RedirectToAction("Index");
         }
     }

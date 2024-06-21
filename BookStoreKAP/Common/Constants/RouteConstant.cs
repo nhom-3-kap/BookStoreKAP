@@ -50,6 +50,8 @@
         public const string ADMIN_DOMAIN = $"/{AreasConstant.ADMIN}/Domain";
         public const string ADMIN_DOMAIN_CREATE = $"/{AreasConstant.ADMIN}/Domain/Create";
         public const string ADMIN_DOMAIN_MODIFY = $"/{AreasConstant.ADMIN}/Domain/Modify";
+        public const string ADMIN_DOMAIN_DOMAINS_BY_ACCESS_CONTROLLER = $"/{AreasConstant.ADMIN}/Domain/DomainsByAccessController";
+
         #endregion
 
         #region Auth Routes

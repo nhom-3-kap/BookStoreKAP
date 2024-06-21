@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
-    [Area(AreasConstant.ADMIN), Authorize(Roles = RolesConstant.ADMIN)]
+    [Area(AreasConstant.ADMIN)]
     public class HomeAdminController : Controller
     {
+        [Authorize(Policy = "CanView")]
         public IActionResult Index()
         {
             TempData[ToastrConstant.SUCCESS_MSG] = "Welcome Back 🙋‍";

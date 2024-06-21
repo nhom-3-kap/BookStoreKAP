@@ -64,7 +64,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "Genre created successfully.";
-                return RedirectToAction(nameof(Index)); // Redirect to the index or any other page after success
+                return Redirect($"{RouteConstant.ADMIN_GENRE}?menuKey=GM"); // Redirect to the index or any other page after success
             }
             catch (Exception ex)
             {

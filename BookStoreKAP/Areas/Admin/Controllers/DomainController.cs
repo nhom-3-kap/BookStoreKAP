@@ -21,13 +21,14 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _roleManager = roleManager;
         }
 
-        public IActionResult Index(Guid roleID)
+        public IActionResult Index(Guid roleID, string roleName)
         {
-            var domainList = _context.Domains.Where(x => x.RoleID == roleID).ToList();
+            var domainList = _context.Domains.Include(x => x.AccessController).Include(x => x.Role).Where(x => x.RoleID == roleID).ToList();
+            ViewBag.RoleName = roleName;
             return View(domainList);
         }
 
-        public IActionResult GetAllDomainsByAccessControllerID(Guid accessControllerID)
+        public IActionResult DomainsByAccessController(Guid accessControllerID)
         {
             var domains = _context.Domains.Include(x => x.AccessController).Include(x => x.Role).Where(x => x.AccessControllerID == accessControllerID).ToList();
 
@@ -52,7 +53,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context.Domains.Add(domain);
             _context.SaveChanges();
 
-            return RedirectToAction("GetAllDomainsByAccessControllerID", new { accessControllerID = req.AccessControllerID });
+            return RedirectToAction("DomainsByAccessController", new { accessControllerID = req.AccessControllerID });
         }
     }
 }

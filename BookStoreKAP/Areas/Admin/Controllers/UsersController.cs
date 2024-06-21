@@ -13,7 +13,6 @@ using System.Security.Claims;
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
     [Area(AreasConstant.ADMIN)]
-    [Authorize(Roles = RolesConstant.ADMIN)]
     public class UsersController : Controller
     {
         private readonly RoleManager<Role> _roleManager;
@@ -28,6 +27,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _signInManager = signInManager;
         }
 
+        [Authorize(Policy = "CanView")]
         public async Task<IActionResult> Index([FromQuery] ReqQuerySearchUser q)
         {
 
@@ -73,6 +73,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(userRolesViewModel);
         }
 
+        [Authorize(Policy = "CanCreate")]
         public IActionResult Create()
         {
             var roles = _roleManager.Roles.ToList();
@@ -81,6 +82,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View();
         }
 
+        [Authorize(Policy = "CanEdit")]
         public async Task<IActionResult> Modify(Guid userID)
         {
             var user = _userManager.Users.Where(x => x.Id.Equals(userID)).FirstOrDefault();
@@ -99,6 +101,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(user);
         }
 
+        [Authorize(Policy = "CanEdit")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqModifyUser req, IFormFile Avatar)
         {
@@ -236,7 +239,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-
+        [Authorize(Policy = "CanCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateUser req)
         {
@@ -286,6 +289,8 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
+
+        [Authorize(Policy = "CanDelete")]
         [HttpDelete]
         public async Task<IActionResult> RemoveUserByIDAPI(Guid userID)
         {
@@ -322,6 +327,5 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 return Ok(new ResponseAPI<string>() { Success = false, Message = ex.Message });
             }
         }
-
     }
 }

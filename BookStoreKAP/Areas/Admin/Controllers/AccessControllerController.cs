@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
-    [Area(AreasConstant.ADMIN), Authorize(Roles = RolesConstant.ADMIN)]
+    [Area(AreasConstant.ADMIN)]
     public class AccessControllerController : Controller
     {
         private readonly BookStoreKAPDBContext _context;
@@ -17,6 +17,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
+        [Authorize(Policy = "CanView")]
         public IActionResult Index()
         {
             var controllerList = _context.AccessControllers.OrderByDescending(x => x.AreaName).ToList();
@@ -24,6 +25,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(controllerList);
         }
 
+        [Authorize(Policy = "CanView")]
         public IActionResult RefreshList()
         {
             var controllerListOnProject = Assembly.GetExecutingAssembly()

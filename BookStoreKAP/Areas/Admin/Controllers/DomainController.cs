@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
-    [Area(AreasConstant.ADMIN), Authorize(Roles = RolesConstant.ADMIN)]
+    [Area(AreasConstant.ADMIN)]
     public class DomainController : Controller
     {
         private readonly BookStoreKAPDBContext _context;
@@ -21,6 +21,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _roleManager = roleManager;
         }
 
+        [Authorize(Policy = "CanView")]
         public IActionResult Index(Guid roleID, string roleName)
         {
             var domainList = _context.Domains.Include(x => x.AccessController).Include(x => x.Role).Where(x => x.RoleID == roleID).ToList();
@@ -28,6 +29,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(domainList);
         }
 
+        [Authorize(Policy = "CanView")]
         public IActionResult DomainsByAccessController(Guid accessControllerID)
         {
             var domains = _context.Domains.Include(x => x.AccessController).Include(x => x.Role).Where(x => x.AccessControllerID == accessControllerID).ToList();
@@ -37,6 +39,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(domains);
         }
 
+        [Authorize(Policy = "CanCreate")]
         public IActionResult Create(Guid accessControllerID)
         {
             var roles = _context.Roles.ToList();
@@ -46,6 +49,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(roles);
         }
 
+        [Authorize(Policy = "CanCreate")]
         [HttpPost]
         public IActionResult Create(ReqCreateDomain req)
         {

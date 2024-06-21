@@ -25,13 +25,18 @@ namespace BookStoreKAP.Middleware
             var endpoint = context.GetEndpoint();
             if (endpoint != null)
             {
-                var controllerName = endpoint.Metadata.OfType<ControllerActionDescriptor>().FirstOrDefault()?.ControllerName;
+                var controllerDescriptor = endpoint.Metadata.OfType<ControllerActionDescriptor>().FirstOrDefault();
+                var controllerName = controllerDescriptor?.ControllerName;
+                var actionName = controllerDescriptor?.ActionName;
                 var areaName = endpoint.Metadata.OfType<AreaAttribute>()?.FirstOrDefault()?.RouteValue;
-                var actionName = endpoint.Metadata.OfType<ControllerActionDescriptor>().FirstOrDefault()?.ActionName;
 
                 if (controllerName != null && actionName != null)
                 {
-                    var accessController = await _context.AccessControllers.Include(ac => ac.Domains).ThenInclude(d => d.Role).FirstOrDefaultAsync(ac => ac.Name == controllerName && ac.AreaName == areaName);
+                    var accessController = await _context.AccessControllers
+                        .Include(ac => ac.Domains)
+                        .ThenInclude(d => d.Role)
+                        .FirstOrDefaultAsync(ac => ac.Name == controllerName && ac.AreaName == areaName);
+
                     if (accessController != null)
                     {
                         var roles = accessController.Domains.Select(d => d.Role).ToList();
@@ -42,10 +47,13 @@ namespace BookStoreKAP.Middleware
 
                             foreach (var role in roles)
                             {
-                                var claims = await _context.RoleClaims.Where(rc => rc.RoleId == role.Id).ToListAsync();
+                                var claims = await _context.RoleClaims
+                                    .Where(rc => rc.RoleId == role.Id && rc.ControllerName == controllerName && rc.ActionName == actionName)
+                                    .ToListAsync();
+
                                 foreach (var claim in claims)
                                 {
-                                    if (claim.ClaimType == "Permission" && user.HasClaim("Permission", claim.ClaimValue))
+                                    if (user.HasClaim("Permission", claim.ClaimValue))
                                     {
                                         hasAccess = true;
                                         break;

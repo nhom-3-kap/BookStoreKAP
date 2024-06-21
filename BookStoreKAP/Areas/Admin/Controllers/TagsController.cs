@@ -38,14 +38,14 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(paged);
         }
 
-        // GET: Tags/Create
+
         [Authorize(Policy = "CanCreate")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tags/Create
+
         [Authorize(Policy = "CanView")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateTag req, IFormFile? Thumbnail)
@@ -101,7 +101,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        // GET: Tags/Modify/{tagID}
+
         [Authorize(Policy = "CanEdit")]
         public async Task<IActionResult> Modify(Guid tagID)
         {
@@ -121,7 +121,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(model);
         }
 
-        // POST: Tags/Modify
+
         [Authorize(Policy = "CanEdit")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqModifyTag req, IFormFile? Thumbnail)

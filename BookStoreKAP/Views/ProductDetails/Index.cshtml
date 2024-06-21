@@ -1,6 +1,61 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿
+
+<div class="all-details">
+        <section class="product-details">
+
+            <div class="image-box">
+            <img src="/images/beautiful.jpg" alt="World's Best Girlfriend">
+            </div>
+            <div class="details">
+                <h1>Beautiful World Where Are You</h1>
+                <h5><strong>Book Publisher:</strong>
+                    Penguin
+                </h5>
+                <h5>
+                    <strong>Book Author: </strong>
+                Sally Rooney
+                </h5>
+                <p>SKU: 9780143448365</p>
+                <p class="price">159$ <span>199$</span></p>
+                <div class="rating">
+                     <span>
+                        3 in Stock (Can be backordered)
+                    </span>
+                </div>
+            <div class="product-actions">
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="100">
+                <button class="add-to-cart">ADD TO CART</button>
+                <button class="add-to-wishlist">♡ ADD TO WISHLIST</button>
+            </div>
+               
+            
+            </div>
+        </section>
+    <section class="description">
+        <h2><strong>Description</strong></h2>
+        <div class="description-content">
+            <p>Đây là Decryption</p>
+         
+        </div>
+    </section>
+    <div class="review-container">
+        <h3>Your rating</h3>
+        <div class="rating-stars" id="rating-stars">
+            <span class="rating-star">&#9733;</span>
+            <span class="rating-star">&#9733;</span>
+            <span class="rating-star">&#9733;</span>
+            <span class="rating-star">&#9733;</span>
+            <span class="rating-star">&#9733;</span>
+
+        </div>
+        <div class="review-text">
+            <label for="review-text">Your review *</label>
+            <textarea id="review-text" name="review-text" required></textarea>
+        </div>
+        <button class="submit-button">Submit</button>
+    </div>
+</div>
+@section scripts {
+    <script src="~/js/rating-stars.js"></script>
 }
-@ViewBag.ProductId;
+

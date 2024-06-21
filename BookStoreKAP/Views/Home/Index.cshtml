@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<BookStoreKAP.Models.Entities.Book>
+@{
     ViewData["Title"] = "Home";
 }
 
@@ -60,13 +61,16 @@
                 <img src="/images/Heading-Line-R.png" alt="heading left" />
             </div>
         </div>
-
-        <div class="wrap-carousel">
+        
+         <div class="wrap-carousel">
             <div class="owl-carousel" id="carousel-new-release">
-                <div class="owl-carousel-item">
+                @foreach(var item in Model)
+                {
+                 <div class="owl-carousel-item">
+                    
                     <div class="card-product">
                         <div class="card-product-heading">
-                            <a href="@(RouteConstant.PRODUCT_DETAIL)/Id1">
+                            <a href="@(RouteConstant.PRODUCT_DETAIL)/@item.ID">
                                 <img src="/images/Beautiful.jpg" />
                             </a>
                             <button>
@@ -76,7 +80,7 @@
                         <div class="card-product-content">
                             <h6 class="card-product-title">
                                 <a href="#">
-                                    Beautiful World Where Are You
+                                    @item.Title
                                 </a>
                             </h6>
                             <div class="card-product-desc">
@@ -84,12 +88,12 @@
                                     <strong>Book Author: </strong>
                                 </span>
                                 <span>
-                                    Sally Rooney
+                                        @item.Author
                                 </span>
                             </div>
                             <div class="card-product-wrap-price">
-                                <span class="card-product-current-price">440$</span>
-                                <span class="card-product-old-price">550$</span>
+                                <span class="card-product-current-price">@item.Discount</span>
+                                <span class="card-product-old-price">@item.Price</span>
                             </div>
                         </div>
                         <div class="card-product-fotter">
@@ -108,66 +112,21 @@
                             </div>
 
                         </div>
+                    
                     </div>
-
-                </div>
-                <div class="owl-carousel-item">
-                    <div class="card-product">
-                        <div class="card-product-heading">
-                            <a href="#">
-                                <img src="/images/HarryPotter.jpg" />
-                            </a>
-                            <button>
-                                <i class="bi bi-suit-heart"></i>
-                            </button>
-                        </div>
-                        <div class="card-product-content">
-                            <h6 class="card-product-title">
-                                <a href="#">
-                                    The Harry Potter Wizarding Almanac
-                                </a>
-                            </h6>
-                            <div class="card-product-desc">
-                                <span>
-                                    <strong>Book Author: </strong>
-                                </span>
-                                <span>
-                                    JK ROWLING
-                                </span>
-                            </div>
-                            <div class="card-product-wrap-price">
-                                <span class="card-product-current-price">1279$</span>
-                                <span class="card-product-old-price">1599$</span>
-                            </div>
-                        </div>
-                        <div class="card-product-fotter">
-
-                            <div class="card-product-wrap-btn">
-                                <button class="card-product-btn kap-btn kap-btn-primary">BUY</button>
-                                <button class="card-product-btn kap-btn kap-btn-secondary">ADD TO CART</button>
-                            </div>
-
-                            <div class="card-product-wrap-star">
-                                <button><i class="bi bi-star"></i></button>
-                                <button><i class="bi bi-star"></i></button>
-                                <button><i class="bi bi-star"></i></button>
-                                <button><i class="bi bi-star"></i></button>
-                                <button><i class="bi bi-star"></i></button>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+                    
+                 </div>
+               }
+               
             <div class="carousel-controls">
                 <button class="control control-left"><i class="bi bi-arrow-left"></i></button>
                 <button class="control control-right"><i class="bi bi-arrow-right"></i></button>
             </div>
 
             <button class="kap-btn kap-btn-solid carousel-btn-more">View More</button>
-
-        </div>
+             
+         </div>
+        
     </section>
 </div>
 

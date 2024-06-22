@@ -1,6 +1,9 @@
 using BookStoreKAP.Common.Constants;
+using BookStoreKAP.Data;
 using BookStoreKAP.Models;
+using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace BookStoreKAP.Controllers
@@ -8,15 +11,19 @@ namespace BookStoreKAP.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly BookStoreKAPDBContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, BookStoreKAPDBContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            
+            List<Book> lst = _context.Books.Include(x=>x.Sales).ToList();
+            return View(lst);
         }
 
         public IActionResult Privacy()

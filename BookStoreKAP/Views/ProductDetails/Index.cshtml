@@ -65,5 +65,14 @@
 </div>
 @section scripts {
     <script src="~/js/rating-stars.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#quantity").on("blur", function () { 
+                if ($(this).val()>100) {
+                    toastr.warning("Value ivalid 1-100")
+                }
+            })
+        })
+    </script>
 }
 

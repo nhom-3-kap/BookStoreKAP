@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreKAP.Migrations
 {
     [DbContext(typeof(BookStoreKAPDBContext))]
-    [Migration("20240621025832_CustomtableRoleClaim")]
-    partial class CustomtableRoleClaim
+    [Migration("20240622181544_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,6 +42,9 @@ namespace BookStoreKAP.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -127,6 +130,8 @@ namespace BookStoreKAP.Migrations
                     b.HasIndex("RatingID");
 
                     b.HasIndex("SeriesID");
+
+                    b.HasIndex("TagID");
 
                     b.ToTable("Books");
                 });
@@ -290,6 +295,41 @@ namespace BookStoreKAP.Migrations
                     b.HasIndex("BookID");
 
                     b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("BookStoreKAP.Models.Entities.Policy", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<Guid>("AccessControllerID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ActionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("AccessControllerID");
+
+                    b.ToTable("Policies");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Rating", b =>
@@ -466,9 +506,6 @@ namespace BookStoreKAP.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<Guid?>("BookID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -488,8 +525,6 @@ namespace BookStoreKAP.Migrations
                         .HasDefaultValueSql("GETDATE()");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("BookID");
 
                     b.ToTable("Tags");
                 });
@@ -689,6 +724,12 @@ namespace BookStoreKAP.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BookStoreKAP.Models.Entities.Tag", null)
+                        .WithMany("Books")
+                        .HasForeignKey("TagID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Series");
                 });
 
@@ -768,6 +809,17 @@ namespace BookStoreKAP.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("BookStoreKAP.Models.Entities.Policy", b =>
+                {
+                    b.HasOne("BookStoreKAP.Models.Entities.AccessController", "AccessController")
+                        .WithMany("Policies")
+                        .HasForeignKey("AccessControllerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccessController");
+                });
+
             modelBuilder.Entity("BookStoreKAP.Models.Entities.RoleClaim", b =>
                 {
                     b.HasOne("BookStoreKAP.Models.Entities.Role", "Role")
@@ -788,13 +840,6 @@ namespace BookStoreKAP.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("BookStoreKAP.Models.Entities.Tag", b =>
-                {
-                    b.HasOne("BookStoreKAP.Models.Entities.Book", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("BookID");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.User", b =>
@@ -865,6 +910,8 @@ namespace BookStoreKAP.Migrations
             modelBuilder.Entity("BookStoreKAP.Models.Entities.AccessController", b =>
                 {
                     b.Navigation("Domains");
+
+                    b.Navigation("Policies");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Book", b =>
@@ -876,8 +923,6 @@ namespace BookStoreKAP.Migrations
                     b.Navigation("OrderDetails");
 
                     b.Navigation("Sales");
-
-                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Genre", b =>
@@ -907,6 +952,11 @@ namespace BookStoreKAP.Migrations
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Series", b =>
+                {
+                    b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("BookStoreKAP.Models.Entities.Tag", b =>
                 {
                     b.Navigation("Books");
                 });

@@ -128,6 +128,8 @@ namespace BookStoreKAP.Migrations
 
                     b.HasIndex("SeriesID");
 
+                    b.HasIndex("TagID");
+
                     b.ToTable("Books");
                 });
 
@@ -501,9 +503,6 @@ namespace BookStoreKAP.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<Guid?>("BookID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -523,8 +522,6 @@ namespace BookStoreKAP.Migrations
                         .HasDefaultValueSql("GETDATE()");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("BookID");
 
                     b.ToTable("Tags");
                 });
@@ -724,6 +721,12 @@ namespace BookStoreKAP.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BookStoreKAP.Models.Entities.Tag", null)
+                        .WithMany("Books")
+                        .HasForeignKey("TagID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Series");
                 });
 
@@ -836,13 +839,6 @@ namespace BookStoreKAP.Migrations
                     b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("BookStoreKAP.Models.Entities.Tag", b =>
-                {
-                    b.HasOne("BookStoreKAP.Models.Entities.Book", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("BookID");
-                });
-
             modelBuilder.Entity("BookStoreKAP.Models.Entities.User", b =>
                 {
                     b.HasOne("BookStoreKAP.Models.Entities.Order", null)
@@ -924,8 +920,6 @@ namespace BookStoreKAP.Migrations
                     b.Navigation("OrderDetails");
 
                     b.Navigation("Sales");
-
-                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Genre", b =>
@@ -955,6 +949,11 @@ namespace BookStoreKAP.Migrations
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Series", b =>
+                {
+                    b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("BookStoreKAP.Models.Entities.Tag", b =>
                 {
                     b.Navigation("Books");
                 });

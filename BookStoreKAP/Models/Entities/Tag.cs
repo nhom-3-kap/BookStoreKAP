@@ -11,5 +11,7 @@ namespace BookStoreKAP.Models.Entities
 
         [AllowNull]
         public string? Thumbnail { get; set; }
+
+        public List<Book> Books { get; set; }
     }
 }

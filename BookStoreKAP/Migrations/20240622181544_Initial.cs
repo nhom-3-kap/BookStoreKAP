@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookStoreKAP.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,6 +17,8 @@ namespace BookStoreKAP.Migrations
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AreaName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
@@ -105,6 +107,43 @@ namespace BookStoreKAP.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Policies",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ActionName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AccessControllerID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Policies", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Policies_AccessControllers_AccessControllerID",
+                        column: x => x.AccessControllerID,
+                        principalTable: "AccessControllers",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -151,7 +190,6 @@ namespace BookStoreKAP.Migrations
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    ControllerNameID = table.Column<int>(type: "int", nullable: false),
                     AccessControllerID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RoleID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
@@ -180,6 +218,8 @@ namespace BookStoreKAP.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    ControllerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ActionName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -229,6 +269,12 @@ namespace BookStoreKAP.Migrations
                         name: "FK_Books_Series_SeriesID",
                         column: x => x.SeriesID,
                         principalTable: "Series",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Books_Tags_TagID",
+                        column: x => x.TagID,
+                        principalTable: "Tags",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -420,27 +466,6 @@ namespace BookStoreKAP.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Tags",
-                columns: table => new
-                {
-                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BookID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tags", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Tags_Books_BookID",
-                        column: x => x.BookID,
-                        principalTable: "Books",
-                        principalColumn: "ID");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_BookGenres_BookID",
                 table: "BookGenres",
@@ -455,6 +480,11 @@ namespace BookStoreKAP.Migrations
                 name: "IX_Books_SeriesID",
                 table: "Books",
                 column: "SeriesID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_TagID",
+                table: "Books",
+                column: "TagID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Domains_AccessControllerID",
@@ -477,6 +507,11 @@ namespace BookStoreKAP.Migrations
                 column: "BookID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Policies_AccessControllerID",
+                table: "Policies",
+                column: "AccessControllerID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
                 table: "RoleClaims",
                 column: "RoleId");
@@ -491,11 +526,6 @@ namespace BookStoreKAP.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Sales_BookID",
                 table: "Sales",
-                column: "BookID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tags_BookID",
-                table: "Tags",
                 column: "BookID");
 
             migrationBuilder.CreateIndex(
@@ -567,13 +597,13 @@ namespace BookStoreKAP.Migrations
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
+                name: "Policies");
+
+            migrationBuilder.DropTable(
                 name: "RoleClaims");
 
             migrationBuilder.DropTable(
                 name: "Sales");
-
-            migrationBuilder.DropTable(
-                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "UserClaims");
@@ -604,6 +634,9 @@ namespace BookStoreKAP.Migrations
 
             migrationBuilder.DropTable(
                 name: "Series");
+
+            migrationBuilder.DropTable(
+                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "Orders");

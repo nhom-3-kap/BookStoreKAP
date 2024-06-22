@@ -1,4 +1,4 @@
-﻿using BookStoreKAP.Configurations;
+﻿//using BookStoreKAP.Configurations;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

@@ -2,6 +2,7 @@
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BookStoreKAP.Controllers
@@ -24,8 +25,7 @@ namespace BookStoreKAP.Controllers
                 return NotFound();
             }
 
-            var series = _context.Series.ToList();
-            ViewBag.Series = series.Select(s => s.Name).ToList();
+            ViewBag.Series = _context.Series.ToList();
 
             var books = _context.Books
                                 .Where(b => b.SeriesID == seriesId)
@@ -38,16 +38,27 @@ namespace BookStoreKAP.Controllers
 
             }
             ViewBag.Books = books;
-
             if (Service == "NewReleases")
             {
+                Guid guid = new Guid("9a4b304f-ed75-4e77-867f-2f941f330b0c");
                 ViewBag.Service = "New Releases";
+                var lst = _context.Books
+                                 .Where(c => c.TagID.Equals(guid))
+                                .OrderBy(b => b.Title)
+                                .ToList();
+                ViewBag.Books = lst;
                 return View();
 
             }
             else if (Service == "BestSellers")
             {
-                ViewBag.Service = "Best Sellers";
+                Guid guid = new Guid("a2e58fe7-0850-414e-b683-d365cc3166ad");
+                ViewBag.Service = "BestSellers";
+                var lst = _context.Books
+                                 .Where(c => c.TagID.Equals(guid))
+                                .OrderBy(b => b.Title)
+                                .ToList();
+                ViewBag.Books = lst;
                 return View();
             }
             return View();

@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = ViewBag.Service;
 }
 <div>
@@ -31,11 +32,11 @@
 
                             </div>
                             <div class="side-bar-item-child">
-                                @foreach (var seriesName in ViewBag.Series)
-                                {
+                                @foreach (var series in ViewBag.Series)
+                               {
                                     <div class="new-releases-child">
                                         <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
-                                        <a href="@(RouteConstant.LIST)?Service=@seriesName">@seriesName</a>
+                                        <a href="@(RouteConstant.LIST)?Service=NewRelease&seriesId=@series.ID">@series.Name</a>
                                     </div>
                                 }
                             </div>
@@ -62,9 +63,9 @@
                         <div >
                             <div class="side-price-item">
                                 <p>Price Range:</p>
-                                <span>10$</span>
+                                <span>1000Đ</span>
                                 <span>-</span>
-                                <span>500$</span>
+                                <span>500000Đ</span>
                             </div>
                             <input type="range"/> 
                         </div>
@@ -81,7 +82,7 @@
                             <div class="card-product">
                                 <div class="card-product-heading">
                                     <a href="#">
-                                        <img src="@book.Image" alt="@book.Title" />
+                                        <img src="@book.Images" alt="@book.Title" />
                                     </a>
                                     <button>
                                         <i class="bi bi-suit-heart"></i>
@@ -96,8 +97,8 @@
                                         <span>@book.Author</span>
                                     </div>
                                     <div class="card-product-wrap-price">
-                                        <span class="card-product-current-price">@book.Price $</span>
-                                        <span class="card-product-old-price">@book.OldPrice $</span>
+                                        <span class="card-product-current-price">@book.Discount Đ</span>
+                                        <span class="card-product-old-price">@book.Price Đ</span>
                                     </div>
                                 </div>
                                 <div class="card-product-footer">

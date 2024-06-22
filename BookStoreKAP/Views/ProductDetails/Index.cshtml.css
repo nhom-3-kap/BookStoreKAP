@@ -51,10 +51,11 @@ textarea,
         margin: 0;
         line-height: 1.6;
     }
-.price-book {
-    display: flex ;
-    margin-top: 1px;
 
+
+.price-book {
+    display: flex;
+    margin-top: 1px;
 }
 
     .price-book .pr {
@@ -62,6 +63,7 @@ textarea,
         font-weight: 700;
         margin-right: 0.3em;
     }
+
 .price {
     font-size: 24px;
     font-weight: bold;

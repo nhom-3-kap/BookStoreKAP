@@ -1,6 +1,76 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 @{
+    var book = ViewBag.Books;
 }
-@ViewBag.ProductId;
+
+<div class="all-details">
+    <section class="product-details">
+
+        <div class="image-box">
+            <img src="/images/beautiful.jpg" alt="World's Best Girlfriend">
+        </div>
+        <div class="details">
+            <h1>@ViewBag.Title</h1>
+           
+            <h5>
+                <strong>Book Publisher:</strong>
+                @ViewBag.Publisher
+            </h5>
+            <h5>
+                <strong>Book Author: </strong>
+                @ViewBag.Author
+            </h5>
+            <h5>
+                <strong>Genre: </strong>
+                @foreach(var genre in ViewBag.Genres)
+                {
+                    @genre
+                    <span>&nbsp;</span>
+                }
+
+            </h5>
+            <p>Series: @ViewBag.Series</p>
+
+            <div class="price-book">
+                <p class="pr">Price:  </p>
+                <p class="price">  @ViewBag.Discount Đ <span>@ViewBag.Price Đ</span></p>
+            </div>
+            <div class="rating">
+                <span>
+                    @ViewBag.Quantity in Stock (Can be backordered)
+                </span>
+            </div>
+            <div class="product-actions">
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max=@ViewBag.Quantity>
+                <button class="add-to-cart">ADD TO CART</button>
+                <button class="add-to-wishlist">♡ ADD TO WISHLIST</button>
+            </div>
+
+
+        </div>
+    </section>
+    <section class="description">
+        <h2><strong>Description</strong></h2>
+        <div class="description-content">
+            <p>@ViewBag.Description</p>     
+        </div>
+    </section>
+    <div class="review-container">
+        <h3>Your rating</h3>
+        <div class="rating-stars" id="rating-stars">
+            <span class="rating-star">&#9733;</span>
+            <span class="rating-star">&#9733;</span>
+            <span class="rating-star">&#9733;</span>
+            <span class="rating-star">&#9733;</span>
+            <span class="rating-star">&#9733;</span>
+
+        </div>
+        <div class="review-text">
+            <label for="review-text">Your review *</label>
+            <textarea id="review-text" name="review-text" required></textarea>
+        </div>
+        <button class="submit-button">Submit</button>
+    </div>
+</div>
+@section scripts {
+    <script src="~/js/rating-stars.js"></script>
+}

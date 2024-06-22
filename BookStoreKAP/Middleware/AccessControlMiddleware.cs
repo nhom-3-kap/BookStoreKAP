@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using BookStoreKAP.Common.Constants;
 
 namespace BookStoreKAP.Middleware
 {
@@ -35,7 +36,7 @@ namespace BookStoreKAP.Middleware
                     var accessController = await _context.AccessControllers
                         .Include(ac => ac.Domains)
                         .ThenInclude(d => d.Role)
-                        .FirstOrDefaultAsync(ac => ac.Name == controllerName && ac.AreaName == areaName);
+                        .FirstOrDefaultAsync(ac => ac.Name == controllerName && ac.AreaName == areaName && ac.Status == AccessControllerStatusConstant.PRIVATE);
 
                     if (accessController != null)
                     {

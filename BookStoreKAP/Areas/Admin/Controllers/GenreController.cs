@@ -38,13 +38,13 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(paged);
         }
 
-        [Authorize(Policy = "CanCreate")]
+        [Authorize(Policy = "CanViewCreate")]
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize(Policy = "CanCreate")]
+        [Authorize(Policy = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqGenreCreate req)
         {
@@ -75,7 +75,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        [Authorize(Policy = "CanEdit")]
+        [Authorize(Policy = "CanViewModify")]
         public async Task<IActionResult> Modify(Guid genreID)
         {
             var genre = await _context.Genres.FindAsync(genreID);
@@ -93,7 +93,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(model);
         }
 
-        [Authorize(Policy = "CanEdit")]
+        [Authorize(Policy = "CanSaveModify")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqGenreModify req)
         {

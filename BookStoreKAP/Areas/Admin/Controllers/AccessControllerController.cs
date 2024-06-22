@@ -17,7 +17,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
-        //[Authorize(Policy = "CanView")]
+        [Authorize(Policy = "CanView")]
         public IActionResult Index()
         {
             var controllerList = _context.AccessControllers.OrderByDescending(x => x.AreaName).ToList();
@@ -25,7 +25,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(controllerList);
         }
 
-        //[Authorize(Policy = "CanView")]
+        [Authorize(Policy = "CanRefresh")]
         public IActionResult RefreshList()
         {
             var controllerListOnProject = Assembly.GetExecutingAssembly()
@@ -56,11 +56,23 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 {
                     continue;
                 }
-                _context.AccessControllers.Add(new AccessController()
+
+                var accessController = new AccessController()
                 {
                     Name = controller.Key,
                     AreaName = controller.Value.AreaName
-                });
+                };
+
+                if (!string.IsNullOrEmpty(controller.Value.AreaName))
+                {
+                    accessController.Status = AccessControllerStatusConstant.PUBLIC;
+                }
+                else
+                {
+                    accessController.Status = AccessControllerStatusConstant.PRIVATE;
+                }
+
+                _context.AccessControllers.Add(accessController);
             }
 
             _context.SaveChanges();

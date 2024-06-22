@@ -6,5 +6,6 @@ namespace BookStoreKAP.ViewModels
     {
         public Role Role { get; set; }
         public List<AccessController> AccessControllers { get; set; }
+        public List<RoleClaim> CurrentPolicy { get; set; }
     }
 }

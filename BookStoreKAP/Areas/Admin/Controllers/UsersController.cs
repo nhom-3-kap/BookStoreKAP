@@ -27,7 +27,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _signInManager = signInManager;
         }
 
-        //[Authorize(Policy = "CanView")]
+        [Authorize(Policy = "CanView")]
         public async Task<IActionResult> Index([FromQuery] ReqQuerySearchUser q)
         {
 
@@ -73,7 +73,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(userRolesViewModel);
         }
 
-        //[Authorize(Policy = "CanCreate")]
+        [Authorize(Policy = "CanViewCreate")]
         public IActionResult Create()
         {
             var roles = _roleManager.Roles.ToList();
@@ -82,7 +82,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View();
         }
 
-        //[Authorize(Policy = "CanEdit")]
+        [Authorize(Policy = "CanViewModify")]
         public async Task<IActionResult> Modify(Guid userID)
         {
             var user = _userManager.Users.Where(x => x.Id.Equals(userID)).FirstOrDefault();
@@ -101,7 +101,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(user);
         }
 
-        //[Authorize(Policy = "CanEdit")]
+        [Authorize(Policy = "CanSaveModify")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqModifyUser req, IFormFile Avatar)
         {
@@ -239,7 +239,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        //[Authorize(Policy = "CanCreate")]
+        [Authorize(Policy = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateUser req)
         {
@@ -290,7 +290,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
 
-        //[Authorize(Policy = "CanDelete")]
+        [Authorize(Policy = "CanDelete")]
         [HttpDelete]
         public async Task<IActionResult> RemoveUserByIDAPI(Guid userID)
         {

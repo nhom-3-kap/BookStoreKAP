@@ -61,8 +61,15 @@
                                                     {
                                                         <div class="col-lg-6">
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" value="@(policy.ID)" name="PolicyIDs" data-tippy-content="Action: @(policy.ActionName)">
-                                                                <label class="form-check-label user-select-none text-sm" >@(policy.Name)</label>
+                                                                @if (Model.CurrentPolicy.Any(x => x.ClaimValue == policy.Name && x.ActionName==policy.ActionName && x.ControllerName == policy.AccessController.Name))
+                                                                {
+                                                                    <input class="form-check-input" type="checkbox" value="@(policy.ID)" name="PolicyIDs" data-tippy-content="Action: @(policy.ActionName)" checked>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input class="form-check-input" type="checkbox" value="@(policy.ID)" name="PolicyIDs" data-tippy-content="Action: @(policy.ActionName)">
+                                                                }
+                                                                <label class="form-check-label user-select-none text-sm">@(policy.Name)</label>
                                                             </div>
                                                         </div>
                                                     }

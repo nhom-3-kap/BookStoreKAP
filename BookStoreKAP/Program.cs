@@ -68,19 +68,30 @@ builder.Services.AddScoped<BookStoreKAPDBContext>();
 //builder.Services.AddScoped<AccessControlMiddleware>();
 #endregion
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("CanCreate", policy =>
-//        policy.RequireClaim("Permission", "CanCreate"));
-//    options.AddPolicy("CanEdit", policy =>
-//        policy.RequireClaim("Permission", "CanEdit"));
-//    options.AddPolicy("CanDelete", policy =>
-//        policy.RequireClaim("Permission", "CanDelete"));
-//    options.AddPolicy("CanView", policy =>
-//        policy.RequireClaim("Permission", "CanView"));
-//    options.AddPolicy("All", policy =>
-//        policy.RequireClaim("Permission", "All"));
-//});
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CanViewCreate", policy =>
+        policy.RequireClaim("Permission", "CanViewCreate"));
+    options.AddPolicy("CanSaveCreate", policy =>
+        policy.RequireClaim("Permission", "CanSaveCreate"));
+
+    options.AddPolicy("CanViewModify", policy =>
+        policy.RequireClaim("Permission", "CanViewModify"));
+    options.AddPolicy("CanSaveModify", policy =>
+        policy.RequireClaim("Permission", "CanSaveModify"));
+
+    options.AddPolicy("CanDelete", policy =>
+        policy.RequireClaim("Permission", "CanDelete"));
+
+    options.AddPolicy("CanView", policy =>
+        policy.RequireClaim("Permission", "CanView"));
+
+    options.AddPolicy("CanRefresh", policy =>
+        policy.RequireClaim("Permission", "CanRefresh"));
+
+    options.AddPolicy("All", policy =>
+        policy.RequireClaim("Permission", "All"));
+});
 
 var app = builder.Build();
 

@@ -68,17 +68,74 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var accessControllers = _context.AccessControllers.Include(x => x.Policies).ToList();
 
+            var accessControllers = _context.AccessControllers.Include(x => x.Policies)
+                .Where(x => x.AreaName == "Admin" || x.AreaName == "Api")
+                .OrderByDescending(x => x.AreaName)
+                .ThenByDescending(x => x.Policies.Count)
+                .ToList();
 
-            var roleModifyVM = new ModifyRoleVM() { Role = role, AccessControllers = accessControllers };
+            var currentPolicy = _context.RoleClaims
+                .Where(rc => rc.RoleId == roleID)
+                .ToList();
+
+            var roleModifyVM = new ModifyRoleVM()
+            {
+                Role = role,
+                AccessControllers = accessControllers,
+                CurrentPolicy = currentPolicy
+            };
+
             return View(roleModifyVM);
         }
+
 
         [HttpPost]
         public IActionResult Modify(ReqModifyRole req)
         {
-            return View();
+            using var transaction = _context.Database.BeginTransaction();
+            try
+            {
+                var role = _context.Roles.Include(x => x.UserRoles).SingleOrDefault(x => x.Id == req.Id);
+                if (role == null)
+                {
+                    return NotFound();
+                }
+
+                // Xóa các RoleClaim hiện tại của Role
+                var existingRoleClaims = _context.RoleClaims.Where(rc => rc.RoleId == req.Id).ToList();
+                _context.RoleClaims.RemoveRange(existingRoleClaims);
+
+                // Thêm các RoleClaim mới dựa trên PolicyIDs từ request
+                foreach (var policyID in req.PolicyIDs)
+                {
+                    var policy = _context.Policies.Include(x => x.AccessController).FirstOrDefault(x => x.ID == policyID);
+                    if (policy != null)
+                    {
+                        var roleClaim = new RoleClaim()
+                        {
+                            RoleId = req.Id,
+                            ClaimType = "Permission",
+                            ClaimValue = policy.Name,
+                            ActionName = policy.ActionName,
+                            ControllerName = policy.AccessController.Name
+                        };
+                        _context.RoleClaims.Add(roleClaim);
+                    }
+                }
+
+                _context.SaveChanges();
+                transaction.Commit();
+
+                TempData[ToastrConstant.SUCCESS_MSG] = "Modify Successfully";
+                return RedirectToAction("Index", new { menuKey = "RM" });
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                TempData[ToastrConstant.ERROR_MSG] = ex.Message;
+                return View(req);
+            }
         }
 
         public IActionResult RefreshListController(Guid roleID)
@@ -111,11 +168,23 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 {
                     continue;
                 }
-                _context.AccessControllers.Add(new AccessController()
+
+                var accessController = new AccessController()
                 {
                     Name = controller.Key,
                     AreaName = controller.Value.AreaName
-                });
+                };
+
+                if (!string.IsNullOrEmpty(controller.Value.AreaName))
+                {
+                    accessController.Status = AccessControllerStatusConstant.PUBLIC;
+                }
+                else
+                {
+                    accessController.Status = AccessControllerStatusConstant.PRIVATE;
+                }
+
+                _context.AccessControllers.Add(accessController);
             }
 
             _context.SaveChanges();
@@ -166,16 +235,11 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     continue;
                 }
 
-                var existingPoliciesForController = policyNewList
-                    .Where(p => p.AccessController.Name == controller.Key)
-                    .Select(p => p.Name)
-                    .ToHashSet();
-
                 foreach (var action in controller.Value)
                 {
                     foreach (var policy in action.Policies)
                     {
-                        if (existingPoliciesForController.Contains(policy))
+                        if (policyNewList.Any(p => p.AccessController.Name == controller.Key && p.ActionName == action.ActionName && p.Name == policy))
                         {
                             continue;
                         }
@@ -186,8 +250,6 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                             ActionName = action.ActionName,
                             AccessControllerID = accessController.ID
                         });
-
-                        existingPoliciesForController.Add(policy);
                     }
                 }
             }
@@ -195,8 +257,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context.SaveChanges();
 
             TempData[ToastrConstant.SUCCESS_MSG] = "Refresh Successfully";
-            return RedirectToAction("Modify", new { menuKey = "RM", roleID });
+            return RedirectToAction("Modify", new { roleID, menuKey = "RM" });
         }
-
     }
 }

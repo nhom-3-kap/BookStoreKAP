@@ -7,7 +7,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
     [Area(AreasConstant.ADMIN)]
     public class HomeAdminController : Controller
     {
-        //[Authorize(Policy = "CanView")]
+        [Authorize(Roles = "Admin", Policy = "CanView")]
         public IActionResult Index()
         {
             TempData[ToastrConstant.SUCCESS_MSG] = "Welcome Back 🙋‍";

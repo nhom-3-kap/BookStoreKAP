@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
     [Area(AreasConstant.ADMIN)]
-    [Authorize(Roles = RolesConstant.ADMIN)]
     public class GenreController : Controller
     {
         private readonly BookStoreKAPDBContext _context;
@@ -19,6 +18,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
+        //[Authorize(Policy = "CanView")]
         public IActionResult Index([FromQuery] ReqQuerySearchGenre q)
         {
             var genres = _context.Genres.Where(x => (string.IsNullOrEmpty(q.Name) || x.Name.Trim().ToUpper().Contains(q.Name.Trim().ToUpper()))).OrderBy(x => x.UpdatedAt).ToList();
@@ -38,11 +38,13 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(paged);
         }
 
+        //[Authorize(Policy = "CanViewCreate")]
         public IActionResult Create()
         {
             return View();
         }
 
+        //[Authorize(Policy = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqGenreCreate req)
         {
@@ -64,7 +66,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "Genre created successfully.";
-                return RedirectToAction(nameof(Index)); // Redirect to the index or any other page after success
+                return Redirect($"{RouteConstant.ADMIN_GENRE}?menuKey=GM"); // Redirect to the index or any other page after success
             }
             catch (Exception ex)
             {
@@ -73,6 +75,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
+        //[Authorize(Policy = "CanViewModify")]
         public async Task<IActionResult> Modify(Guid genreID)
         {
             var genre = await _context.Genres.FindAsync(genreID);
@@ -90,6 +93,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(model);
         }
 
+        //[Authorize(Policy = "CanSaveModify")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqGenreModify req)
         {
@@ -126,7 +130,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        // Xử lý yêu cầu xóa Genre theo ID
+        //[Authorize(Policy = "CanDelete")]
         [HttpDelete]
         public async Task<IActionResult> DeleteGenreByIdAPI(Guid genreID)
         {

@@ -1,0 +1,37 @@
+﻿@model List<Domain>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="@(RouteConstant.ADMIN_ACCESS_CONTROLLER)?menuKey=AM" class="btn btn-primary btn-sm"><i class="bi bi-arrow-bar-left"></i> Back</a>
+                <a href="@(RouteConstant.ADMIN_DOMAIN_CREATE)?accessControllerID=@(ViewBag.AccessControllerID)" class="btn btn-success btn-sm">Add Role</a>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Role Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var domain in Model)
+                    {
+                        <tr>
+                            <td>@(domain.Role.Name)</td>
+                            <td>
+                                <div class="d-flex align-items-center" style="column-gap: 4px;">
+                                    <button class="btn btn-danger btn-sm btnDeleteBook" data-RoleID="@(domain.ID)"><i class="bi bi-trash"></i></button>
+                                    @*<a href="#" class="btn btn-info btn-sm text-white"><i class="bi bi-pencil-square"></i></a>*@
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    

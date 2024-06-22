@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
     [Area(AreasConstant.ADMIN)]
-    [Authorize(Roles = RolesConstant.ADMIN)]
     public class SeriesController : Controller
     {
         private readonly BookStoreKAPDBContext _context;
@@ -19,6 +18,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
+        //[Authorize(Policy = "CanView")]
         public IActionResult Index([FromQuery] ReqQuerySearchSeries q)
         {
             var series = _context.Series.Where(x =>
@@ -29,11 +29,13 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(series);
         }
 
+        [Authorize(Policy = "CanViewCreate")]
         public IActionResult Create()
         {
             return View();
         }
 
+        //[Authorize(Policy = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateSeries req)
         {
@@ -65,6 +67,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
+        [Authorize(Policy = "CanDelete")]
         [HttpDelete]
         public async Task<IActionResult> DeleteSeriesByIdAPI(Guid seriesID)
         {
@@ -92,6 +95,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
         }
 
+        //[Authorize(Policy = "CanViewModify")]
         public IActionResult Modify(Guid seriesID)
         {
             var series = _context.Series.Find(seriesID) ?? new Series();
@@ -99,6 +103,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(series);
         }
 
+        //[Authorize(Policy = "CanSaveModify")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqModifySeries req)
         {

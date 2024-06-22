@@ -1,5 +1,4 @@
-﻿//using BookStoreKAP.Configurations;
-using BookStoreKAP.Models.Entities;
+﻿using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -131,6 +130,10 @@ namespace BookStoreKAP.Data
             builder.Entity<AccessController>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
             builder.Entity<AccessController>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
 
+            builder.Entity<Policy>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<Policy>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<Policy>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
             builder.Entity<Role>().Property(e => e.Id).HasDefaultValueSql("NEWID()");
             builder.Entity<Role>().Property(e => e.ConcurrencyStamp).HasDefaultValueSql("NEWID()");
             // Configuration Many to Many
@@ -175,6 +178,8 @@ namespace BookStoreKAP.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Domain> Domains { get; set; }
         public DbSet<AccessController> AccessControllers { get; set; }
+
+        public DbSet<Policy> Policies { get; set; }
 
     }
 }

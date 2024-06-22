@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
     [Area(AreasConstant.ADMIN)]
-    [Authorize(Roles = RolesConstant.ADMIN)]
     public class TagsController : Controller
     {
         private readonly BookStoreKAPDBContext _context;
@@ -19,6 +18,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
+        //[Authorize(Policy = "CanView")]
         public IActionResult Index([FromQuery] ReqQuerySearchTag q)
         {
             var tags = _context.Tags.Where(x => (string.IsNullOrEmpty(q.Name) || x.Name.ToUpper().Trim().Contains(q.Name.ToUpper().Trim()))).ToList();
@@ -38,13 +38,15 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(paged);
         }
 
-        // GET: Tags/Create
+
+        //[Authorize(Policy = "CanViewCreate")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tags/Create
+
+        //[Authorize(Policy = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateTag req, IFormFile? Thumbnail)
         {
@@ -99,7 +101,8 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        // GET: Tags/Modify/{tagID}
+
+        //[Authorize(Policy = "CanViewModify")]
         public async Task<IActionResult> Modify(Guid tagID)
         {
             var tag = await _context.Tags.FindAsync(tagID);
@@ -118,7 +121,8 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(model);
         }
 
-        // POST: Tags/Modify
+
+        //[Authorize(Policy = "CanSaveModify")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqModifyTag req, IFormFile? Thumbnail)
         {
@@ -183,6 +187,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
+        //[Authorize(Policy = "CanDelete")]
         [HttpDelete]
         public async Task<IActionResult> DeleteTagByIdAPI(Guid tagID)
         {

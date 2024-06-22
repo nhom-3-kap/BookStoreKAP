@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
-    [Area(AreasConstant.ADMIN), Authorize(Roles = RolesConstant.ADMIN)]
+    [Area(AreasConstant.ADMIN)]
     public class AccessControllerController : Controller
     {
         private readonly BookStoreKAPDBContext _context;
@@ -17,22 +17,27 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
+        //[Authorize(Policy = "CanView")]
         public IActionResult Index()
         {
-            var controllerList = _context.AccessControllers.ToList();
+            var controllerList = _context.AccessControllers.OrderByDescending(x => x.AreaName).ToList();
 
             return View(controllerList);
         }
 
-
+        //[Authorize(Policy = "CanRefresh")]
         public IActionResult RefreshList()
         {
             var controllerListOnProject = Assembly.GetExecutingAssembly()
                                                     .GetTypes()
-                                                    .Where(type => typeof(Controller)
-                                                    .IsAssignableFrom(type) || typeof(ControllerBase)
-                                                    .IsAssignableFrom(type))
-                                                    .ToDictionary(x => x.Name[..x.Name.LastIndexOf("Controller")]);
+                                                    .Where(type => typeof(Controller).IsAssignableFrom(type) || typeof(ControllerBase).IsAssignableFrom(type))
+                                                    .Select(type => new
+                                                    {
+                                                        Name = type.Name[..type.Name.LastIndexOf("Controller")],
+                                                        AreaName = type.GetCustomAttribute<AreaAttribute>()?.RouteValue
+                                                    })
+                                                    .ToDictionary(x => x.Name);
+
             var accessControllerListOnDB = _context.AccessControllers.ToList();
 
             foreach (var accessController in accessControllerListOnDB)
@@ -51,15 +56,28 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 {
                     continue;
                 }
-                _context.AccessControllers.Add(new AccessController()
+
+                var accessController = new AccessController()
                 {
                     Name = controller.Key,
-                });
+                    AreaName = controller.Value.AreaName
+                };
+
+                if (!string.IsNullOrEmpty(controller.Value.AreaName))
+                {
+                    accessController.Status = AccessControllerStatusConstant.PUBLIC;
+                }
+                else
+                {
+                    accessController.Status = AccessControllerStatusConstant.PRIVATE;
+                }
+
+                _context.AccessControllers.Add(accessController);
             }
 
             _context.SaveChanges();
 
-
+            TempData[ToastrConstant.SUCCESS_MSG] = "Refresh Successfully";
             return RedirectToAction("Index");
         }
     }

@@ -11,7 +11,7 @@ using NuGet.Protocol;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
-    [Area(AreasConstant.ADMIN), Authorize(Roles = RolesConstant.ADMIN)]
+    [Area(AreasConstant.ADMIN)]
     public class BooksController : Controller
     {
         private readonly BookStoreKAPDBContext _context;
@@ -20,7 +20,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
-        // GET: Books/Index
+        //[Authorize(Policy = "CanView")]
         public IActionResult Index([FromQuery] ReqQuerySearchBook q)
         {
             var booksQuery = _context.Books.Include(x => x.Series).Include(x => x.BookGenres).ThenInclude(x => x.Genre).AsQueryable();
@@ -71,6 +71,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(pagedBooks);
         }
 
+        //[Authorize(Policy = "CanViewCreate")]
         public IActionResult Create()
         {
             var tags = _context.Tags.ToList();
@@ -83,8 +84,8 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View();
         }
 
-        // POST: Books/Create
-        // Phương thức POST để xử lý việc lưu Book mới vào cơ sở dữ liệu
+
+        //[Authorize(Policy = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateBook req, IFormFile Thumbnail)
         {
@@ -153,6 +154,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return Redirect($"{RouteConstant.ADMIN_BOOKS}?menuKey=BM"); // Chuyển hướng về trang Index
         }
 
+        //[Authorize(Policy = "CanViewModify")]
         public async Task<IActionResult> Modify(Guid bookID)
         {
             try
@@ -171,6 +173,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
+        //[Authorize(Policy = "CanSaveModify")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqModifyBook req, IFormFile? Thumbnail)
         {
@@ -275,6 +278,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
+        //[Authorize(Policy = "CanDelete")]
         [HttpDelete]
         public async Task<IActionResult> RemoveBookByIDAPI(Guid bookID)
         {

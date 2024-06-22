@@ -4,6 +4,7 @@ using BookStoreKAP.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreKAP.Migrations
 {
     [DbContext(typeof(BookStoreKAPDBContext))]
-    partial class BookStoreKAPDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240620184514_AddFeildAccessController")]
+    partial class AddFeildAccessController
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,6 +33,7 @@ namespace BookStoreKAP.Migrations
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("AreaName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -39,9 +43,6 @@ namespace BookStoreKAP.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -292,41 +293,6 @@ namespace BookStoreKAP.Migrations
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("BookStoreKAP.Models.Entities.Policy", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<Guid>("AccessControllerID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ActionName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("AccessControllerID");
-
-                    b.ToTable("Policies");
-                });
-
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Rating", b =>
                 {
                     b.Property<Guid>("ID")
@@ -404,18 +370,10 @@ namespace BookStoreKAP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ActionName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ControllerName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("RoleId")
@@ -803,17 +761,6 @@ namespace BookStoreKAP.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("BookStoreKAP.Models.Entities.Policy", b =>
-                {
-                    b.HasOne("BookStoreKAP.Models.Entities.AccessController", "AccessController")
-                        .WithMany("Policies")
-                        .HasForeignKey("AccessControllerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AccessController");
-                });
-
             modelBuilder.Entity("BookStoreKAP.Models.Entities.RoleClaim", b =>
                 {
                     b.HasOne("BookStoreKAP.Models.Entities.Role", "Role")
@@ -911,8 +858,6 @@ namespace BookStoreKAP.Migrations
             modelBuilder.Entity("BookStoreKAP.Models.Entities.AccessController", b =>
                 {
                     b.Navigation("Domains");
-
-                    b.Navigation("Policies");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Book", b =>

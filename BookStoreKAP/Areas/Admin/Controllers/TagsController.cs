@@ -1,5 +1,6 @@
 ﻿using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Data;
+using BookStoreKAP.Filters;
 using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
@@ -18,7 +19,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
-        //[Authorize(Policy = "CanView")]
+        [PermissionFilter(Name = "CanView")]
         public IActionResult Index([FromQuery] ReqQuerySearchTag q)
         {
             var tags = _context.Tags.Where(x => (string.IsNullOrEmpty(q.Name) || x.Name.ToUpper().Trim().Contains(q.Name.ToUpper().Trim()))).ToList();
@@ -39,14 +40,14 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
 
-        //[Authorize(Policy = "CanViewCreate")]
+        [PermissionFilter(Name = "CanViewCreate")]
         public IActionResult Create()
         {
             return View();
         }
 
 
-        //[Authorize(Policy = "CanSaveCreate")]
+        [PermissionFilter(Name = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateTag req, IFormFile? Thumbnail)
         {
@@ -102,7 +103,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
 
-        //[Authorize(Policy = "CanViewModify")]
+        [PermissionFilter(Name = "CanViewCreate")]
         public async Task<IActionResult> Modify(Guid tagID)
         {
             var tag = await _context.Tags.FindAsync(tagID);
@@ -122,7 +123,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
 
-        //[Authorize(Policy = "CanSaveModify")]
+        [PermissionFilter(Name = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqModifyTag req, IFormFile? Thumbnail)
         {
@@ -187,7 +188,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        //[Authorize(Policy = "CanDelete")]
+        [PermissionFilter(Name = "CanDelete")]
         [HttpDelete]
         public async Task<IActionResult> DeleteTagByIdAPI(Guid tagID)
         {

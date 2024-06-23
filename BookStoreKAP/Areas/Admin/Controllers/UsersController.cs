@@ -1,5 +1,6 @@
 ﻿using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Data;
+using BookStoreKAP.Filters;
 using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
@@ -27,7 +28,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _signInManager = signInManager;
         }
 
-        //[Authorize(Policy = "CanView")]
+        [PermissionFilter(Name = "CanView")]
         public async Task<IActionResult> Index([FromQuery] ReqQuerySearchUser q)
         {
 
@@ -73,7 +74,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(userRolesViewModel);
         }
 
-        //[Authorize(Policy = "CanViewCreate")]
+        [PermissionFilter(Name = "CanViewCreate")]
         public IActionResult Create()
         {
             var roles = _roleManager.Roles.ToList();
@@ -82,7 +83,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View();
         }
 
-        //[Authorize(Policy = "CanViewModify")]
+        [PermissionFilter(Name = "CanViewEdit")]
         public async Task<IActionResult> Modify(Guid userID)
         {
             var user = _userManager.Users.Where(x => x.Id.Equals(userID)).FirstOrDefault();
@@ -101,7 +102,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(user);
         }
 
-        //[Authorize(Policy = "CanSaveModify")]
+        [PermissionFilter(Name = "CanSaveEdit")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqModifyUser req, IFormFile Avatar)
         {
@@ -239,7 +240,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        //[Authorize(Policy = "CanSaveCreate")]
+        [PermissionFilter(Name = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateUser req)
         {
@@ -289,8 +290,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-
-        //[Authorize(Policy = "CanDelete")]
+        [PermissionFilter(Name = "CanDelete")]
         [HttpDelete]
         public async Task<IActionResult> RemoveUserByIDAPI(Guid userID)
         {

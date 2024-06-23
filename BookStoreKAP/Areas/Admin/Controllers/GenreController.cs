@@ -1,5 +1,6 @@
 ﻿using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Data;
+using BookStoreKAP.Filters;
 using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
@@ -18,7 +19,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
-        //[Authorize(Policy = "CanView")]
+        [PermissionFilter(Name = "CanView")]
         public IActionResult Index([FromQuery] ReqQuerySearchGenre q)
         {
             var genres = _context.Genres.Where(x => (string.IsNullOrEmpty(q.Name) || x.Name.Trim().ToUpper().Contains(q.Name.Trim().ToUpper()))).OrderBy(x => x.UpdatedAt).ToList();
@@ -38,13 +39,13 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(paged);
         }
 
-        //[Authorize(Policy = "CanViewCreate")]
+        [PermissionFilter(Name = "CanViewCreate")]
         public IActionResult Create()
         {
             return View();
         }
 
-        //[Authorize(Policy = "CanSaveCreate")]
+        [PermissionFilter(Name = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqGenreCreate req)
         {
@@ -75,7 +76,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        //[Authorize(Policy = "CanViewModify")]
+        [PermissionFilter(Name = "CanViewEdit")]
         public async Task<IActionResult> Modify(Guid genreID)
         {
             var genre = await _context.Genres.FindAsync(genreID);
@@ -93,7 +94,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(model);
         }
 
-        //[Authorize(Policy = "CanSaveModify")]
+        [PermissionFilter(Name = "CanSaveEdit")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqGenreModify req)
         {
@@ -129,8 +130,8 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 return View(req);
             }
         }
-
-        //[Authorize(Policy = "CanDelete")]
+        
+        [PermissionFilter(Name = "CanDelete")]
         [HttpDelete]
         public async Task<IActionResult> DeleteGenreByIdAPI(Guid genreID)
         {

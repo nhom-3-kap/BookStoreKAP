@@ -1,5 +1,6 @@
 ﻿using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Data;
+using BookStoreKAP.Filters;
 using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
@@ -18,7 +19,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
-        //[Authorize(Policy = "CanView")]
+        [PermissionFilter(Name = "CanView")]
         public IActionResult Index([FromQuery] ReqQuerySearchSeries q)
         {
             var series = _context.Series.Where(x =>
@@ -29,13 +30,13 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(series);
         }
 
-        //[Authorize(Policy = "CanViewCreate")]
+        [PermissionFilter(Name = "CanViewCreate")]
         public IActionResult Create()
         {
             return View();
         }
 
-        //[Authorize(Policy = "CanSaveCreate")]
+        [PermissionFilter(Name = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateSeries req)
         {
@@ -95,7 +96,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
         }
 
-        //[Authorize(Policy = "CanViewModify")]
+        [PermissionFilter(Name = "CanViewEdit")]
         public IActionResult Modify(Guid seriesID)
         {
             var series = _context.Series.Find(seriesID) ?? new Series();
@@ -103,7 +104,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(series);
         }
 
-        //[Authorize(Policy = "CanSaveModify")]
+        [PermissionFilter(Name = "CanSaveEdit")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqModifySeries req)
         {
@@ -139,6 +140,5 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 return View(series);
             }
         }
-
     }
 }

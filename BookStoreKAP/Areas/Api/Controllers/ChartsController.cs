@@ -1,6 +1,7 @@
 ﻿using BookStoreKAP.Areas.Api.Models;
 using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Data;
+using BookStoreKAP.Filters;
 using BookStoreKAP.Models;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,7 @@ namespace BookStoreKAP.Areas.Api.Controllers
             _context = context;
         }
 
+        [PermissionFilter(Name = "GetChartCountViewBook")]
         [HttpGet]
         public IActionResult GetChartCountViewBook()
         {
@@ -36,6 +38,7 @@ namespace BookStoreKAP.Areas.Api.Controllers
             }
         }
 
+        [PermissionFilter(Name = "GetChartBookAmount")]
         [HttpGet]
         public IActionResult GetChartBookAmount()
         {
@@ -55,6 +58,7 @@ namespace BookStoreKAP.Areas.Api.Controllers
             }
         }
 
+        [PermissionFilter(Name = "GetChartTotalPriceForMQY")]
         [HttpGet]
         public async Task<IActionResult> GetChartTotalPriceForMQY([FromQuery] int year)
         {

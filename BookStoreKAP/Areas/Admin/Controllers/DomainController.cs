@@ -1,5 +1,6 @@
 ﻿using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Data;
+using BookStoreKAP.Filters;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +22,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _roleManager = roleManager;
         }
 
-        //[Authorize(Policy = "CanView")]
+        [PermissionFilter(Name = "CanView")]
         public IActionResult Index(Guid roleID, string roleName)
         {
             var domainList = _context.Domains.Include(x => x.AccessController).Include(x => x.Role).Where(x => x.RoleID == roleID).ToList();
@@ -29,7 +30,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(domainList);
         }
 
-        //[Authorize(Policy = "CanView")]
+        [PermissionFilter(Name = "CanView")]
         public IActionResult DomainsByAccessController(Guid accessControllerID)
         {
             var domains = _context.Domains.Include(x => x.AccessController).Include(x => x.Role).Where(x => x.AccessControllerID == accessControllerID).ToList();
@@ -39,7 +40,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(domains);
         }
 
-        //[Authorize(Policy = "CanViewCreate")]
+        [PermissionFilter(Name = "CanViewCreate")]
         public IActionResult Create(Guid accessControllerID)
         {
             var roles = _context.Roles.ToList();
@@ -49,7 +50,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(roles);
         }
 
-        //[Authorize(Policy = "CanSaveCreate")]
+        [PermissionFilter(Name = "CanSaveCreate")]
         [HttpPost]
         public IActionResult Create(ReqCreateDomain req)
         {

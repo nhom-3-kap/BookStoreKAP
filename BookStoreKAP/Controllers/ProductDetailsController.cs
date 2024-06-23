@@ -36,6 +36,7 @@ namespace BookStoreKAP.Controllers
             ViewBag.Discount = item.Discount;
             ViewBag.Quantity = item.Quantity;
             ViewBag.Description = item.Synopsis;
+            ViewBag.Image = item.Thumbnail;
             return View();
         }
     }

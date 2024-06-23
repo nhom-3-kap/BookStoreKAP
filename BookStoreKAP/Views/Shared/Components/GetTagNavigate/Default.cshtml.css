@@ -1,0 +1,16 @@
+﻿.nav-category {
+    padding: 15px 0;
+    background-color: var(--primary-color);
+}
+
+.nav-category-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.nav-category-item {
+    color: var(--white-color);
+    font-size: 18px;
+    text-transform: uppercase;
+}

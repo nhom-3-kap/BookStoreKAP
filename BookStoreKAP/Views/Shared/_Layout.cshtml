@@ -15,6 +15,8 @@
 
 </head>
 <body>
+    
+    <form>
     <header class="header">
         <section class="header-top">
             <p>BUY BESTSELLERS AT UNBELIEVABLE DISCOUNTS! </p>
@@ -52,7 +54,7 @@
 
                 <div class="header-search-content-left">
                     <div class="header-search-wrap">
-                        <input type="text" placeholder="Search by author, Publisher, Book type, Category, SKU" />
+                        <input type="text" name="input" placeholder="Search by author, Publisher, Book type, Category, SKU" />
                         <button class="header-search-btn active"><i class="bi bi-search"></i></button>
                     </div>
 
@@ -96,19 +98,8 @@
     </header>
 
     <main role="main" class="app">
-        <nav class="nav-category">
-            <div class="container">
-                <div class="nav-category-inner">
-                    <ul class="nav-category-list">
-                        <li><a class="nav-category-item" href="@(RouteConstant.HOME)">HOME</a></li>
-                        <li><a class="nav-category-item" href="@(RouteConstant.LIST)?Service=NewReleases">NEW RELEASES</a></li>
-                        <li><a class="nav-category-item" href="@(RouteConstant.LIST)?Service=BestSellers">BESTSELLERS</a></li>
-                        <li><a class="nav-category-item" href="@(RouteConstant.BOOK_REQUEST)">BOOK REQUEST</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        @RenderBody()
+            @await Component.InvokeAsync("GetTagNavigate")
+            @RenderBody()
     </main>
     <hr>
     <footer class="kap-fotter">
@@ -228,5 +219,6 @@
             }
         });
     </script>
+    </form>
 </body>
 </html>

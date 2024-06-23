@@ -21,9 +21,8 @@ namespace BookStoreKAP.Controllers
 
         public IActionResult Index()
         {
-            
-            List<Book> lst = _context.Books.Include(x=>x.Sales).ToList();
-            return View(lst);
+            var tags = _context.Tags.Include(x => x.Books).ToList();
+            return View(tags);
         }
 
         public IActionResult Privacy()

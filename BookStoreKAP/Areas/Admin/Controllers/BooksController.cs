@@ -82,8 +82,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View();
         }
 
-
-        //[Authorize(Policy = "CanSaveCreate")]
+        [PermissionFilter(Name = "CanSaveCreate")]
         [HttpPost]
         public async Task<IActionResult> Create(ReqCreateBook req, IFormFile Thumbnail)
         {
@@ -152,7 +151,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return Redirect($"{RouteConstant.ADMIN_BOOKS}?menuKey=BM"); // Chuyển hướng về trang Index
         }
 
-        //[Authorize(Policy = "CanViewModify")]
+        [PermissionFilter(Name = "CanViewEdit")]
         public async Task<IActionResult> Modify(Guid bookID)
         {
             try
@@ -171,7 +170,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        //[Authorize(Policy = "CanSaveModify")]
+        [PermissionFilter(Name = "CanSaveEdit")]
         [HttpPost]
         public async Task<IActionResult> Modify(ReqModifyBook req, IFormFile? Thumbnail)
         {
@@ -276,7 +275,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        //[Authorize(Policy = "CanDelete")]
+        [PermissionFilter(Name = "CanDelete")]
         [HttpDelete]
         public async Task<IActionResult> RemoveBookByIDAPI(Guid bookID)
         {

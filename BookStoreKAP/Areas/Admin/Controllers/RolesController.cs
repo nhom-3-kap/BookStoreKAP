@@ -5,7 +5,6 @@ using BookStoreKAP.Filters;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
 using BookStoreKAP.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -63,6 +62,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
         }
 
+        [PermissionFilter(Name = "CanViewEdit")]
         public IActionResult Modify(Guid roleID)
         {
             var role = _context.Roles.Where(x => x.Id == roleID).SingleOrDefault();
@@ -92,7 +92,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
 
-        [PermissionFilter(Name = "CanViewEdit")]
+        [PermissionFilter(Name = "CanSaveEdit")]
         [HttpPost]
         public IActionResult Modify(ReqModifyRole req)
         {
@@ -109,37 +109,48 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 var existingRoleClaims = _context.RoleClaims.Where(rc => rc.RoleId == req.Id).ToList();
                 _context.RoleClaims.RemoveRange(existingRoleClaims);
 
-                var accessControllerIds = _context.Policies.Include(x => x.AccessController).Where(x => req.PolicyIDs.Contains(x.ID)).GroupBy(x => x.AccessControllerID).Select(x => x.Key).ToList();
-                var domains = _context.Domains.Where(x => accessControllerIds.Contains(x.AccessControllerID)).ToList();
-
-                if (domains != null && domains.Count <= 0)
+                if (req.PolicyIDs != null && req.PolicyIDs.Count > 0)
                 {
+                    var accessControllerIds = _context.Policies.Include(x => x.AccessController).Where(x => req.PolicyIDs.Contains(x.ID)).GroupBy(x => x.AccessControllerID).Select(x => x.Key).ToList();
+                    var domains = _context.Domains.Where(x => accessControllerIds.Contains(x.AccessControllerID)).ToList();
 
-                }
-
-                // Thêm các RoleClaim mới dựa trên PolicyIDs từ request
-                foreach (var policyID in req.PolicyIDs)
-                {
-                    var policy = _context.Policies.Include(x => x.AccessController).FirstOrDefault(x => x.ID == policyID);
-                    if (policy != null)
+                    foreach (var accessControllerId in accessControllerIds)
                     {
-                        var roleClaim = new RoleClaim()
+                        if (domains.Any(x => x.AccessControllerID == accessControllerId))
                         {
-                            RoleId = req.Id,
-                            ClaimType = "Permission",
-                            ClaimValue = policy.Name,
-                            ActionName = policy.ActionName,
-                            ControllerName = policy.AccessController.Name
+                            continue;
+                        }
+
+                        var newDomain = new Domain()
+                        {
+                            AccessControllerID = accessControllerId,
+                            RoleID = req.Id,
                         };
 
-                        
+                        _context.Domains.Add(newDomain);
+                    }
 
-                        _context.RoleClaims.Add(roleClaim);
+                    // Thêm các RoleClaim mới dựa trên PolicyIDs từ request
+                    foreach (var policyID in req.PolicyIDs)
+                    {
+                        var policy = _context.Policies.Include(x => x.AccessController).FirstOrDefault(x => x.ID == policyID);
+                        if (policy != null)
+                        {
+                            var roleClaim = new RoleClaim()
+                            {
+                                RoleId = req.Id,
+                                ClaimType = "Permission",
+                                ClaimValue = policy.Name,
+                                ActionName = policy.ActionName,
+                                ControllerName = policy.AccessController.Name
+                            };
+
+
+
+                            _context.RoleClaims.Add(roleClaim);
+                        }
                     }
                 }
-
-
-                
 
                 _context.SaveChanges();
                 transaction.Commit();
@@ -155,6 +166,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
+        [PermissionFilter(Name = "CanRefreshController")]
         public IActionResult RefreshListController(Guid roleID)
         {
             var controllerListOnProject = Assembly.GetExecutingAssembly()
@@ -210,6 +222,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return RedirectToAction("Modify", new { roleID, menuKey = "RM" });
         }
 
+        [PermissionFilter(Name = "CanRefreshPermission")]
         public IActionResult RefreshListPermissions(Guid roleID)
         {
             var controllerActionPermissionList = Assembly.GetExecutingAssembly()

@@ -113,7 +113,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Đăng ký middleware kiểm tra quyền truy cập
-//app.UseMiddleware<AccessControlMiddleware>();
+app.UseMiddleware<AccessControlMiddleware>();
 
 app.Use(async (context, next) =>
 {

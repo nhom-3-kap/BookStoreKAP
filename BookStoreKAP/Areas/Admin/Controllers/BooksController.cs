@@ -1,13 +1,11 @@
 ﻿using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Data;
+using BookStoreKAP.Filters;
 using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
@@ -20,7 +18,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
-        //[Authorize(Policy = "CanView")]
+        [PermissionFilter(Name = "CanView")]
         public IActionResult Index([FromQuery] ReqQuerySearchBook q)
         {
             var booksQuery = _context.Books.Include(x => x.Series).Include(x => x.BookGenres).ThenInclude(x => x.Genre).AsQueryable();
@@ -71,7 +69,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(pagedBooks);
         }
 
-        //[Authorize(Policy = "CanViewCreate")]
+        [PermissionFilter(Name = "CanCreate")]
         public IActionResult Create()
         {
             var tags = _context.Tags.ToList();

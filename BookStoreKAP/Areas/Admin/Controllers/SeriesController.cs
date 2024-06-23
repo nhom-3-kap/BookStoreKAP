@@ -29,7 +29,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(series);
         }
 
-        [Authorize(Policy = "CanViewCreate")]
+        //[Authorize(Policy = "CanViewCreate")]
         public IActionResult Create()
         {
             return View();

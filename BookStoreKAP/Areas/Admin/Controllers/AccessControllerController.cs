@@ -4,6 +4,7 @@ using System.Reflection;
 using BookStoreKAP.Models.Entities;
 using BookStoreKAP.Common.Constants;
 using Microsoft.AspNetCore.Authorization;
+using BookStoreKAP.Filters;
 
 namespace BookStoreKAP.Areas.Admin.Controllers
 {
@@ -17,7 +18,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
-        //[Authorize(Policy = "CanView")]
+        [PermissionFilter(Name = "CanView")]
         public IActionResult Index()
         {
             var controllerList = _context.AccessControllers.OrderByDescending(x => x.AreaName).ToList();
@@ -25,7 +26,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return View(controllerList);
         }
 
-        //[Authorize(Policy = "CanRefresh")]
+        [PermissionFilter(Name = "CanRefresh")]
         public IActionResult RefreshList()
         {
             var controllerListOnProject = Assembly.GetExecutingAssembly()

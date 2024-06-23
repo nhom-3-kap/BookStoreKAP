@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = ViewBag.Service;
 }
+<input hidden name ="service" value="@ViewBag.Service"/>
+<input hidden name="genres" value="@ViewBag.GenresID" />
 <div>
     <div class="container"> 
         <div class="breadcrumb-wrap">
@@ -32,11 +34,11 @@
 
                             </div>
                             <div class="side-bar-item-child">
-                                @foreach (var series in ViewBag.Series)
+                                @foreach (var genre in ViewBag.Genres)
                                {
                                     <div class="new-releases-child">
                                         <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
-                                        <a href="@(RouteConstant.LIST)?Service=NewRelease&seriesId=@series.ID">@series.Name</a>
+                                        <a href="@(RouteConstant.LIST)?Service=NewRelease&genresId=@genre.ID">@genre.Name</a>
                                     </div>
                                 }
                             </div>
@@ -63,11 +65,12 @@
                         <div >
                             <div class="side-price-item">
                                 <p>Price Range:</p>
-                                <span>1000Đ</span>
+                                <span>10000Đ</span>
                                 <span>-</span>
                                 <span>500000Đ</span>
                             </div>
-                            <input type="range"/> 
+                            <input id ="pricechange" type="range" min="10000" max ="500000"/> 
+                            <p>10000Đ- <span id="currentprice"></span>Đ</p>
                         </div>
                         
                        
@@ -75,14 +78,14 @@
                 </div>
             </div>
             <div class="col-lg-10">
-                <div class="row">
+                <div id="book" class="row">
                     @foreach (var book in ViewBag.Books)
                     {
                         <div class="col-lg-3">
                             <div class="card-product">
                                 <div class="card-product-heading">
                                     <a href="#">
-                                        <img src="@book.Images" alt="@book.Title" />
+                                        <img src="@book.Thumbnail" alt="@book.Title" />
                                     </a>
                                     <button>
                                         <i class="bi bi-suit-heart"></i>
@@ -115,4 +118,64 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script> 
+        $(document).ready(function () {
+            $("#pricechange").on("change", function () { 
+                const value = $(this).val()
+                $("#currentprice").text(value)
+                const service  = $("input[name='service']").val()
+                const genres = $("input[name='genres']").val()
+                handleAjax("/List/SortPriceBook", {
+                    req: {
+                        MinPrice: 10000, MaxPrice: value, Service: service, SeriesID: genres
+                    }
+                }, (res) => {
+                    if (res.success) {
+                        const html = res.data.map((book) => {
+                            return `
+                                        <div class="col-lg-3">
+                                            <div class="card-product">
+                                                <div class="card-product-heading">
+                                                    <a href="#">
+                                                                     <img src="${book.thumbnail}" alt="${book.title}" />
+                                                    </a>
+                                                    <button>
+                                                        <i class="bi bi-suit-heart"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="card-product-content">
+                                                    <h6 class="card-product-title">
+                                                                        <a href="#">${book.title}</a>
+                                                    </h6>
+                                                    <div class="card-product-desc">
+                                                        <span><strong>Book Author: </strong></span>
+                                                                        <span>${book.author}</span>
+                                                    </div>
+                                                    <div class="card-product-wrap-price">
+                                                                <span class="card-product-current-price">${book.discount} Đ</span>
+                                                                <span class="card-product-old-price">${book.price} Đ</span>
+                                                    </div>
+                                                </div>
+                                                <div class="card-product-footer">
+                                                    <div class="card-product-wrap-btn">
+                                                        <button class="card-product-btn kap-btn kap-btn-primary">BUY</button>
+                                                        <button class="card-product-btn kap-btn kap-btn-secondary">ADD TO CART</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                `
+                        }).join()
+                        $("#book").html(html)
+                    }
+
+                })
+            })
+            
+        })
+    </script>
+}
 

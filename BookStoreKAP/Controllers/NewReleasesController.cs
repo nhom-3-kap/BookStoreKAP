@@ -31,7 +31,7 @@ namespace BookStoreKAP.Controllers
             ViewBag.Service = Service;
             ViewBag.GenresID = genresId;
             var books = new List<Book>();
-            if (!string.IsNullOrEmpty(Service) && genresId == Guid.Empty)
+            if (string.IsNullOrEmpty(Service) && genresId == Guid.Empty)
             {
                 books = _context.Books
                                 .Where(b=> b.Tag.Name == Service)
@@ -62,13 +62,26 @@ namespace BookStoreKAP.Controllers
             return View();
 
         }
-        [HttpPost ("/List/SortPriceBook")]
+        [HttpPost("/List/SortPriceBook")]
         public IActionResult SortPriceBook(ReqBookByDK req)
         {
-            var books = _context.Books
-                                .Where(b => b.Price<= req.MaxPrice && b.Price>=req.MinPrice)
+            var books = new List<Book>();
+            if (req.GenreID != Guid.Empty)
+            { 
+            books = _context.BookGenres
+                                .Where(b => b.Book.Discount <= req.MaxPrice && b.Book.Discount >= req.MinPrice && b.Book.Tag.Name == req.Service && b.GenreID == req.GenreID)
+                                .Select(a => a.Book).Distinct()
                                 .OrderBy(b => b.Title)
                                 .ToList();
+            }
+            else
+            {
+                books = _context.BookGenres
+                                .Where(b => b.Book.Discount <= req.MaxPrice && b.Book.Discount >= req.MinPrice && b.Book.Tag.Name == req.Service )
+                                .Select(a => a.Book).Distinct()
+                                .OrderBy(b => b.Title)
+                                .ToList();
+            }    
             return Ok(new ResponseAPI<List<Book>>() { Success=true, Message = "Success", Data=books});
         }
     }

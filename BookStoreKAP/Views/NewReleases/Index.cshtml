@@ -128,7 +128,7 @@
                 const genres = $("input[name='genres']").val()
                 handleAjax("/List/SortPriceBook", {
                     req: {
-                        MinPrice: 10000, MaxPrice: value, Service: service, SeriesID: genres
+                        MinPrice: 10000, MaxPrice: value, Service: service, GenreID: genres
                     }
                 }, (res) => {
                     if (res.success) {

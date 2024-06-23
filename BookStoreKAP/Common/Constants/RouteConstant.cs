@@ -42,7 +42,7 @@
         public const string ADMIN_ROLES_CREATE = $"/{AreasConstant.ADMIN}/Roles/Create";
         public const string ADMIN_ROLES_MODIFY = $"/{AreasConstant.ADMIN}/Roles/Modify";
         public const string ADMIN_ROLES_REFRESH_LIST_CONTROLLERS = $"/{AreasConstant.ADMIN}/Roles/RefreshListController";
-        public const string ADMIN_ROLES_REFRESH_LIST_POLICY = $"/{AreasConstant.ADMIN}/Roles/RefreshListPolicy";
+        public const string ADMIN_ROLES_REFRESH_LIST_POLICY = $"/{AreasConstant.ADMIN}/Roles/RefreshListPermissions";
 
         public const string ADMIN_ACCESS_CONTROLLER = $"/{AreasConstant.ADMIN}/AccessController";
         public const string ADMIN_ACCESS_CONTROLLER_CREATE = $"/{AreasConstant.ADMIN}/AccessController/Create";

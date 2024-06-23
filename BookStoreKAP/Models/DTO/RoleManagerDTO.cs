@@ -16,6 +16,7 @@ namespace BookStoreKAP.Models.DTO
         public required string Name { get; set; }
 
         public List<Guid> PolicyIDs { get; set; }
+
     }
 
 

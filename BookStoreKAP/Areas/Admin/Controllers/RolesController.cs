@@ -1,6 +1,7 @@
 ﻿using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Common.Extensions;
 using BookStoreKAP.Data;
+using BookStoreKAP.Filters;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
 using BookStoreKAP.ViewModels;
@@ -21,19 +22,20 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             _context = context;
         }
 
-        //[Authorize(Policy = "CanView")]
+        [PermissionFilter(Name = "CanView")]
         public IActionResult Index()
         {
-            var roles = _context.Roles.ToList();
+            var roles = _context.Roles.Where(x => x.NormalizedName != "ROOT").ToList();
             return View(roles);
         }
 
-        //[Authorize(Policy = "CanCreate")]
+        [PermissionFilter(Name = "CanViewCreate")]
         public IActionResult Create()
         {
             return View();
         }
 
+        [PermissionFilter(Name = "CanSaveCreate")]
         [HttpPost]
         public IActionResult Create(ReqCreateRole req)
         {
@@ -90,6 +92,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
 
+        [PermissionFilter(Name = "CanViewEdit")]
         [HttpPost]
         public IActionResult Modify(ReqModifyRole req)
         {
@@ -106,6 +109,14 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 var existingRoleClaims = _context.RoleClaims.Where(rc => rc.RoleId == req.Id).ToList();
                 _context.RoleClaims.RemoveRange(existingRoleClaims);
 
+                var accessControllerIds = _context.Policies.Include(x => x.AccessController).Where(x => req.PolicyIDs.Contains(x.ID)).GroupBy(x => x.AccessControllerID).Select(x => x.Key).ToList();
+                var domains = _context.Domains.Where(x => accessControllerIds.Contains(x.AccessControllerID)).ToList();
+
+                if (domains != null && domains.Count <= 0)
+                {
+
+                }
+
                 // Thêm các RoleClaim mới dựa trên PolicyIDs từ request
                 foreach (var policyID in req.PolicyIDs)
                 {
@@ -120,9 +131,15 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                             ActionName = policy.ActionName,
                             ControllerName = policy.AccessController.Name
                         };
+
+                        
+
                         _context.RoleClaims.Add(roleClaim);
                     }
                 }
+
+
+                
 
                 _context.SaveChanges();
                 transaction.Commit();
@@ -175,7 +192,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     AreaName = controller.Value.AreaName
                 };
 
-                if (!string.IsNullOrEmpty(controller.Value.AreaName))
+                if (string.IsNullOrEmpty(controller.Value.AreaName))
                 {
                     accessController.Status = AccessControllerStatusConstant.PUBLIC;
                 }
@@ -193,9 +210,9 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             return RedirectToAction("Modify", new { roleID, menuKey = "RM" });
         }
 
-        public IActionResult RefreshListPolicy(Guid roleID)
+        public IActionResult RefreshListPermissions(Guid roleID)
         {
-            var controllerActionPolicyListOnProject = Assembly.GetExecutingAssembly()
+            var controllerActionPermissionList = Assembly.GetExecutingAssembly()
                 .GetTypes()
                 .Where(type => typeof(Controller).IsAssignableFrom(type) || typeof(ControllerBase).IsAssignableFrom(type))
                 .SelectMany(type => type.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public)
@@ -204,30 +221,30 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     {
                         ControllerName = type.Name[..type.Name.LastIndexOf("Controller")],
                         ActionName = m.Name,
-                        Policies = m.GetCustomAttributes<AuthorizeAttribute>()
-                                    .Where(attr => !string.IsNullOrEmpty(attr.Policy))
-                                    .Select(attr => attr.Policy)
-                                    .ToList()
+                        Permissions = m.GetCustomAttributes<PermissionFilter>()
+                                       .Where(attr => !string.IsNullOrEmpty(attr.Name))
+                                       .Select(attr => attr.Name)
+                                       .ToList()
                     }))
                 .GroupBy(x => x.ControllerName)
-                .ToDictionary(g => g.Key, g => g.Select(x => new { x.ActionName, x.Policies }).ToList());
+                .ToDictionary(g => g.Key, g => g.Select(x => new { x.ActionName, x.Permissions }).ToList());
 
-            var policyListOnDB = _context.Policies.Include(p => p.AccessController).ToList();
+            var permissionListOnDB = _context.Policies.Include(p => p.AccessController).ToList();
 
-            // Remove policies from database if they do not exist in the project
-            foreach (var policy in policyListOnDB)
+            // Remove permissions from database if they do not exist in the project
+            foreach (var permission in permissionListOnDB)
             {
-                if (!controllerActionPolicyListOnProject.TryGetValue(policy.AccessController.Name, out var actions) ||
-                    !actions.Any(a => a.ActionName == policy.ActionName && a.Policies.Contains(policy.Name)))
+                if (!controllerActionPermissionList.TryGetValue(permission.AccessController.Name, out var actions) ||
+                    !actions.Any(a => a.ActionName == permission.ActionName && a.Permissions.Contains(permission.Name)))
                 {
-                    _context.Policies.Remove(policy);
+                    _context.Policies.Remove(permission);
                 }
             }
 
-            var policyNewList = _context.Policies.Include(p => p.AccessController).ToList();
+            var permissionNewList = _context.Policies.Include(p => p.AccessController).ToList();
 
-            // Add new policies to database if they do not exist for the same controller
-            foreach (var controller in controllerActionPolicyListOnProject)
+            // Add new permissions to database if they do not exist for the same controller
+            foreach (var controller in controllerActionPermissionList)
             {
                 var accessController = _context.AccessControllers.FirstOrDefault(ac => ac.Name == controller.Key);
                 if (accessController == null)
@@ -237,16 +254,16 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
                 foreach (var action in controller.Value)
                 {
-                    foreach (var policy in action.Policies)
+                    foreach (var permission in action.Permissions)
                     {
-                        if (policyNewList.Any(p => p.AccessController.Name == controller.Key && p.ActionName == action.ActionName && p.Name == policy))
+                        if (permissionNewList.Any(p => p.AccessController.Name == controller.Key && p.ActionName == action.ActionName && p.Name == permission))
                         {
                             continue;
                         }
 
                         _context.Policies.Add(new Policy()
                         {
-                            Name = policy,
+                            Name = permission,
                             ActionName = action.ActionName,
                             AccessControllerID = accessController.ID
                         });
@@ -256,7 +273,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
             _context.SaveChanges();
 
-            TempData[ToastrConstant.SUCCESS_MSG] = "Refresh Successfully";
+            TempData["SUCCESS_MSG"] = "Refresh Successfully";
             return RedirectToAction("Modify", new { roleID, menuKey = "RM" });
         }
     }

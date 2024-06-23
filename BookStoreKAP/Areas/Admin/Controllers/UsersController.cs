@@ -168,7 +168,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var rolesToRemove = userRoles.Where(r => req.RoleIds == null || !req.RoleIds.Any(g => _roleManager.Roles.Any(role => role.Id == g && role.Name == r))).ToList();
-                var rolesToAdd = req.RoleIds?.Where(g => _roleManager.Roles.Any(role => role.Id == g && !userRoles.Contains(role.Name))).Select(g => _roleManager.Roles.First(role => role.Id == g).Name).ToList();
+                var rolesToAdd = req.RoleIds?.Where(g => _roleManager.Roles.Any(role => role.Id == g && !userRoles.Contains(role.Name))).Select(g => _roleManager.Roles.First(role => role.Id == g).Name);
 
                 if (rolesToRemove.Any())
                 {

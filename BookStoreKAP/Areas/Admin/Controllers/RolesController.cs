@@ -2,9 +2,11 @@
 using BookStoreKAP.Common.Extensions;
 using BookStoreKAP.Data;
 using BookStoreKAP.Filters;
+using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
 using BookStoreKAP.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -15,10 +17,12 @@ namespace BookStoreKAP.Areas.Admin.Controllers
     public class RolesController : Controller
     {
         private readonly BookStoreKAPDBContext _context;
+        private readonly RoleManager<Role> _roleManager;
 
-        public RolesController(BookStoreKAPDBContext context)
+        public RolesController(BookStoreKAPDBContext context, RoleManager<Role> roleManager)
         {
             _context = context;
+            _roleManager = roleManager;
         }
 
         [PermissionFilter(Name = "CanView")]
@@ -36,7 +40,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
         [PermissionFilter(Name = "CanSaveCreate")]
         [HttpPost]
-        public IActionResult Create(ReqCreateRole req)
+        public async Task<IActionResult> Create(ReqCreateRole req)
         {
             try
             {
@@ -45,9 +49,10 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     throw new Exception("Values invalid");
                 }
 
-                var role = new Role() { Name = req.Name, NormalizedName = req.Name.ToSnakeCase() };
+                var role = new Role() { Name = req.Name };
 
-                _context.Roles.Add(role);
+                await _roleManager.CreateAsync(role);
+
                 _context.SaveChanges();
 
                 TempData[ToastrConstant.SUCCESS_MSG] = "Create Successfully";
@@ -112,7 +117,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 if (req.PolicyIDs != null && req.PolicyIDs.Count > 0)
                 {
                     var accessControllerIds = _context.Policies.Include(x => x.AccessController).Where(x => req.PolicyIDs.Contains(x.ID)).GroupBy(x => x.AccessControllerID).Select(x => x.Key).ToList();
-                    var domains = _context.Domains.Where(x => accessControllerIds.Contains(x.AccessControllerID)).ToList();
+                    var domains = _context.Domains.Where(x => accessControllerIds.Contains(x.AccessControllerID) && x.RoleID == req.Id).ToList();
 
                     foreach (var accessControllerId in accessControllerIds)
                     {
@@ -169,6 +174,51 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         [PermissionFilter(Name = "CanRefreshController")]
         public IActionResult RefreshListController(Guid roleID)
         {
+
+            RefreshListController();
+            TempData[ToastrConstant.SUCCESS_MSG] = "Refresh Successfully";
+            return RedirectToAction("Modify", new { roleID, menuKey = "RM" });
+        }
+
+        [PermissionFilter(Name = "CanRefreshPermission")]
+        public IActionResult RefreshListPermissions(Guid roleID)
+        {
+            RefreshListPermissions();
+            TempData["SUCCESS_MSG"] = "Refresh Successfully";
+            return RedirectToAction("Modify", new { roleID, menuKey = "RM" });
+        }
+
+        [PermissionFilter(Name = "CanDelete")]
+        [HttpDelete]
+        public IActionResult RemoveRoleByRoleIdAPI(Guid roleID)
+        {
+            try
+            {
+                //var accessControllerExists = _context.AccessControllers.Where(x => x.)
+
+                var domainsExists = _context.Domains.Where(x => x.RoleID == roleID);
+                _context.Domains.RemoveRange(domainsExists);
+
+                var roleClaimsExists = _context.RoleClaims.Where(x => x.RoleId == roleID);
+                _context.RoleClaims.RemoveRange(roleClaimsExists);
+
+                var userRoleExists = _context.UserRoles.Where(x => x.RoleId == roleID);
+                _context.UserRoles.RemoveRange(userRoleExists);
+
+                var roleExists = _context.Roles.First(x => x.Id == roleID);
+                _context.Roles.Remove(roleExists);
+
+                _context.SaveChanges();
+                return Ok(new ResponseAPI<string>() { Success = true, Message = "Deleted Successfully" });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ResponseAPI<string>() { Success = false, Message = ex.Message });
+            }
+        }
+
+        public void RefreshListController()
+        {
             var controllerListOnProject = Assembly.GetExecutingAssembly()
                                                     .GetTypes()
                                                     .Where(type => typeof(Controller).IsAssignableFrom(type) || typeof(ControllerBase).IsAssignableFrom(type))
@@ -217,13 +267,9 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
 
             _context.SaveChanges();
-
-            TempData[ToastrConstant.SUCCESS_MSG] = "Refresh Successfully";
-            return RedirectToAction("Modify", new { roleID, menuKey = "RM" });
         }
 
-        [PermissionFilter(Name = "CanRefreshPermission")]
-        public IActionResult RefreshListPermissions(Guid roleID)
+        public void RefreshListPermissions()
         {
             var controllerActionPermissionList = Assembly.GetExecutingAssembly()
                 .GetTypes()
@@ -285,9 +331,6 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
 
             _context.SaveChanges();
-
-            TempData["SUCCESS_MSG"] = "Refresh Successfully";
-            return RedirectToAction("Modify", new { roleID, menuKey = "RM" });
         }
     }
 }

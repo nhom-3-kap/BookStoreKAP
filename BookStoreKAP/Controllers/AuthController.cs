@@ -203,29 +203,18 @@ namespace BookStoreKAP.Controllers
                     throw new Exception("User not found after creation.");
                 }
 
-                var userRole = new UserRole()
-                {
-                    RoleId = Guid.Parse("74102ea6-5a0d-4638-9790-02936b857022"),
-                    UserId = userAfterCreated.Id,
-                };
-
-                _context.Add(userRole);
-                await _context.SaveChangesAsync();
-
                 await transaction.CommitAsync();
 
                 await _signInManager.PasswordSignInAsync(req.Username, req.Password, false, lockoutOnFailure: false);
+                TempData[ToastrConstant.SUCCESS_MSG] = "Registered successfully";
                 return Redirect(RouteConstant.HOME);
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
-                ModelState.AddModelError("", "An error occurred while processing your request. Please try again.");
-                ModelState.AddModelError("", ex.Message);
-
                 ViewBag.ReturnUrl = returnUrl ?? Url.Content("~/");
                 ViewBag.Service = "Login";
                 ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                TempData[ToastrConstant.ERROR_MSG] = ex.Message;
                 return View(req);
             }
         }

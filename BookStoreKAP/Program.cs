@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using BookStoreKAP.Data;
 using BookStoreKAP.Middleware;
+using BookStoreKAP.Areas.Admin.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -65,33 +66,8 @@ builder.Services.AddMvc();
 builder.Services.AddScoped<RoleManager<Role>>();
 builder.Services.AddScoped<UserManager<User>>();
 builder.Services.AddScoped<BookStoreKAPDBContext>();
-//builder.Services.AddScoped<AccessControlMiddleware>();
+builder.Services.AddScoped<RolesController>();
 #endregion
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("CanViewCreate", policy =>
-        policy.RequireClaim("Permission", "CanViewCreate"));
-    options.AddPolicy("CanSaveCreate", policy =>
-        policy.RequireClaim("Permission", "CanSaveCreate"));
-
-    options.AddPolicy("CanViewModify", policy =>
-        policy.RequireClaim("Permission", "CanViewModify"));
-    options.AddPolicy("CanSaveModify", policy =>
-        policy.RequireClaim("Permission", "CanSaveModify"));
-
-    options.AddPolicy("CanDelete", policy =>
-        policy.RequireClaim("Permission", "CanDelete"));
-
-    options.AddPolicy("CanView", policy =>
-        policy.RequireClaim("Permission", "CanView"));
-
-    options.AddPolicy("CanRefresh", policy =>
-        policy.RequireClaim("Permission", "CanRefresh"));
-
-    options.AddPolicy("All", policy =>
-        policy.RequireClaim("Permission", "All"));
-});
 
 var app = builder.Build();
 
@@ -133,4 +109,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+using (var scope = app.Services.CreateScope())
+{
+    var rolesController = scope.ServiceProvider.GetRequiredService<RolesController>();
+    rolesController.RefreshListController();
+    rolesController.RefreshListPermissions();
+}
 app.Run();

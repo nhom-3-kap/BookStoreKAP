@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using BookStoreKAP.Common.Constants;
 using System.Text.Encodings.Web;
+using BookStoreKAP.Models.Entities;
 
 namespace BookStoreKAP.Middleware
 {
@@ -60,6 +61,7 @@ namespace BookStoreKAP.Middleware
                                 else
                                 {
                                     var roles = accessController.Domains.Select(d => d.Role).ToList();
+                                    Role currentRole = null;
                                     if (roles.Any())
                                     {
                                         var hasRole = false;
@@ -69,30 +71,23 @@ namespace BookStoreKAP.Middleware
                                             if (user.IsInRole(role.Name))
                                             {
                                                 hasRole = true;
+                                                currentRole = role;
                                                 break;
                                             }
                                         }
 
-                                        if (hasRole)
+                                        if (hasRole && currentRole != null)
                                         {
                                             var hasAccess = false;
-                                            foreach (var role in roles)
+                                            var claims = await _context.RoleClaims
+                                                .Where(rc => rc.RoleId == currentRole.Id && rc.ControllerName == controllerName && rc.ActionName == actionName)
+                                                .ToListAsync();
+
+                                            foreach (var claim in claims)
                                             {
-                                                var claims = await _context.RoleClaims
-                                                    .Where(rc => rc.RoleId == role.Id && rc.ControllerName == controllerName && rc.ActionName == actionName)
-                                                    .ToListAsync();
-
-                                                foreach (var claim in claims)
+                                                if (user.HasClaim("Permission", claim.ClaimValue))
                                                 {
-                                                    if (user.HasClaim("Permission", claim.ClaimValue))
-                                                    {
-                                                        hasAccess = true;
-                                                        break;
-                                                    }
-                                                }
-
-                                                if (hasAccess)
-                                                {
+                                                    hasAccess = true;
                                                     break;
                                                 }
                                             }

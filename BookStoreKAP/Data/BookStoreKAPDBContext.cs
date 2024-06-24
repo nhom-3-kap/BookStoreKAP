@@ -134,6 +134,14 @@ namespace BookStoreKAP.Data
             builder.Entity<Policy>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
             builder.Entity<Policy>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
 
+            builder.Entity<Cart>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<Cart>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<Cart>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
+            builder.Entity<CartItem>().Property(e => e.ID).HasDefaultValueSql("NEWID()");
+            builder.Entity<CartItem>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Entity<CartItem>().Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
             builder.Entity<Role>().Property(e => e.Id).HasDefaultValueSql("NEWID()");
             builder.Entity<Role>().Property(e => e.ConcurrencyStamp).HasDefaultValueSql("NEWID()");
             // Configuration Many to Many
@@ -180,6 +188,8 @@ namespace BookStoreKAP.Data
         public DbSet<AccessController> AccessControllers { get; set; }
 
         public DbSet<Policy> Policies { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
     }
 }

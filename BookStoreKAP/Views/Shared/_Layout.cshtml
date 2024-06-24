@@ -15,7 +15,6 @@
 
 </head>
 <body>
-    
     <header class="header">
         <section class="header-top">
             <p>BUY BESTSELLERS AT UNBELIEVABLE DISCOUNTS! </p>
@@ -56,17 +55,16 @@
                         <input type="text" name="input" placeholder="Search by author, Publisher, Genre" />
                         <button class="header-search-btn active"><i class="bi bi-search"></i></button>
                     </div>
-
-                    <div class="header-search-cart">
-                        <div class="header-search-wrap-cart-icon">
-                            <i class="bi bi-bag"></i>
-                            <span>0</span>
-                        </div>
-                        <a href="@(RouteConstant.CART)" class="header-search-wrap-cart-label" style="color:unset"> CART </a>
-                    </div>
-
                     @if (User.Identity?.IsAuthenticated != null && User.Identity.IsAuthenticated)
                     {
+                        <div class="header-search-cart">
+                            <div class="header-search-wrap-cart-icon">
+                                <i class="bi bi-bag"></i>
+                                <span>0</span>
+                            </div>
+                            <a href="@(RouteConstant.CART)" class="header-search-wrap-cart-label" style="color:unset"> CART </a>
+                        </div>
+
                         <div class="d-flex flex-wrap align-items-center justify-content-between justify-content-lg-end">
                             <div class="dropdown text-end">
                                 <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -97,8 +95,8 @@
     </header>
 
     <main role="main" class="app">
-            @await Component.InvokeAsync("GetTagNavigate")
-            @RenderBody()
+        @await Component.InvokeAsync("GetTagNavigate")
+        @RenderBody()
     </main>
     <hr>
     <footer class="kap-fotter">
@@ -173,8 +171,23 @@
                 </div>
             </div>
         </div>
-
     </footer>
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+
+            <div class="modal-content">
+                <form action="/" method="POST">
+                    <div class="modal-body">
+                        Modal Đăng Nhập
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="kap-btn kap-btn-primary" onclick="$('#exampleModalCenter').modal('hide')">Close</button>
+                        <button type="button" class="kap-btn kap-btn-solid">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="/lib/owl/js/owl.carousel.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

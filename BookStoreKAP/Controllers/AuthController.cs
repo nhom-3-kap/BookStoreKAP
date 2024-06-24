@@ -130,7 +130,7 @@ namespace BookStoreKAP.Controllers
                 // Tạo danh sách các claims bổ sung
                 var additionalClaims = new List<Claim>
                 {
-                    new Claim("Avatar", user.Avatar ?? "https://placehold.co/200x200") // Thêm claim Avatar
+                    new("Avatar", user.Avatar ?? "https://placehold.co/200x200") // Thêm claim Avatar
                 };
 
                 // Tạo ClaimsPrincipal mới
@@ -140,8 +140,7 @@ namespace BookStoreKAP.Controllers
 
                 // Đăng nhập người dùng với ClaimsPrincipal mới
                 await _signInManager.SignOutAsync(); // Đảm bảo đăng xuất người dùng trước khi đăng nhập lại với claims mới
-                await _signInManager.SignInAsync(user, new AuthenticationProperties { IsPersistent = false }, identity.AuthenticationType);
-
+                await _signInManager.Context.SignInAsync(IdentityConstants.ApplicationScheme, claimsPrincipal); // Đăng nhập với claims mới
                 return Redirect(returnUrl);
             }
             catch (Exception)

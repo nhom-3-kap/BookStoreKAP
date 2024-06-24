@@ -1,22 +1,17 @@
 ﻿@model List<Tag>
-@{
-    
-}
-<div>
-    <nav class="nav-category">
-        <div class="container">
-            <div class="nav-category-inner">
-                <ul class="nav-category-list">
-                    <li><a class="nav-category-item" href="@(RouteConstant.HOME)">HOME</a></li>
-                    @foreach (var item in Model)
-                    {
-                        <li><a class="nav-category-item" href="@(RouteConstant.LIST)?Service=@item.Name">@item.Name</a></li>
+<nav class="nav-category">
+    <div class="container">
+        <div class="nav-category-inner">
+            <ul class="nav-category-list">
+                <li><a class="nav-category-item" href="@(RouteConstant.HOME)">HOME</a></li>
+                @foreach (var item in Model)
+                {
+                    <li><a class="nav-category-item" href="@(RouteConstant.LIST)?Service=@item.Name">@item.Name</a></li>
 
-                    }
+                }
 
-                    <li><a class="nav-category-item" href="@(RouteConstant.BOOK_REQUEST)">BOOK REQUEST</a></li>
-                </ul>
-            </div>
+                <li><a class="nav-category-item" href="@(RouteConstant.BOOK_REQUEST)">BOOK REQUEST</a></li>
+            </ul>
         </div>
-    </nav>
-</div>
+    </div>
+</nav>

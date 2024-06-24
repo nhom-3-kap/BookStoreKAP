@@ -51,10 +51,7 @@
                 </div>
 
                 <div class="header-search-content-left">
-                    <div class="header-search-wrap">
-                        <input type="text" name="input" placeholder="Search by author, Publisher, Genre" />
-                        <button class="header-search-btn active"><i class="bi bi-search"></i></button>
-                    </div>
+                    @await Component.InvokeAsync("Search")
                     @if (User.Identity?.IsAuthenticated != null && User.Identity.IsAuthenticated)
                     {
                         <div class="header-search-cart">

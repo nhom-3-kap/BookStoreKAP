@@ -8,7 +8,7 @@
         <div class="breadcrumb-wrap">
             <a href="@(RouteConstant.HOME)">Home</a>
             <span>&#10095;</span>
-            <p>@(ViewBag.Service)</p>
+            <p>@(ViewBag.Hambuger)</p>
             
         </div>
         <div class="row">
@@ -29,7 +29,7 @@
                                {
                                     <div class="new-releases-child">
                                         <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
-                                        <a href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@genre.ID">@genre.Name</a>
+                                        <a href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@(genre.ID)&Hambuger=@ViewBag.Service">@genre.Name</a>
                                     </div>
                                 }
                             </div>
@@ -44,7 +44,7 @@
 
                             <div class="new-releases-child">
                                 <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
-                                    <a href="@(RouteConstant.LIST)?Service=@ViewBag.Service">Liberated Saigon</a>
+                                <a href="@(RouteConstant.LIST)?Service=@(ViewBag.Service)&Hambuger=@ViewBag.Service">Liberated Saigon</a>
                             </div>
 
                             </div>
@@ -117,9 +117,12 @@
                 $("#currentprice").text(value)
                 const service  = $("input[name='service']").val()
                 const genres = $("input[name='genres']").val()
+                const input = location.href.split("?")[1].split("&")[0].split("=")
+                console.log(input)
                 handleAjax("/List/SortPriceBook", {
                     req: {
-                        MinPrice: 10000, MaxPrice: value, Service: service, GenreID: genres
+                        MinPrice: 10000, MaxPrice: value, Service: service, GenreID: genres, input: input[0] !== "input"?undefined: input[1]
+
                     }
                 }, (res) => {
                     if (res.success) {
@@ -159,10 +162,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    
-                                    
                                 `
-                        }).join()
+                        }).join("")
                         $("#book").html(html)
                     }
 

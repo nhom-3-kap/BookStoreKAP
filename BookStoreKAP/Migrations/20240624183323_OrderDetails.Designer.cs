@@ -4,6 +4,7 @@ using BookStoreKAP.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreKAP.Migrations
 {
     [DbContext(typeof(BookStoreKAPDBContext))]
-    partial class BookStoreKAPDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240624183323_OrderDetails")]
+    partial class OrderDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -347,10 +350,8 @@ namespace BookStoreKAP.Migrations
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.OrderDetail", b =>
                 {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
+                    b.Property<Guid>("OrderID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BookID")
                         .HasColumnType("uniqueidentifier");
@@ -360,8 +361,9 @@ namespace BookStoreKAP.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<Guid>("OrderID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("ID")
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -374,11 +376,9 @@ namespace BookStoreKAP.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.HasKey("ID");
+                    b.HasKey("OrderID", "BookID");
 
                     b.HasIndex("BookID");
-
-                    b.HasIndex("OrderID");
 
                     b.ToTable("OrderDetails");
                 });

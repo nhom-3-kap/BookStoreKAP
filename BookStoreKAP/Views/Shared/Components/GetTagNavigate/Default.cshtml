@@ -16,7 +16,7 @@
                     <li><a class="nav-category-item" href="@(RouteConstant.HOME)">HOME</a></li>
                     @foreach (var item in Model)
                     {
-                        <li><a class="nav-category-item" href="@(RouteConstant.LIST)?Service=@item.Name">@item.Name</a></li>
+                        <li><a class="nav-category-item" href="@(RouteConstant.LIST)?Service=@(item.Name)&Hambuger=@item.Name">@item.Name</a></li>
 
 
                     }

@@ -56,9 +56,9 @@
                         <div >
                             <div class="side-price-item">
                                 <p>Price Range:</p>
-                                <span>10000Đ</span>
+                            <span>@(string.Format("{0:0,00#} VNĐ", 10000))</span>
                                 <span>-</span>
-                                <span>500000Đ</span>
+                            <span>@(string.Format("{0:0,00#} VNĐ", 500000))</span>
                             </div>
                             <input id ="pricechange" type="range" min="10000" max ="500000"/> 
                             <p>10000Đ- <span id="currentprice"></span>Đ</p>
@@ -91,8 +91,8 @@
                                         <span>@book.Author</span>
                                     </div>
                                     <div class="card-product-wrap-price">
-                                        <span class="card-product-current-price">@book.Discount Đ</span>
-                                        <span class="card-product-old-price">@book.Price Đ</span>
+                                    <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", book.Discount))</span>
+                                    <span class="card-product-old-price">@(string.Format("{0:0,00#} VNĐ", book.Price))</span>
                                     </div>
                                 </div>
                                 <div class="card-product-footer">
@@ -124,6 +124,8 @@
                 }, (res) => {
                     if (res.success) {
                         const html = res.data.map((book) => {
+                            const formattedDiscount = book.discount.toLocaleString('vi-VN') + ' VNĐ';
+                            const formattedPrice = book.price.toLocaleString('vi-VN') + ' VNĐ';
                             return `
                                     
                                          <div class="col-lg-3">
@@ -145,8 +147,8 @@
                                                                         <span>${book.author}</span>
                                                     </div>
                                                     <div class="card-product-wrap-price">
-                                                                <span class="card-product-current-price">${book.discount} Đ</span>
-                                                                <span class="card-product-old-price">${book.price} Đ</span>
+                                                                        <span class="card-product-current-price">${formattedDiscount} </span>
+                                                                        <span class="card-product-old-price">${formattedPrice} </span>
                                                     </div>
                                                 </div>
                                                 <div class="card-product-footer">

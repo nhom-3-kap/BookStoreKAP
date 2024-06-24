@@ -4,21 +4,12 @@
 }
 <input hidden name ="service" value="@ViewBag.Service"/>
 <input hidden name="genres" value="@ViewBag.GenresID" />
-<div>
     <div class="container"> 
         <div class="breadcrumb-wrap">
             <a href="@(RouteConstant.HOME)">Home</a>
             <span>&#10095;</span>
             <p>@(ViewBag.Service)</p>
             
-        </div>
-        <div class="header-wrap">
-
-        <h3 class="header">@(ViewBag.Service)</h3>
-        <div class="wrap-btn">
-                <button class="active"><i class="bi bi-grid"> </i></button>
-                <button><i class="bi bi-list"> </i></button>
-        </div>
         </div>
         <div class="row">
             <div class="col-lg-2">
@@ -38,7 +29,7 @@
                                {
                                     <div class="new-releases-child">
                                         <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
-                                        <a href="@(RouteConstant.LIST)?Service=NewRelease&genresId=@genre.ID">@genre.Name</a>
+                                        <a href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@genre.ID">@genre.Name</a>
                                     </div>
                                 }
                             </div>
@@ -53,7 +44,7 @@
 
                             <div class="new-releases-child">
                                 <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
-                                <a href="@(RouteConstant.LIST)?Service=BestSellers">Liberated Saigon</a>
+                                    <a href="@(RouteConstant.LIST)?Service=@ViewBag.Service">Liberated Saigon</a>
                             </div>
 
                             </div>
@@ -128,13 +119,14 @@
                 const genres = $("input[name='genres']").val()
                 handleAjax("/List/SortPriceBook", {
                     req: {
-                        MinPrice: 10000, MaxPrice: value, Service: service, SeriesID: genres
+                        MinPrice: 10000, MaxPrice: value, Service: service, GenreID: genres
                     }
                 }, (res) => {
                     if (res.success) {
                         const html = res.data.map((book) => {
                             return `
-                                        <div class="col-lg-3">
+                                    
+                                         <div class="col-lg-3">
                                             <div class="card-product">
                                                 <div class="card-product-heading">
                                                     <a href="#">
@@ -165,8 +157,8 @@
                                                 </div>
                                             </div>
                                         </div>
-
-
+                                    
+                                    
                                 `
                         }).join()
                         $("#book").html(html)

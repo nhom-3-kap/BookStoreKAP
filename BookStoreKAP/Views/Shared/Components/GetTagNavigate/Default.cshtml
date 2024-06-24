@@ -1,12 +1,23 @@
 ﻿@model List<Tag>
-<nav class="nav-category">
-    <div class="container">
-        <div class="nav-category-inner">
-            <ul class="nav-category-list">
-                <li><a class="nav-category-item" href="@(RouteConstant.HOME)">HOME</a></li>
-                @foreach (var item in Model)
-                {
-                    <li><a class="nav-category-item" href="@(RouteConstant.LIST)?Service=@item.Name">@item.Name</a></li>
+
+@functions {
+    private string GetDisplayName(string originalName)
+    {
+        // Logic to change the display name
+        // Ví dụ: Thêm "Service: " trước tên
+        return "Service: " + originalName;
+    }
+}
+<div>
+    <nav class="nav-category">
+        <div class="container">
+            <div class="nav-category-inner">
+                <ul class="nav-category-list">
+                    <li><a class="nav-category-item" href="@(RouteConstant.HOME)">HOME</a></li>
+                    @foreach (var item in Model)
+                    {
+                        <li><a class="nav-category-item" href="@(RouteConstant.LIST)?Service=@item.Name">@item.Name</a></li>
+
 
                 }
 

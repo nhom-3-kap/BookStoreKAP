@@ -3,7 +3,7 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="container">
+@*<div class="container">
     <section class="shop-your-favourite">
         <div class="wrap-title">
             <div class="title-img">
@@ -48,25 +48,24 @@
             </div>
         </div>
     </section>
-</div>
+</div>*@
 @for (int i=0; i<Model.Count; i++)
 {
-    
-<div class="container">
-    <section class="section-new-release">
-        <div class="wrap-title">
-            <div class="title-img">
-                <img src="/images/Heading-Line-L.png" alt="heading left" />
+    <div class="container mt-4">
+        <section class="section-new-release">
+            <div class="wrap-title">
+                <div class="title-img">
+                    <img src="/images/Heading-Line-L.png" alt="heading left" />
+                </div>
+                <span class="title">@Model[i].Name</span>
+                <div class="title-img">
+                    <img src="/images/Heading-Line-R.png" alt="heading left" />
+                </div>
             </div>
-            <span class="title">@Model[i].Name</span>
-            <div class="title-img">
-                <img src="/images/Heading-Line-R.png" alt="heading left" />
-            </div>
-        </div>
-        
-         <div class="wrap-carousel">
+
+            <div class="wrap-carousel">
                 <div class="owl-carousel kap-carousel-newreleases" id="kap-carousel-newreleases-@(i+1)">
-                    @foreach( var item in Model[i].Books)
+                    @foreach (var item in Model[i].Books)
                     {
                         <div class="owl-carousel-item">
 
@@ -90,12 +89,12 @@
                                             <strong>Book Author: </strong>
                                         </span>
                                         <span>
-                                           @item.Author
+                                            @item.Author
                                         </span>
                                     </div>
                                     <div class="card-product-wrap-price">
-                                        <span class="card-product-current-price">@item.Discount</span>
-                                        <span class="card-product-old-price">@item.Price</span>
+                                        <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", item.Discount))</span>
+                                        <span class="card-product-old-price">@(string.Format("{0:0,00#} VNĐ", item.Price))</span>
                                     </div>
                                 </div>
                                 <div class="card-product-fotter">
@@ -119,24 +118,26 @@
 
                         </div>
                     }
-                
-               </div>
+
+                </div>
                 <div class="carousel-controls" id="carousel-controls-@(i+1)">
-                <button class="control control-left"><i class="bi bi-arrow-left"></i></button>
-                <button class="control control-right"><i class="bi bi-arrow-right"></i></button>
+                    <button class="control control-left"><i class="bi bi-arrow-left"></i></button>
+                    <button class="control control-right"><i class="bi bi-arrow-right"></i></button>
+                </div>
+
+                <div class="w-100 d-flex justify-content-center align-items-center">
+                    <a href="@(RouteConstant.LIST)?Service=@(Model[i].Name)" style="display: inline-flex; text-align: center;" class="kap-btn kap-btn-solid carousel-btn-more">View More</a>
+                </div>
+
             </div>
 
-            <button class="kap-btn kap-btn-solid carousel-btn-more">View More</button>
-             
-         </div>
-        
-    </section>
-</div>
+        </section>
+    </div>
 } 
 
 
 
-<section class="slider-content">
+@*<section class="slider-content">
     <div class="wrap-carousel">
         <div class="owl-carousel" id="slider-content">
             <div class="owl-carousel-item">
@@ -342,7 +343,7 @@
         </div>
     </section>
 
-    @*<section>
+    <section>
         <div class="wrap-title">
             <div class="title-img">
                 <img src="/images/Heading-Line-L.png" alt="heading left" />

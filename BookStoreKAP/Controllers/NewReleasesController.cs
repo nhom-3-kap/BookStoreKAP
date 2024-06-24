@@ -31,32 +31,28 @@ namespace BookStoreKAP.Controllers
             ViewBag.Service = Service;
             ViewBag.GenresID = genresId;
             var books = new List<Book>();
-            if (string.IsNullOrEmpty(Service) && genresId == Guid.Empty)
+            if (!string.IsNullOrEmpty(Service) && genresId == null)
             {
                 books = _context.Books
-                                .Where(b=> b.Tag.Name == Service)
+                                .Where(b => b.Tag.Name == Service)
                                 .OrderBy(b => b.Title)
                                 .ToList();
             }
             else
             {
                 books = _context.BookGenres
-                                //.Include(x=>x.BookGenres)
                                 .Where(b => b.GenreID == genresId && b.Book.Tag.Name == Service)
                                 .Select(B => B.Book)
                                 .OrderBy(b => b.Title)
                                 .ToList();
-                /*books = _context.Books
-                                .Where(b => b.Tag.Name == Service)
-                                .OrderBy(b => b.Title)
-                                .ToList();*/
             }
-            
             if (books == null || !books.Any())
             {
                 books ??= new List<Book>();
 
             }
+            
+            
             ViewBag.Books = books;
              
             return View();

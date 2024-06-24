@@ -1,6 +1,11 @@
 ﻿@model List<Tag>
-@{
-    
+@functions {
+    private string GetDisplayName(string originalName)
+    {
+        // Logic to change the display name
+        // Ví dụ: Thêm "Service: " trước tên
+        return "Service: " + originalName;
+    }
 }
 <div>
     <nav class="nav-category">

@@ -19,19 +19,6 @@
         margin-bottom: 30px;
 
     }
-    .header-wrap{
-        display: flex;
-        justify-content: space-between;
-    }
-    .wrap-btn > button{
-        background-color: transparent;
-        padding: 6px 10px;
-        border: 1px solid #444;
-
-    }
-.wrap-btn > button.active > i{
-    color: #ff0000;
-}
 .side-bar > div > h6{
     color: #ff0000;
 

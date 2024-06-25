@@ -21,7 +21,9 @@
                 <div class="owl-carousel kap-carousel-newreleases" id="kap-carousel-newreleases-@(i+1)">
                     @foreach (var item in Model[i].Books)
                     {
-                        <div class="owl-carousel-item">
+                        if (item.Quantity > 0)
+                        {
+                            <div class="owl-carousel-item">
 
                             <div class="card-product">
                                 <div class="card-product-heading">
@@ -71,6 +73,7 @@
                             </div>
 
                         </div>
+                        }
                     }
 
                 </div>

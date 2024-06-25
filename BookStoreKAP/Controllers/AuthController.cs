@@ -25,7 +25,7 @@ namespace BookStoreKAP.Controllers
 
 
         [HttpPost]
-        public IActionResult ExternalLogin(string provider, string returnUrl)
+        public IActionResult ExternalLogin(string provider, string returnUrl) // chuyển hướng đăng nhập
         {
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Auth", new { ReturnUrl = returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);

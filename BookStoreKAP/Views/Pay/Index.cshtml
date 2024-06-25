@@ -26,46 +26,51 @@
                                     <div class="myprofile">
                                         <input type="hidden" name="user_id" value="509">
                                         <h2>Add New Address</h2>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                <h4 class="labelhead">Name:<span class="req">*</span></h4>
-                                                    <input name="name" type="text" placeholder="Truong Hoang Phu" value="">
+                                        <form asp-controller="Pay" asp-action="Payment" method="post">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <h4 class="labelhead">Name:<span class="req">*</span></h4>
+                                                        <input name="Name" type="text" placeholder="Truong Hoang Phu" value="">
 
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                <h4 class="labelhead">Phone:<span class="req">*</span></h4>
-                                                    <input name="address" type="text" placeholder="0376976198" value="">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <h4 class="labelhead">Phone:<span class="req">*</span></h4>
+                                                        <input name="Phone" type="text" placeholder="0376976198" value="">
 
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                <h4 class="labelhead">Email:<span class="req">*</span></h4>
-                                                    <input name="address" type="text" placeholder="phuth21@uef.edu.vn" value="">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <h4 class="labelhead">Email:<span class="req">*</span></h4>
+                                                        <input name="Email" type="text" placeholder="phuth21@uef.edu.vn" value="">
 
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                <h4 class="labelhead">Address:<span class="req">*</span></h4>
-                                                <input name="address" type="text" placeholder="141 Dien Bien Phu, phuong 25, quan Binh Thanh, Tp. HCM" value="">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <h4 class="labelhead">Address:<span class="req">*</span></h4>
+                                                        <input name="Address" type="text" placeholder="141 Dien Bien Phu, phuong 25, quan Binh Thanh, Tp. HCM" value="">
 
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="labelhead" for="">Payment method<span class="req">*</span></label>
+                                                        <select  class="s2 select2-hidden-accessible" name="PaymentMethod">
+                                                            <option>Choose One</option>
+                                                            <option value="Card" >Card</option>
+                                                        </select>
+
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label class="labelhead" for="">Payment method<span class="req">*</span></label>
-                                                    <select onchange="getState(this.value)" class="s2 select2-hidden-accessible" name="country" id="country" data-select2-id="country" tabindex="-1" aria-hidden="true">
-                                                        <option>Choose One</option>
-                                                        <option value="101" selected="" data-select2-id="2">Card</option>
-@*                                                     </select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="1" style="width: 218.587px;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-country-container"><span class="select2-selection__rendered" id="select2-country-container" role="textbox" aria-readonly="true" title="India">India</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
- *@
-                                                </div>
-                                            </div>
-                                        </div>
+										    <input type="hidden" name="rowid" id="rowid" value="">
+                                            <input type="hidden" name="type" id="type" value="shipping" hidden="">
+                                            <button name="" id="" class="btn btn-danger" type="submit" role="button">Submit</button>
+                                        </form>
                                         @* <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -115,9 +120,7 @@
                                                 </div>
                                             </div>
                                     </div>*@
-                                        <input type="hidden" name="rowid" id="rowid" value="">
-                                        <input type="hidden" name="type" id="type" value="shipping" hidden="">
-                                        <button name="" id="" class="btn btn-danger" type="submit" role="button">Submit</button>
+                                        
                                     </div>
                             </div>
 

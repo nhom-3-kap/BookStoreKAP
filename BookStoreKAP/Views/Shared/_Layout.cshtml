@@ -16,9 +16,9 @@
 </head>
 <body>
     <header class="header">
-        <section class="header-top">
-            <p>BUY BESTSELLERS AT UNBELIEVABLE DISCOUNTS! </p>
-            <a href="#">SHOP NOW</a>
+        <section class="header-top d-flex justify-content-center align-items-center ">
+            <p class="mb-0 me-2">BUY BESTSELLERS AT UNBELIEVABLE DISCOUNTS! </p>
+            <a href="/Home">SHOP NOW</a>
         </section>
 
         <div class="container">
@@ -51,10 +51,7 @@
                 </div>
 
                 <div class="header-search-content-left">
-                    <div class="header-search-wrap">
-                        <input type="text" name="input" placeholder="Search by author, Publisher, Book type, Category, SKU" />
-                        <button class="header-search-btn active"><i class="bi bi-search"></i></button>
-                    </div>
+                    @await Component.InvokeAsync("Search")
                     @if (User.Identity?.IsAuthenticated != null && User.Identity.IsAuthenticated)
                     {
                         <div class="header-search-cart">

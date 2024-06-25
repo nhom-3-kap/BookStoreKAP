@@ -8,6 +8,8 @@
         public string Service { get; set; }
         public Guid GenreID { get; set; }
 
+        public string input {get; set; }
+
 
     }
 }

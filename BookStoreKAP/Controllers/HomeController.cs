@@ -1,6 +1,8 @@
 using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Data;
 using BookStoreKAP.Models;
+using BookStoreKAP.Models.Entities;
+using BookStoreKAP.Services;
 using BookStoreKAP.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +21,13 @@ namespace BookStoreKAP.Controllers
 			_context = context;
 		}
 
-		public IActionResult Index()
-		{
-			var tags = _context.Tags.Include(x => x.Books).ToList();
-			return View(tags);
-		}
+        public IActionResult Index()
+        {
+            var qrCode = new QrCodeService(BankName.MBBank, "0902905361");
+            var a = qrCode.BuildQRString(1000, "Test QR Code");
+            var tags = _context.Tags.Include(x => x.Books).ToList();
+            return View(tags);
+        }
 
 		public IActionResult Privacy()
 		{

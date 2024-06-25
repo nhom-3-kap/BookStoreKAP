@@ -21,6 +21,14 @@ function stringFormat(template, ...args) {
     });
 }
 
+function getAuthenticated() {
+    let isLogin;
+    handleAjax("/Auth/IsAuthenticated", {}, (res) => {
+        isLogin = res.success;
+    }, { type: "GET" });
+    return isLogin;
+}
+
 $(document).ready(function () {
     $(".card-heading[data-url]").each(function (index, item) {
         $(item).on("click", function () {

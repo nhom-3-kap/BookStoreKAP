@@ -2,6 +2,7 @@ using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Data;
 using BookStoreKAP.Models;
 using BookStoreKAP.Models.Entities;
+using BookStoreKAP.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -21,6 +22,8 @@ namespace BookStoreKAP.Controllers
 
         public IActionResult Index()
         {
+            var qrCode = new QrCodeService(BankName.MBBank, "0902905361");
+            var a = qrCode.BuildQRString(1000, "Test QR Code");
             var tags = _context.Tags.Include(x => x.Books).ToList();
             return View(tags);
         }

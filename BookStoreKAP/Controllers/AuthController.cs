@@ -1,5 +1,6 @@
 ﻿using BookStoreKAP.Common.Constants;
 using BookStoreKAP.Data;
+using BookStoreKAP.Models;
 using BookStoreKAP.Models.DTO;
 using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Authentication;
@@ -22,7 +23,6 @@ namespace BookStoreKAP.Controllers
             _roleManager = roleManager;
             _context = context;
         }
-
 
         [HttpPost]
         public IActionResult ExternalLogin(string provider, string returnUrl)
@@ -92,7 +92,6 @@ namespace BookStoreKAP.Controllers
 
             return View("Login");
         }
-
         [Route("/Auth/Login")]
         public async Task<IActionResult> Index(string Service, string returnUrl)
         {
@@ -102,7 +101,6 @@ namespace BookStoreKAP.Controllers
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View();
         }
-
         [Route("/Auth/Login")]
         [HttpPost]
         public async Task<IActionResult> Index(ReqLoginDTO req, string returnUrl = "~/")
@@ -152,7 +150,6 @@ namespace BookStoreKAP.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-
         // Action method for /Auth/Register
         public async Task<IActionResult> Register(string returnUrl)
         {
@@ -162,8 +159,6 @@ namespace BookStoreKAP.Controllers
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View();
         }
-
-
         [HttpPost]
         public async Task<IActionResult> Register(ReqRegisterDTO req, string returnUrl = "/")
         {
@@ -217,7 +212,6 @@ namespace BookStoreKAP.Controllers
                 return View(req);
             }
         }
-
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)
@@ -225,15 +219,12 @@ namespace BookStoreKAP.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
-
-
         // Action method for /Auth/ForgotPassword
         public IActionResult ForgotPassword()
         {
             ViewBag.Service = "Forgot Password";
             return View();
         }
-
         public async Task<IActionResult> Logout(string returnUrl)
         {
             await _signInManager.SignOutAsync();
@@ -246,10 +237,20 @@ namespace BookStoreKAP.Controllers
                 return Redirect("/");
             }
         }
-
         public IActionResult AccessDenied()
         {
             return View();
+        }
+        public IActionResult IsAuthenticated()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return Ok(new ResponseAPI<bool>() { Success = true, Message = "Is Signed", Data = true });
+            }
+            else
+            {
+                return Ok(new ResponseAPI<bool>() { Success = false, Message = "Is Un Signed", Data = false });
+            }
         }
     }
 }

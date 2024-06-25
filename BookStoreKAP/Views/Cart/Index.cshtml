@@ -1,7 +1,7 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<CartItem>
+
 @{
+    var totalPrice = 0.0;
 }
 <div>
     <div class="container">
@@ -21,60 +21,73 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 col-lg-8">
-                        <div class="product-list">
+                        <div class="row">
+                            @foreach (var cartItem in Model)
+                            {
+                                totalPrice += cartItem.Quantity * cartItem.Price;
+                                <div class="col-lg-12 mt-2">
+                                <div class="product-list">
+                                    <div>
+                                        <div class="pr-listbox" cart-item="2954">
+                                            <div class="list-primg">
+                                                <img src="@(cartItem.Book.Thumbnail)">
 
-                            <form action="" id="cart-form">
-                                <div class="pr-listbox" cart-item="2954">
-                                    <div class="list-primg">
-                                        <img src="/images/tuduytontai.jpg">
-
-                                    </div>
-                                    <div class="checkdetails">
-                                        <h3><a href="#">TA TƯ DUY<br>TA TỒN TẠI</a></h3>
-                                        <h6>
-                                            <span>Book Author:</span>
-                                            James Allen
-                                        </h6>
-                                        <p>1 Offer Applied <i class="bi bi-info-circle-fill"></i> <b> 20.04% Off</b></p>
+                                            </div>
+                                            <div class="checkdetails">
+                                                <h3><a href="#">@(cartItem.Book.Title)</a></h3>
+                                                <h6>
+                                                    <span>Book Author:</span>
+                                                    @(cartItem.Book.Author)
+                                                </h6>
+                                                <p>1 Offer Applied <i class="bi bi-info-circle-fill"></i> <b> 20.04% Off</b></p>
 
 
-                                        399$
-                                        <del>499$</del>
-                                    </div>
-                                    <div class="qunatity-check ml-auto">
+                                                @(string.Format("{0:0,00# VNĐ}", cartItem.Price))
+                                            </div>
+                                            <div class="qunatity-check ml-auto">
 
-                                        <div class="input-group">
-                                            <span class="input-group-btn">
-                                                <button type="button" class="quantity-left-minus btn btn-number q_inc_dec" data-rec_id="2954" data-type="minus" data-field="">
+                                                <div class="input-group">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="quantity-left-minus btn btn-number q_inc_dec" data-rec_id="2954" data-type="minus" data-field="">
 
-                                                    <i class="bi bi-dash"></i>
-                                                </button>
-                                            </span>
-                                            <input type="hidden" name="item_id[]" value="2954">
+                                                            <i class="bi bi-dash"></i>
+                                                        </button>
+                                                    </span>
+                                                    <input type="hidden" name="item_id[]" value="2954">
 
-                                            <input type="text" id="q_cart" name="quantity[]" class="form-control input-number" value="1" min="1" max="3" readonly="">
-                                            <span class="input-group-btn">
-                                                <button type="button" class="quantity-right-plus btn btn-number q_inc_dec" data-rec_id="2954" data-type="plus" data-field="">
-                                                    <i class="bi bi-plus"></i>
-                                                </button>
-                                            </span>
+                                                    <input type="text" id="q_cart" name="quantity[]" class="form-control input-number" value="@(cartItem.Quantity)" min="1" max="3" readonly="">
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="quantity-right-plus btn btn-number q_inc_dec" data-rec_id="2954" data-type="plus" data-field="">
+                                                            <i class="bi bi-plus"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+
+                                            </div>
+                                            <div class="price-check">
+                                                <h5> 
+                                                    <span>
+                                                        @(string.Format("{0:0,00# VNĐ}", cartItem.Price * cartItem.Quantity))
+                                                    </span>
+                                                </h5>
+                                                <a class="rm-btn" onclick="remove_from_cart('2954')">Remove</a>
+                                            </div>
                                         </div>
+                                        <p class="text-right">
 
-                                    </div>
-                                    <div class="price-check">
-                                        <h5> <del></del> <span>399$</span></h5>
-                                        <a class="rm-btn" onclick="remove_from_cart('2954')">Remove</a>
+
+                                        </p>
                                     </div>
                                 </div>
-                                <p class="text-right">
+                            </div>
+                            }
 
 
-                                </p>
-                            </form>
+                            
                         </div>
 
                     </div>
-                    <div class="col-md-12 col-lg-4">
+                    <div class="col-md-12 col-lg-4 mt-2">
                         <div class="checkoutslip" id="checkoutslip">
                             <h2>Order Summary</h2>
                             <div class="row">
@@ -82,16 +95,14 @@
                                     <h5>Subtotal</h5>
                                 </div>
                                 <div id="summary_price" class="col-5 text-right">
-                                    <h5>1,976.00$</h5>
+                                    <h5>@(string.Format("{0:0,00# VNĐ}", totalPrice))</h5>
                                 </div>
-
-
 
                                 <div class="col-7">
-                                    <h5>Tax(0%)</h5>
+                                    <h5>Tax</h5>
                                 </div>
                                 <div class="col-5 text-right text-danger">
-                                    <h5> 0.00$</h5>
+                                    <h5>10%</h5>
                                 </div>
 
 
@@ -102,7 +113,7 @@
                                         <h4>Total Amount</h4>
                                     </div>
                                     <div id="total_price" class="col-5 text-right">
-                                        <h4 id="gross_price">1,976.00$</h4>
+                                        <h4 id="gross_price">@(string.Format("{0:0,00# VNĐ}", totalPrice + (totalPrice * 0.1)))</h4>
                                     </div>
                                 </div>
                             </div>
@@ -110,8 +121,8 @@
 
 
 
-                            <a href="@(RouteConstant.PAY)" class="chakeout-btn">
-                                <button class="btn chakeout-btn w-100">Proceed To Address Select</button>
+                            <a href="@(RouteConstant.PAY)" class="chakeout-btn btn chakeout-btn w-100">
+                                Proceed To Address Select
                             </a>
                             
                         </div>

@@ -1,33 +1,6 @@
 ﻿@{
     ViewData["Title"] = ViewBag.Service;
 }
-
-<script src="https://cdn.jsdelivr.net/npm/@("@emailjs")/browser@4/dist/email.min.js"></script>
-<script type="text/javascript">
-    (function () {
-        emailjs.init("xKXTUwEEes8A_maGU"); // Replace with your EmailJS user ID
-    })();
-</script>
-<script type="text/javascript">
-    window.onload = function () {
-        document.getElementById('book-request-form').addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            // Collect the form data using EmailJS
-            emailjs.sendForm('service_t2f4gbg', 'template_jn1e5qk', this)
-                .then(function (response) {
-                    console.log('SUCCESS!', response.status, response.text);
-                    alert('Your request has been submitted successfully!');
-                    // Optionally, clear the form fields after submission
-                    document.getElementById('book-request-form').reset();
-                }, function (error) {
-                    console.log('FAILED...', error);
-                    alert('There was an error submitting your request. Please try again later.');
-                });
-        });
-    }
-</script>
-
 <div class="container">
     <div class="header-wrap">
         <h3 class="header">@ViewBag.Service</h3>
@@ -75,3 +48,25 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/@("@emailjs")/browser@4/dist/email.min.js"></script>
+    <script>
+        (function () {
+            emailjs.init("xKXTUwEEes8A_maGU");
+        })();
+        $(document).ready(function () {
+            $("#book-request-form").on("submit", function (e) {
+                e.preventDefault();
+
+                emailjs.sendForm('service_t2f4gbg', 'template_jn1e5qk', this)
+                    .then(function (response) {
+                        toastr.success("Send Email Successfully");
+                        $('#book-request-form').trigger("reset");
+                    }, function (error) {
+                        toastr.error("Send Email Successfully");
+                    });
+            });
+        });
+    </script>
+}

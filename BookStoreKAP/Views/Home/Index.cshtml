@@ -3,52 +3,6 @@
     ViewData["Title"] = "Home";
 }
 
-@*<div class="container">
-    <section class="shop-your-favourite">
-        <div class="wrap-title">
-            <div class="title-img">
-                <img src="/images/Heading-Line-L.png" alt="heading left" />
-            </div>
-            <span class="title">SHOP YOUR FAVOURITE BOOKS ONLINE AT OXFORD BOOKSTORE</span>
-            <div class="title-img">
-                <img src="/images/Heading-Line-R.png" alt="heading left" />
-            </div>
-        </div>
-
-        <div class="wrap-card-heading">
-            <div class="card-heading" data-url="/List?Service=NewReleases">
-                <div class="card-heading-img">
-                    <img src="/images/book-item-card.png" alt="book item card" />
-                </div>
-                <span class="card-heading-title">NEW RELEASE</span>
-            </div>
-            <div class="card-heading " data-url="/">
-                <div class="card-heading-img">
-                    <img src="/images/pen-item-card.png" alt="book item card" />
-                </div>
-                <span class="card-heading-title">SIGNED EDITIONS</span>
-            </div>
-            <div class="card-heading" data-url="/List?Service=BestSellers">
-                <div class="card-heading-img">
-                    <img src="/images/best-item-card.png" alt="book item card" />
-                </div>
-                <span class="card-heading-title">BESTSELLERS</span>
-            </div>
-            <div class="card-heading" data-url="/">
-                <div class="card-heading-img">
-                    <img src="/images/books-item-card.png" alt="book item card" />
-                </div>
-                <span class="card-heading-title">SUMMER READING</span>
-            </div>
-            <div class="card-heading">
-                <div class="card-heading-img">
-                    <img src="/images/tag-item-card.png" alt="book item card" />
-                </div>
-                <span class="card-heading-title">VietNamese Books</span>
-            </div>
-        </div>
-    </section>
-</div>*@
 @for (int i=0; i<Model.Count; i++)
 {
     <div class="container mt-4">
@@ -101,7 +55,7 @@
 
                                     <div class="card-product-wrap-btn">
                                         <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook">BUY</button>
-                                        <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart">ADD TO CART</button>
+                                        <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart" data-bookID="@(item.ID)" >ADD TO CART</button>
                                     </div>
 
                                     <div class="card-product-wrap-star">
@@ -149,14 +103,25 @@
 
             $(".btnAddToCart").each(function () {
                 $(this).on("click", function () {
+                    const _this = this;
+                    $(_this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...`).prop("disabled", true);
                     if (!getAuthenticated()) {
                         $("#modalLogin").modal("show");
                     } else {
-
-                        //Call api add to card
-
-                        $(this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...`).prop("disabled", true);
+                        const bookID = $(_this).attr("data-bookID");
+                        handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
+                            if (res.success) {
+                                toastr.success(res.message);
+                                const count = getCountCartAPI();
+                                $("#spanCartItemCount").text(count);
+                            } else {
+                                toastr.error(res.message);
+                            }
+                        });
                     }
+                    setTimeout(() => {
+                        $(_this).html(`ADD TO CART`).prop("disabled", false); 
+                    }, 100)
                 });
             });
             

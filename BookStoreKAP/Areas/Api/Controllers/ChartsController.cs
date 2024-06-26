@@ -69,8 +69,8 @@ namespace BookStoreKAP.Areas.Api.Controllers
 
                 // Monthly data
                 var monthlyData = await _context.Orders
-                                                .Where(o => o.Status == StatusType.APPROVED && o.OrderDate.Year == year)
-                                                .GroupBy(o => new { o.OrderDate.Year, o.OrderDate.Month })
+                                                .Where(o => o.Status == StatusType.APPROVED && o.CreatedAt.Year == year)
+                                                .GroupBy(o => new { o.CreatedAt.Year, o.CreatedAt.Month })
                                                 .Select(g => new
                                                 {
                                                     Period = g.Key.Month, // Chỉ lấy tháng
@@ -79,8 +79,8 @@ namespace BookStoreKAP.Areas.Api.Controllers
                                                 .ToListAsync();
                 // Quarterly data
                 var quarterlyData = await _context.Orders
-                                                .Where(o => o.Status == StatusType.APPROVED && o.OrderDate.Year == year)
-                                                .GroupBy(o => new { o.OrderDate.Year, Quarter = (o.OrderDate.Month - 1) / 3 + 1 })
+                                                .Where(o => o.Status == StatusType.APPROVED && o.CreatedAt.Year == year)
+                                                .GroupBy(o => new { o.CreatedAt.Year, Quarter = (o.CreatedAt.Month - 1) / 3 + 1 })
                                                 .Select(g => new
                                                 {
                                                     Period = "Q" + g.Key.Quarter, // Chỉ lấy quý
@@ -90,8 +90,8 @@ namespace BookStoreKAP.Areas.Api.Controllers
 
                 // Yearly data
                 var yearlyData = await _context.Orders
-                                                .Where(o => o.Status == StatusType.APPROVED && o.OrderDate.Year == year)
-                                                .GroupBy(o => o.OrderDate.Year)
+                                                .Where(o => o.Status == StatusType.APPROVED && o.CreatedAt.Year == year)
+                                                .GroupBy(o => o.CreatedAt.Year)
                                                 .Select(g => new
                                                 {
                                                     Year = g.Key.ToString(), // Chỉ lấy năm

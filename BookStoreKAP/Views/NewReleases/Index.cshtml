@@ -75,7 +75,7 @@
                         <div class="col-lg-3">
                             <div class="card-product">
                                 <div class="card-product-heading">
-                                    <a href="#">
+                                <a href="@(RouteConstant.PRODUCT_DETAIL)/@book.ID">
                                         <img src="@book.Thumbnail" alt="@book.Title" />
                                     </a>
                                     <button>
@@ -129,12 +129,13 @@
                         const html = res.data.map((book) => {
                             const formattedDiscount = book.discount.toLocaleString('vi-VN') + ' VNĐ';
                             const formattedPrice = book.price.toLocaleString('vi-VN') + ' VNĐ';
+                            const productDetailUrl = `${RouteConstant.PRODUCT_DETAIL}/${book.ID}`;
                             return `
                                     
                                          <div class="col-lg-3">
                                             <div class="card-product">
                                                 <div class="card-product-heading">
-                                                    <a href="#">
+                                                    <a href="${productDetailUrl}">
                                                                      <img src="${book.thumbnail}" alt="${book.title}" />
                                                     </a>
                                                     <button>

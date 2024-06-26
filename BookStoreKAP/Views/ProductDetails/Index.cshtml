@@ -39,7 +39,7 @@
             </div>
             <div class="product-actions">
                 <input type="number" id="quantity" name="quantity" value="1" min="1" max=@Model.Book.Quantity>
-                <button class="add-to-cart">ADD TO CART</button>
+                <button class="add-to-cart  btnAddToCart" data-bookID="@(Model.Book.ID)">ADD TO CART</button>
                 <button class="add-to-wishlist">♡ ADD TO WISHLIST</button>
             </div>
 
@@ -70,5 +70,33 @@
     </div>
 </div>
 @section scripts {
-    <script src="~/js/rating-stars.js"></script>
+    <script src="/js/home.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".btnAddToCart").each(function () {
+                $(this).on("click", function () {
+                    const _this = this;
+                    $(_this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...`).prop("disabled", true);
+                    if (!getAuthenticated()) {
+                        $("#modalLogin").modal("show");
+                    } else {
+                        const bookID = $(_this).attr("data-bookID");
+                        handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
+                            if (res.success) {
+                                toastr.success(res.message);
+                                const count = getCountCartAPI();
+                                $("#spanCartItemCount").text(count);
+                            } else {
+                                toastr.error(res.message);
+                            }
+                        });
+                    }
+                    setTimeout(() => {
+                        $(_this).html(`ADD TO CART`).prop("disabled", false);
+                    }, 100)
+                });
+            });
+
+        });
+    </script>
 }

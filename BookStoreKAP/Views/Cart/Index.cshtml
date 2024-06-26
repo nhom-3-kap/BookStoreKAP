@@ -26,7 +26,7 @@
                             <div class="row">
                                 @foreach (var cartItem in Model)
                                 {
-                                    totalPrice += cartItem.Quantity * cartItem.Price;
+                                    totalPrice += cartItem.Quantity * cartItem.Book.Discount;
                                     <div class="col-lg-12 mt-2">
                                         <div class="product-list">
                                             <div>
@@ -41,10 +41,7 @@
                                                             <span>Book Author:</span>
                                                             @(cartItem.Book.Author)
                                                         </h6>
-                                                        <p>1 Offer Applied <i class="bi bi-info-circle-fill"></i> <b> 20.04% Off</b></p>
-
-
-                                                        @(string.Format("{0:0,00# VNĐ}", cartItem.Price))
+                                                        @(string.Format("{0:0,00# VNĐ}", cartItem.Book.Discount))
                                                     </div>
                                                     <div class="qunatity-check ml-auto">
 
@@ -69,7 +66,7 @@
                                                     <div class="price-check">
                                                         <h5>
                                                             <span>
-                                                                @(string.Format("{0:0,00# VNĐ}", cartItem.Price * cartItem.Quantity))
+                                                                @(string.Format("{0:0,00# VNĐ}", cartItem.Book.Discount * cartItem.Quantity))
                                                             </span>
                                                         </h5>
                                                         <a class="rm-btn" onclick="remove_from_cart('2954')">Remove</a>
@@ -106,8 +103,6 @@
                                     <div class="col-5 text-right text-danger">
                                         <h5>10%</h5>
                                     </div>
-
-
                                 </div>
                                 <div class="gap-cart">
                                     <div class="row">
@@ -119,10 +114,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
-
-
                                 <a href="@(RouteConstant.PAY)?totalPrice=@(totalPrice + (totalPrice * 0.1))" class="chakeout-btn btn chakeout-btn w-100">
                                     Proceed To Address Select
                                 </a>

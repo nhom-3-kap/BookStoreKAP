@@ -56,7 +56,10 @@
                                 <div class="card-product-fotter">
 
                                     <div class="card-product-wrap-btn">
-                                        <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook">BUY</button>
+                                            <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook" data-bookID="@(item.ID)"
+                                                    onclick="window.location.href='@Url.RouteUrl(RouteConstant.CART)';">
+                                                BUY
+                                            </button>
                                         <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart" data-bookID="@(item.ID)" >ADD TO CART</button>
                                     </div>
 
@@ -98,13 +101,27 @@
         $(document).ready(function () {
             $(".btnBuyBook").each(function () {
                 $(this).on("click", function () {
+                    const _this = this;
                     if (!getAuthenticated()) {
                         $("#modalLogin").modal("show");
                     }
                     else
                     {
-                        //
+                        const bookID = $(_this).attr("data-bookID");
+                        handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
+                            if (res.success) {
+                                toastr.success(res.message);
+                                const count = getCountCartAPI();
+                                $("#spanCartItemCount").text(count);
+                                const cartLink = `@Url.RouteUrl(RouteConstant.CART)`;
+                                location.href = "https://localhost:5001/Cart";
+                            } else {
+                                toastr.error(res.message);
+                            }
+                        });
+                      
                     }
+
                 });
             });
 

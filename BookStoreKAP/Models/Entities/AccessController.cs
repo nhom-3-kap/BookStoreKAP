@@ -14,5 +14,6 @@ namespace BookStoreKAP.Models.Entities
 
         public ICollection<Domain> Domains { get; set; }
         public ICollection<Policy> Policies { get; set; }
+
     }
 }

@@ -55,6 +55,18 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = new PathString("/Auth/Login");
+    options.Events.OnRedirectToLogin = context =>
+    {
+        if (context.Request.Path.StartsWithSegments("/Admin/HomeAdmin"))
+        {
+            context.Response.StatusCode = 200;
+            return Task.CompletedTask;
+        }
+        context.Response.Redirect(options.LoginPath);
+        return Task.CompletedTask;
+    };
+
+    options.LoginPath = new PathString("/Auth/Login");
     options.LogoutPath = new PathString("/Auth/Logout");
     options.AccessDeniedPath = new PathString("/Auth/AccessDenied");
 });
@@ -93,11 +105,16 @@ app.UseMiddleware<AccessControlMiddleware>();
 
 app.Use(async (context, next) =>
 {
-    if (context.Request.Path.StartsWithSegments("/Admin") && context.Request.Path == "/Admin")
+    if (context.Request.Path == "/Admin/HomeAdmin")
     {
-        context.Response.Redirect("/Admin/HomeAdmin");
+        await next();
         return;
     }
+    //if (context.Request.Path.StartsWithSegments("/Admin") && context.Request.Path == "/Admin")
+    //{
+    //    context.Response.Redirect("/Admin/HomeAdmin");
+    //    return;
+    //}
     await next();
 });
 

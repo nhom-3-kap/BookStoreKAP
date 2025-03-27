@@ -25,6 +25,12 @@ namespace BookStoreKAP.Middleware
             using var scope = _scopeFactory.CreateScope();
             var _context = scope.ServiceProvider.GetRequiredService<BookStoreKAPDBContext>();
 
+            if (context.Request.Path.StartsWithSegments("/Admin/HomeAdmin"))
+            {
+                await _next(context);
+                return;
+            }
+
             var endpoint = context.GetEndpoint();
             if (endpoint != null)
             {

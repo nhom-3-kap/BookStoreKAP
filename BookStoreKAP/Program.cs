@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using BookStoreKAP.Data;
 using BookStoreKAP.Middleware;
 using BookStoreKAP.Areas.Admin.Controllers;
+using BookStoreKAP.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -79,6 +80,8 @@ builder.Services.AddScoped<RoleManager<Role>>();
 builder.Services.AddScoped<UserManager<User>>();
 builder.Services.AddScoped<BookStoreKAPDBContext>();
 builder.Services.AddScoped<RolesController>();
+builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+
 #endregion
 
 var app = builder.Build();

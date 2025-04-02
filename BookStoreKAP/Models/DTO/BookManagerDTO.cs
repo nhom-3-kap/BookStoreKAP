@@ -27,8 +27,13 @@ namespace BookStoreKAP.Models.DTO
         public Guid TagID { get; set; }
         [Required]
         public List<Guid> GenreIds { get; set; }
-
+        [Required]
         public string? Synopsis { get; set; }
+
+        public DateTime? CreatedAt { get; set; }
+        [Required]
+        public int BuyCount { get; set; } = 0;
+
     }
 
     public class ReqQuerySearchBook : BaseRequestQueryManagerDTO
@@ -39,6 +44,10 @@ namespace BookStoreKAP.Models.DTO
         public string? Author { get; set; }
         public Guid? SeriesID { get; set; }
         public Guid? TagID { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public int? BuyCount { get; set; }
+
+
     }
 
     public class ReqModifyBook
@@ -59,5 +68,8 @@ namespace BookStoreKAP.Models.DTO
         public Guid TagID { get; set; }
         public List<Guid> GenreIds { get; set; }
         public string? Synopsis { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public int BuyCount { get; set; } = 0;
+
     }
 }

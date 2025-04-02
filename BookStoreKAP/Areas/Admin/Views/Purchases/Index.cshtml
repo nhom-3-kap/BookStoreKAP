@@ -1,0 +1,158 @@
+﻿@model List<PurchaseViewModel>
+@{
+    ViewBag.Title = "Purchases Management";
+    ReqQuerySearchPurchase searchValue = ViewBag.SearchValue ?? new ReqQuerySearchPurchase();
+    PaginationModel pagination = ViewBag.Pagination ?? new PaginationModel();
+    var totalPages = (int)Math.Ceiling(pagination.TotalItems / (double)pagination.PageSize);
+}
+<div class="container">
+    <div id="contentSearch">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="text-primary">Search</h3>
+            </div>
+            <hr />
+            <div class="col-lg-12">
+                <form asp-action="Index" method="GET" id="frmSearchPurchase">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label fw-bold" for="txtSTitle">Title</label>
+                                <input type="text" id="txtSTitle" name="Title" class="form-control" placeholder="Enter title..." value="@searchValue?.Title" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label fw-bold" for="txtSAuthor">Author</label>
+                                <input type="text" id="txtSAuthor" name="Author" class="form-control" placeholder="Enter author name..." value="@searchValue?.Author" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label fw-bold" for="txtSUserName">User Name</label>
+                                <input type="text" id="txtSUserName" name="UserName" class="form-control" placeholder="Enter user name..." value="@searchValue?.UserName" />
+                            </div>
+                        </div>
+                        <div class="col-lg-12 mt-2">
+                            <div class="d-flex align-items-center justify-content-end">
+                                <button class="btn btn-info text-white" id="btnFindPurchases"><i class="bi bi-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div>
+                    <h3 class="text-primary">Purchased Books</h3>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <table id="tblPurchases" class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>User Name</th>
+                            <th>Date</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Count > 0)
+                        {
+                            for (int i = 0; i < Model.Count; i++)
+                            {
+                                        <tr>
+                                            <td>@(i + 1)</td>
+                                            <td>@(Model[i].Title)</td>
+                                            <td>@(Model[i].Author)</td>
+                                            <td>@(Model[i].UserName)</td>
+                                            <td>@(Model[i].BoughtDate.ToString("yyyy-MM-dd"))</td>
+                                            <td>@(Model[i].Quantity)</td>
+                                            <td>@(Model[i].Price.ToString("C"))</td>
+                                            <td>@((Model[i].Price * Model[i].Quantity).ToString("C"))</td>
+                                            <td>
+                                                <div class="d-flex align-items-center" style="column-gap: 4px;">
+                                                    <button class="btn btn-danger btn-sm btnDeletePurchase" data-purchaseID="@(Model[i].ID)"><i class="bi bi-trash"></i></button>
+                                                    <a href="@(RouteConstant.ADMIN_PURCHASES_MODIFY)?menuKey=PM&purchaseID=@(Model[i].ID)" class="btn btn-info btn-sm text-white"><i class="bi bi-pencil-square"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                            }
+                        }
+                        else
+                        {
+                                <tr>
+                                    <td colspan="9">
+                                        <p class="text-center">Purchase list is empty!!</p>
+                                    </td>
+                                </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-12">
+                <div class="d-flex justify-content-end">
+                    @await Component.InvokeAsync("Pagination", pagination)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+        <script>
+            $(document).ready(function () {
+                // Function to handle delete button click
+                const handleClickDeletePurchase = () => {
+                    $(".btnDeletePurchase").each(function () {
+                        $(this).on("click", function () {
+                            const purchaseID = $(this).attr("data-purchaseID");
+                            Swal.fire({
+                                title: "Are you sure?",
+                                text: "You will not be able to recover this data!!!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Yes, delete it!"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    handleAjax(`/Admin/Purchases/RemovePurchaseByIDAPI?purchaseId=${purchaseID}`, {}, (res) => {
+                                        if (res.success) {
+                                            Swal.fire({
+                                                title: "Deleted!",
+                                                text: "Deleted Successfully",
+                                                icon: "success"
+                                            }).then(() => {
+                                                location.reload();
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: "Error Delete!",
+                                                text: res.message,
+                                                icon: "error"
+                                            });
+                                        }
+                                    }, { type: "DELETE" });
+                                }
+                            });
+                        });
+                    });
+                };
+                function init() {
+                    Validator("#frmSearchPurchase");
+                    handleClickDeletePurchase();
+                }
+                init();
+            });
+        </script>
+}

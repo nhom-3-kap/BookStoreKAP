@@ -34,6 +34,10 @@
         public const string ADMIN_BOOKS_CREATE = $"/{AreasConstant.ADMIN}/Books/Create";
         public const string ADMIN_BOOKS_MODIFY = $"/{AreasConstant.ADMIN}/Books/Modify";
 
+        public const string ADMIN_PURCHASES = $"/{AreasConstant.ADMIN}/Purchases";
+        public const string ADMIN_PURCHASES_MODIFY = $"/{AreasConstant.ADMIN}/Purchases/Modify";
+
+
         public const string ADMIN_USERS = $"/{AreasConstant.ADMIN}/Users";
         public const string ADMIN_USERS_CREATE = $"/{AreasConstant.ADMIN}/Users/Create";
         public const string ADMIN_USERS_MODIFY = $"/{AreasConstant.ADMIN}/Users/Modify";

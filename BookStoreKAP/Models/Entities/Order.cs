@@ -2,24 +2,23 @@
 
 namespace BookStoreKAP.Models.Entities
 {
-	public class Order : BaseEntity
-	{
-		public DateTime OrderDate { get; set; }
-		public int SubTotal { get; set; }
-		public double Total { get; set; }
-		public string Address { get; set; }
-		public StatusType Status { get; set; }
+    public class Order : BaseEntity
+    {
+        public DateTime OrderDate { get; set; }
+        public int SubTotal { get; set; }
+        public double Total { get; set; }
+        public string Address { get; set; }
+        public StatusType Status { get; set; }
+        public string PaymentMethod { get; set; }
 
-		public string PaymentMethod { get; set; }
+        [ForeignKey(nameof(Customer))]
+        public Guid CustomerID { get; set; }
+        public User Customer { get; set; }  // Sửa từ ICollection<User> thành User
 
-		[ForeignKey(nameof(CustomerID))]
-		public Guid CustomerID { get; set; }
-		public ICollection<User> Customers { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
+    }
 
-		public ICollection<OrderDetail> OrderDetails { get; set; }
-	}
-
-	public enum StatusType
+    public enum StatusType
 	{
 		WAITING_FOR_PROGRESSING,
 		APPROVED,

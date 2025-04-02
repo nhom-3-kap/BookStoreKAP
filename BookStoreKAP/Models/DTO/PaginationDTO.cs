@@ -8,5 +8,7 @@
         public string Action { get; set; }
         public string Controller { get; set; }
         public dynamic SearchParams { get; set; }
+        public string menuKey { get; set; }
+
     }
 }

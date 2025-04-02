@@ -31,7 +31,7 @@ namespace BookStoreKAP.Models.Entities
         public int ViewCount { get; set; } = 0;
 
         [ForeignKey(nameof(TagID))]
-        public Guid TagID { get; set; }
+        public Guid? TagID { get; set; }
         public Tag Tag { get; set; }
 
         [ForeignKey(nameof(SeriesID))]
@@ -47,5 +47,8 @@ namespace BookStoreKAP.Models.Entities
         public ICollection<Favorite> Favorites { get; set; }
 
         public ICollection<CartItem> CartItems { get; set; }
+
+        public int BuyCount { get; set; } = 0;
+
     }
 }

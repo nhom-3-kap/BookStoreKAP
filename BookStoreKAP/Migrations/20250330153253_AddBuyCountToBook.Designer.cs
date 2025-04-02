@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreKAP.Migrations
 {
     [DbContext(typeof(BookStoreKAPDBContext))]
-    [Migration("20250327061130_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250330153253_AddBuyCountToBook")]
+    partial class AddBuyCountToBook
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,6 +68,9 @@ namespace BookStoreKAP.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("BuyCount")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()

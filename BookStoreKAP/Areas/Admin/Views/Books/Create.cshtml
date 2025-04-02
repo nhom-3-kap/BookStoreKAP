@@ -86,18 +86,6 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label class="form-label" for="cboTag">Tags <span class="required text-danger">*</span></label>
-                            <select class="form-select" id="cboTag" name="TagID">
-                                <option value="@(Guid.Empty)">--- Choose Tag ---</option>
-                                @foreach (var tag in tags)
-                                {
-                                    <option value="@(tag.ID)">@(tag.Name)</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
                     <div class="col-lg-12 mt-2">
                         <div class="form-group">
                             <label class="form-label" for="cboGenre">Genre <span class="required text-danger">*</span></label>

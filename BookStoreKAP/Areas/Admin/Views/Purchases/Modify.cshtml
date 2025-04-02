@@ -1,0 +1,75 @@
+﻿@model PurchaseViewModel
+@{
+    ViewBag.Title = "Modify Purchase";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="text-primary">Modify Purchase</h3>
+        </div>
+        <div class="col-lg-12">
+            <form asp-action="Modify" method="POST" id="frmModifyPurchase">
+                <input type="hidden" asp-for="ID" />
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="Title">Book Title</label>
+                            <input type="text" asp-for="Title" class="form-control" placeholder="Enter book title..." readonly />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="Author">Author</label>
+                            <input type="text" asp-for="Author" class="form-control" placeholder="Enter author..." readonly />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="UserName">User Name</label>
+                            <input type="text" asp-for="UserName" class="form-control" placeholder="Enter user name..." readonly />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="BoughtDate">Purchase Date</label>
+                            <input type="date" asp-for="BoughtDate" class="form-control" />
+                            <span asp-validation-for="BoughtDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="Quantity">Quantity</label>
+                            <input type="number" asp-for="Quantity" class="form-control" placeholder="Enter quantity..." min="1" />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="Price">Price</label>
+                            <input type="number" asp-for="Price" class="form-control" placeholder="Enter price..." step="0.01" min="0" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Index" asp-route-menuKey="PM" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+        <script>
+            $(document).ready(function () {
+                function init() {
+                    Validator("#frmModifyPurchase");
+                }
+                init();
+            });
+        </script>
+}

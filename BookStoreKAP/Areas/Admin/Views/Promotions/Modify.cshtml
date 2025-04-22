@@ -1,0 +1,109 @@
+﻿@model Promotion
+@{
+    var isEdit = Model != null && Model.Id != Guid.Empty;
+    ViewBag.Title = isEdit ? "Edit Promotion" : "Create Promotion";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="text-primary">@ViewBag.Title</h3>
+        </div>
+        <hr />
+        <div class="col-lg-12">
+            <form asp-action="@(isEdit ? "Edit" : "Create")" method="POST" id="frmPromotion">
+                @if (isEdit)
+                {
+                    <input type="hidden" asp-for="Id" />
+                }
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="Name">Promotion Name</label>
+                            <input type="text" asp-for="Name" class="form-control" placeholder="Enter promotion name..." required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="TagID">Tag</label>
+                            <select asp-for="TagID" class="form-control" required>
+                                <option value="">Select a tag</option>
+                                @foreach (var tag in ViewBag.Tags)
+                                {
+                                    <option value="@tag.ID">@tag.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="TagID" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="StartDate">Start Date</label>
+                            <input type="date" asp-for="StartDate" class="form-control" required value="@(Model?.StartDate.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd"))" />
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="EndDate">End Date</label>
+                            <input type="date" asp-for="EndDate" class="form-control" required value="@(Model?.EndDate.ToString("yyyy-MM-dd") ?? DateTime.Now.AddMonths(1).ToString("yyyy-MM-dd"))" />
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="DiscountPercent">Discount Percentage</label>
+                            <div class="input-group">
+                                <input type="number" asp-for="DiscountPercent" class="form-control" placeholder="Enter discount percentage..." min="0" max="100" required />
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold" asp-for="Description">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter promotion description..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mt-3">
+                        <div class="d-flex justify-content-end" style="column-gap: 8px;">
+                            @* <a href="@RouteConstant.ADMIN_PROMOTIONS_INDEX?menuKey=PM" class="btn btn-secondary">Cancel</a> *@
+                            <button type="submit" class="btn btn-primary">@(isEdit ? "Update" : "Create")</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const validateDates = () => {
+                $("#StartDate, #EndDate").on("change", function() {
+                    const startDate = new Date($("#StartDate").val());
+                    const endDate = new Date($("#EndDate").val());
+
+                    if (endDate < startDate) {
+                        Swal.fire({
+                            title: "Invalid Dates",
+                            text: "End date cannot be before start date!",
+                            icon: "error"
+                        });
+                        $("#EndDate").val($("#StartDate").val());
+                    }
+                });
+            };
+
+            function init() {
+                Validator("#frmPromotion");
+                validateDates();
+            }
+            init();
+        });
+    </script>
+}

@@ -5,7 +5,7 @@
     List<Tag> tags = ViewBag.Tags ?? new List<Tag>();
     List<Series> series = ViewBag.Series ?? new List<Series>();
     ReqQuerySearchBook searchValue = ViewBag.SearchValue ?? new ReqQuerySearchBook();
-    PaginationModel pagination = ViewBag.Pagination ?? new PaginationModel();
+    PaginationDTO pagination = ViewBag.Pagination ?? new PaginationDTO();
     var totalPages = (int)Math.Ceiling(pagination.TotalItems / (double)pagination.PageSize);
 }
 

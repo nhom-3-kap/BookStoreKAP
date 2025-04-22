@@ -2,7 +2,7 @@
 @model List<Genre>
 @{
     ReqQuerySearchGenre searchValue = ViewBag.SearchValue ?? new ReqQuerySearchGenre();
-    PaginationModel pagination = ViewBag.Pagination ?? new PaginationModel();
+    PaginationDTO pagination = ViewBag.Pagination ?? new PaginationDTO();
 }
 <div class="container">
     <div class="row">

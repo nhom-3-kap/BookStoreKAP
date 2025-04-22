@@ -1,7 +1,6 @@
-﻿
-namespace BookStoreKAP.Models.DTO
+﻿namespace BookStoreKAP.Models.DTO
 {
-    public class ReqQuerySearchPurchase : PaginationModel
+    public class ReqQuerySearchPurchase : PaginationDTO
     {
         public string Title { get; set; }
         public string Author { get; set; }

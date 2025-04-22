@@ -13,6 +13,10 @@
         public const string LIST = "/List";
         public const string BOOK_REQUEST = "/BookRequest";
         public const string CART = "/Cart";
+        public const string PURCHASE_HISTORY = "/PurchaseHistory";
+        public const string PROMOTION = "/Promotions";
+
+
         #endregion
 
         #region Admin Routes
@@ -36,6 +40,10 @@
 
         public const string ADMIN_PURCHASES = $"/{AreasConstant.ADMIN}/Purchases";
         public const string ADMIN_PURCHASES_MODIFY = $"/{AreasConstant.ADMIN}/Purchases/Modify";
+
+        public const string ADMIN_PROMOTIONS = $"/{AreasConstant.ADMIN}/Promotions";
+        public const string ADMIN_PROMOTIONS_MODIFY = $"/{AreasConstant.ADMIN}/Promotions/Modify";
+        public const string ADMIN_PROMOTIONS_CREATE = $"/{AreasConstant.ADMIN}/Promotions/Create";
 
 
         public const string ADMIN_USERS = $"/{AreasConstant.ADMIN}/Users";

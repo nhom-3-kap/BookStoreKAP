@@ -9,6 +9,9 @@ namespace BookStoreKAP.Services
         List<PurchaseViewModel> GetAllPurchases();
         PurchaseViewModel GetPurchaseById(Guid id);
         void UpdatePurchase(PurchaseViewModel model);
-        void DeletePurchase(Guid id); // Thêm phương thức này
+        void DeletePurchase(Guid id); 
+        List<PurchaseViewModel> GetPurchasesByUserId(Guid userId); 
+
     }
+
 }

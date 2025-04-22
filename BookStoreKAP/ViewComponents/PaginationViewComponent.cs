@@ -5,7 +5,7 @@ namespace BookStoreKAP.ViewComponents
 {
     public class PaginationViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(PaginationModel paginationViewModel)
+        public IViewComponentResult Invoke(PaginationDTO paginationViewModel)
         {
             return View(paginationViewModel);
         }

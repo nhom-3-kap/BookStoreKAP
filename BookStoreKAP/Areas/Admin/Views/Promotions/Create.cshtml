@@ -1,0 +1,181 @@
+﻿@model BookStoreKAP.Models.PromotionViewModel
+@{
+    ViewBag.Title = Model?.ID != null && Model?.ID != Guid.Empty ? "Chỉnh sửa khuyến mãi" : "Tạo khuyến mãi mới";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="text-center">@ViewBag.Title</h3>
+        </div>
+        <div class="col-lg-12">
+            @if (TempData[BookStoreKAP.Common.Constants.ToastrConstant.SUCCESS_MSG] != null)
+            {
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-check"></i> Thành công!</h5>
+                    @TempData[BookStoreKAP.Common.Constants.ToastrConstant.SUCCESS_MSG]
+                </div>
+            }
+            @if (TempData[BookStoreKAP.Common.Constants.ToastrConstant.ERROR_MSG] != null)
+            {
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-ban"></i> Lỗi!</h5>
+                    @TempData[BookStoreKAP.Common.Constants.ToastrConstant.ERROR_MSG]
+                </div>
+            }
+            <form asp-action="@(Model?.ID != null && Model?.ID != Guid.Empty ? "Modify" : "Create")" method="POST" id="frmCreatePromotion">
+                <input type="hidden" asp-for="ID" />
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="txtName">Tên khuyến mãi <span class="required text-danger">*</span></label>
+                            <input type="text" class="form-control" id="txtName" asp-for="Name" rules="required" placeholder="Nhập tên khuyến mãi..." />
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="cboTag">Thể loại sách <span class="required text-danger">*</span></label>
+                            <select class="form-control" id="cboTag" asp-for="TagID" rules="required">
+                                <option value="">-- Chọn thể loại --</option>
+                                @if (ViewBag.Tags != null)
+                                {
+                                    foreach (var tag in ViewBag.Tags)
+                                    {
+                                        var isBestSeller = tag.ID.ToString().Equals(ViewBag.BestSellerTagId.ToString(), StringComparison.OrdinalIgnoreCase);
+                                        var isNewRelease = tag.ID.ToString().Equals(ViewBag.NewReleaseTagId.ToString(), StringComparison.OrdinalIgnoreCase);
+
+                                        if (isBestSeller)
+                                        {
+                                            <option value="@tag.ID" data-is-special="true" data-tag-type="bestseller">@tag.Name (Best Seller)</option>
+                                        }
+                                        else if (isNewRelease)
+                                        {
+                                            <option value="@tag.ID" data-is-special="true" data-tag-type="newrelease">@tag.Name (New Release)</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@tag.ID">@tag.Name</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                            <span asp-validation-for="TagID" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mt-2">
+                        <div class="form-group">
+                            <label class="form-label" for="txtDescription">Mô tả</label>
+                            <textarea class="form-control" id="txtDescription" asp-for="Description" rows="3" placeholder="Nhập mô tả khuyến mãi..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-2">
+                        <div class="form-group">
+                            <label class="form-label" for="txtStartDate">Ngày bắt đầu <span class="required text-danger">*</span></label>
+                            <input type="date" class="form-control" id="txtStartDate" asp-for="StartDate" rules="required" />
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-2">
+                        <div class="form-group">
+                            <label class="form-label" for="txtEndDate">Ngày kết thúc <span class="required text-danger">*</span></label>
+                            <input type="date" class="form-control" id="txtEndDate" asp-for="EndDate" rules="required" />
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-2">
+                        <div class="form-group">
+                            <label class="form-label" for="txtDiscountPercent">Phần trăm giảm giá (%) <span class="required text-danger">*</span></label>
+                            <input type="number" class="form-control" id="txtDiscountPercent" asp-for="DiscountPercent" rules="required" min="1" max="100" />
+                            <span class="text-danger text-sm-center form-message" hidden></span>
+                            <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mt-3">
+                        <div class="d-flex justify-content-end">
+                            <a href="@Url.Action("Index", new { menuKey = "PM" })" class="btn btn-secondary me-2">Hủy</a>
+                            <button type="submit" class="btn btn-success">@(Model?.ID != null && Model?.ID != Guid.Empty ? "Cập nhật" : "Tạo mới")</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            function init() {
+                Validator("#frmCreatePromotion");
+
+                // Set minimum date for start date to today
+                const today = new Date().toISOString().split('T')[0];
+                $("#txtStartDate").attr("min", today);
+
+                // Ensure end date is after start date
+                $("#txtStartDate").on("change", function() {
+                    const startDate = $(this).val();
+                    if(startDate) {
+                        $("#txtEndDate").attr("min", startDate);
+                        // If end date is before start date, reset it
+                        const endDate = $("#txtEndDate").val();
+                        if(endDate && endDate < startDate) {
+                            $("#txtEndDate").val(startDate);
+                        }
+                    }
+                });
+
+                // Hiển thị gợi ý khi chọn tag đặc biệt
+                $("#cboTag").on("change", function() {
+                    const selectedOption = $(this).find("option:selected");
+                    const isSpecial = selectedOption.data("is-special");
+                    const tagType = selectedOption.data("tag-type");
+
+                    if (isSpecial) {
+                        let suggestedName = "";
+                        let suggestedDesc = "";
+
+                        if (tagType === "bestseller") {
+                            suggestedName = "Khuyến mãi sách bán chạy";
+                            suggestedDesc = "Khuyến mãi đặc biệt cho các sách bán chạy nhất của chúng tôi.";
+                        } else if (tagType === "newrelease") {
+                            suggestedName = "Khuyến mãi sách mới phát hành";
+                            suggestedDesc = "Giảm giá hấp dẫn cho các tựa sách mới ra mắt.";
+                        }
+
+                        // Chỉ gợi ý nếu người dùng chưa nhập thông tin
+                        if (!$("#txtName").val()) {
+                            $("#txtName").val(suggestedName);
+                        }
+
+                        if (!$("#txtDescription").val()) {
+                            $("#txtDescription").val(suggestedDesc);
+                        }
+                    }
+                });
+
+                // Validate dates on form submission
+                $("#frmCreatePromotion").on("submit", function(e) {
+                    const startDate = $("#txtStartDate").val();
+                    const endDate = $("#txtEndDate").val();
+
+                    if(new Date(endDate) <= new Date(startDate)) {
+                        e.preventDefault();
+                        alert("Ngày kết thúc phải sau ngày bắt đầu!");
+                        return false;
+                    }
+
+                    return true;
+                });
+            }
+
+            init();
+        });
+    </script>
+}

@@ -19,7 +19,6 @@
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@5/dist/backdrop.css" />
 </head>
 <body>
-
     <div class="app">
         <section class="admin-side-bar">
             <div class="admin-side-bar-header">
@@ -54,7 +53,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <div class="admin-side-bar-menu-item">
                         <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="GM">
                             <p><i class="bi bi-archive"></i> <span>Genres</span></p>
@@ -72,7 +70,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <div class="admin-side-bar-menu-item">
                         <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="TM">
                             <p><i class="bi bi-archive"></i> <span>Tags</span></p>
@@ -90,7 +87,6 @@
                             </ul>
                         </div>
                     </div>
-
                     <div class="admin-side-bar-menu-item">
                         <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="BM">
                             <p><i class="bi bi-book"></i> <span>Books</span></p>
@@ -108,6 +104,23 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="admin-side-bar-menu-item">
+                        <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="PRM">
+                            <p><i class="bi bi-percent"></i> <span>Promotions</span></p>
+                            <i class="bi bi-chevron-down"></i>
+                        </a>
+                        <div class="admin-side-bar-menu-item-child">
+                            <ul class="admin-side-bar-menu-item-child-list">
+                                <li>
+                                    <a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_PROMOTIONS)?menuKey=PRM">
+                                        <i class="bi bi-circle"></i>
+                                        <span class="ml-1">List Promotions</span>
+                                    </a>
+                                </li>
+                                <li><a class="admin-side-bar-menu-item-child-item" href="@(RouteConstant.ADMIN_PROMOTIONS_CREATE)?menuKey=PRM"><i class="bi bi-circle"></i>Add Promotion</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="admin-side-bar-menu-item">
                     <a href="#" class="admin-side-bar-menu-item-control" data-menu-key="PM">
@@ -120,7 +133,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <div class="admin-side-bar-menu">
                     <p class="admin-side-bar-menu-title">Users</p>
                     <div class="admin-side-bar-menu-item">
@@ -183,9 +195,7 @@
                 @RenderBody()
             </div>
         </div>
-
     </div>
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="/lib/owl/js/owl.carousel.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -200,7 +210,6 @@
     <script src="~/js/validate.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/admin.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
     <script>
         $(document).ready(function () {
@@ -221,20 +230,19 @@
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut"
             };
-
             // Hiển thị thông báo từ TempData
-            @if (TempData[ToastrConstant.SUCCESS_MSG] != null)
-            {
-                <text>toastr.success('@(TempData[ToastrConstant.SUCCESS_MSG])');</text>
-            }
-            @if (TempData[ToastrConstant.ERROR_MSG] != null)
-            {
-                <text>toastr.error('@(TempData[ToastrConstant.ERROR_MSG])');</text>
-            }
-            @if (TempData[ToastrConstant.WARN_MSG] != null)
-            {
-                <text>toastr.error('@(TempData[ToastrConstant.WARN_MSG])');</text>
-            }
+        @if (TempData[ToastrConstant.SUCCESS_MSG] != null)
+        {
+            <text>toastr.success('@(TempData[ToastrConstant.SUCCESS_MSG])');</text>
+        }
+        @if (TempData[ToastrConstant.ERROR_MSG] != null)
+        {
+            <text>toastr.error('@(TempData[ToastrConstant.ERROR_MSG])');</text>
+        }
+        @if (TempData[ToastrConstant.WARN_MSG] != null)
+        {
+            <text>toastr.error('@(TempData[ToastrConstant.WARN_MSG])');</text>
+        }
         });
     </script>
 </body>

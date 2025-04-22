@@ -1,0 +1,212 @@
+﻿@model List<BookStoreKAP.Models.Entities.PurchaseViewModel>
+@{
+    ViewData["Title"] = "Purchase History";
+}
+<div>
+    <div class="container">
+        <div class="breadcrumb-wrap">
+            <a href="@(RouteConstant.HOME)">Home</a>
+            <span>&#10095;</span>
+            <p>Purchase History</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="side-bar">
+                    <div class="side-category">
+                        <h6>FILTER OPTIONS</h6>
+                        <div class="side-bar-item">
+                            <div class="side-bar-item-wrap-title">
+                                <p><strong>Sort By</strong></p>
+                                <span class="wrap-icon"><i class="bi bi-chevron-down"></i></span>
+                            </div>
+                            <div class="side-bar-item-child">
+                                <div class="new-releases-child">
+                                    <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
+                                    <a href="javascript:void(0)" class="sort-option" data-sort="newest">Newest First</a>
+                                </div>
+                                <div class="new-releases-child">
+                                    <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
+                                    <a href="javascript:void(0)" class="sort-option" data-sort="oldest">Oldest First</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="side-bar-item">
+                            <div class="side-bar-item-wrap-title">
+                                <p><strong>Categories</strong></p>
+                                <span class="wrap-icon"><i class="bi bi-chevron-down"></i></span>
+                            </div>
+                            <div class="side-bar-item-child">
+                                <div class="new-releases-child">
+                                    <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
+                                    <a href="javascript:void(0)" class="filter-option" data-filter="all">All Purchases</a>
+                                </div>
+                                <div class="new-releases-child">
+                                    <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
+                                    <a href="javascript:void(0)" class="filter-option" data-filter="books">Books</a>
+                                </div>
+                                <div class="new-releases-child">
+                                    <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
+                                    <a href="javascript:void(0)" class="filter-option" data-filter="magazines">Magazines</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="side-price">
+                        <h6>DATE RANGE</h6>
+                        <div>
+                            <div class="side-price-item">
+                                <p>Filter by date:</p>
+                            </div>
+                            <input id="dateFilter" type="date" class="form-control"/>
+                            <button id="resetDateFilter" class="btn btn-sm btn-outline-secondary mt-2">Reset Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10">
+                @if (Model.Count > 0)
+                {
+                        <div class="d-flex mb-4 justify-content-between align-items-center">
+                            <div class="title-cart" id="cart-itms"><h1><span>Your Purchase History</span> (<span id="cart-item-count">@(Model.Count)</span> items)</h1></div>
+                            <div class="con-spoping">
+                                <a class="con-spoping-btn" href="@(RouteConstant.HOME)">Continue Shopping</a>
+                            </div>
+                        </div>
+                        <div class="row" id="purchase-items-container">
+                        @foreach (var purchase in Model)
+                        {
+                                    <div class="col-lg-3 purchase-item">
+                                        <div class="card-product">
+                                            <div class="card-product-heading">
+                                                <a href="@(RouteConstant.PRODUCT_DETAIL)/@(purchase.ID)">
+                                                    <img src="@(purchase.Thumbnail)" alt="@(purchase.Title)" />
+                                                </a>
+                                                <button>
+                                                    <i class="bi bi-suit-heart"></i>
+                                                </button>
+                                            </div>
+                                            <div class="card-product-content">
+                                                <h6 class="card-product-title">
+                                                    <a href="@(RouteConstant.PRODUCT_DETAIL)/@(purchase.ID)">@(purchase.Title)</a>
+                                                </h6>
+                                                <div class="card-product-desc">
+                                                    <span><strong>Book Author: </strong></span>
+                                                    <span>@(purchase.Author)</span>
+                                                </div>
+                                                <div class="card-product-desc">
+                                                    <span><strong>Purchased: </strong></span>
+                                                    <span>@(purchase.BoughtDate.ToString("dd/MM/yyyy"))</span>
+                                                </div>
+                                                <div class="card-product-desc">
+                                                    <span><strong>Quantity: </strong></span>
+                                                    <span>@(purchase.Quantity)</span>
+                                                </div>
+                                                <div class="card-product-wrap-price">
+                                                    <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", purchase.Price))</span>
+                                                </div>
+                                            </div>
+                                            <div class="card-product-footer">
+                                                <div class="card-product-wrap-btn">
+                                                    <a href="@(RouteConstant.LIST)?id=@(purchase.ID)" class="card-product-btn kap-btn kap-btn-primary">BUY AGAIN</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                        }
+                        </div>
+                }
+                else
+                {
+                        <div class="row" id="empty-purchases">
+                            <div class="col-lg-12">
+                                <h4 class="text-center">You haven't purchased any books yet! <a href="@(RouteConstant.HOME)" class="text-primary"><strong>Start shopping now!</strong></a></h4>
+                            </div>
+                        </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+        <script>
+            $(document).ready(function() {
+                // Sort functionality
+                $(".sort-option").click(function() {
+                    const sortType = $(this).data("sort");
+                    sortPurchases(sortType);
+                });
+
+                // Filter functionality
+                $(".filter-option").click(function() {
+                    const filterType = $(this).data("filter");
+                    filterPurchases(filterType);
+                });
+
+                // Date filter
+                $("#dateFilter").on("change", function() {
+                    const selectedDate = $(this).val();
+                    filterByDate(selectedDate);
+                });
+
+                // Reset date filter
+                $("#resetDateFilter").click(function() {
+                    $("#dateFilter").val("");
+                    $(".purchase-item").show();
+                    updateItemCount();
+                });
+
+                function sortPurchases(sortType) {
+                    const $container = $("#purchase-items-container");
+                    const $items = $container.children(".purchase-item").get();
+
+                    $items.sort(function(a, b) {
+                        const dateA = new Date($(a).find(".card-product-desc:eq(1) span:eq(1)").text().split("/").reverse().join("-"));
+                        const dateB = new Date($(b).find(".card-product-desc:eq(1) span:eq(1)").text().split("/").reverse().join("-"));
+
+                        return sortType === "newest" ? dateB - dateA : dateA - dateB;
+                    });
+
+                    $.each($items, function(index, item) {
+                        $container.append(item);
+                    });
+                }
+
+                function filterPurchases(filterType) {
+                    if (filterType === "all") {
+                        $(".purchase-item").show();
+                    } else {
+                        // This is a placeholder. In a real implementation, 
+                        // you would need product type data to filter by books or magazines
+                        // For now, it just shows all items
+                        $(".purchase-item").show();
+                    }
+                    updateItemCount();
+                }
+
+                function filterByDate(selectedDate) {
+                    if (!selectedDate) {
+                        $(".purchase-item").show();
+                    } else {
+                        $(".purchase-item").each(function() {
+                            const purchaseDate = $(this).find(".card-product-desc:eq(1) span:eq(1)").text();
+                            const dateParts = purchaseDate.split("/");
+                            const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+                            if (formattedDate === selectedDate) {
+                                $(this).show();
+                            } else {
+                                $(this).hide();
+                            }
+                        });
+                    }
+                    updateItemCount();
+                }
+
+                function updateItemCount() {
+                    const visibleItems = $(".purchase-item:visible").length;
+                    $("#cart-item-count").text(visibleItems);
+                }
+            });
+        </script>
+}

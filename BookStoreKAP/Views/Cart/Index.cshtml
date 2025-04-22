@@ -1,5 +1,4 @@
 ﻿@model List<CartItem>
-
 @{
     var totalPrice = 0.0;
 }
@@ -9,128 +8,216 @@
             <a href="@(RouteConstant.HOME)">Home</a>
             <span>&#10095;</span>
             <p>Cart</p>
-
         </div>
         <section class="sectiongap cartpage-main">
             @if (Model.Count > 0)
             {
-                <div class="container">
-                    <div class="d-flex mb-4 justify-content-between align-items-center">
-                        <div class="title-cart" id="cart-itms"><h1><span>Your Cart</span> (@(Model.Count) items)</h1></div>
-                        <div class="con-spoping">
-                            <a class="con-spoping-btn" href="@(RouteConstant.HOME)">Continue Shopping</a>
+                    <div class="container">
+                        <div class="d-flex mb-4 justify-content-between align-items-center">
+                            <div class="title-cart" id="cart-itms"><h1><span>Your Cart</span> (<span id="cart-item-count">@(Model.Count)</span> items)</h1></div>
+                            <div class="con-spoping">
+                                <a class="con-spoping-btn" href="@(RouteConstant.HOME)">Continue Shopping</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 col-lg-8">
-                            <div class="row">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-8">
+                                <div class="row" id="cart-items-container">
                                 @foreach (var cartItem in Model)
                                 {
                                     totalPrice += cartItem.Quantity * cartItem.Book.Discount;
-                                    <div class="col-lg-12 mt-2">
-                                        <div class="product-list">
-                                            <div>
-                                                <div class="pr-listbox" cart-item="2954">
-                                                    <div class="list-primg">
-                                                        <img src="@(cartItem.Book.Thumbnail)">
-
-                                                    </div>
-                                                    <div class="checkdetails">
-                                                        <h3><a href="#">@(cartItem.Book.Title)</a></h3>
-                                                        <h6>
-                                                            <span>Book Author:</span>
+                                            <div class="col-lg-12 mt-2 cart-item-row" id="cart-item-@cartItem.ID">
+                                                <div class="product-list">
+                                                    <div>
+                                                        <div class="pr-listbox" cart-item="@cartItem.ID">
+                                                            <div class="list-primg">
+                                                                <img src="@(cartItem.Book.Thumbnail)">
+                                                            </div>
+                                                            <div class="checkdetails">
+                                                                <h3><a href="#">@(cartItem.Book.Title)</a></h3>
+                                                                <h6>
+                                                                    <span>Book Author:</span>
                                                             @(cartItem.Book.Author)
-                                                        </h6>
+                                                                </h6>
                                                         @(string.Format("{0:0,00# VNĐ}", cartItem.Book.Discount))
-                                                    </div>
-                                                    <div class="qunatity-check ml-auto">
-
-                                                        <div class="input-group">
-                                                            <span class="input-group-btn">
-                                                                <button type="button" class="quantity-left-minus btn btn-number q_inc_dec" data-rec_id="2954" data-type="minus" data-field="">
-
-                                                                    <i class="bi bi-dash"></i>
-                                                                </button>
-                                                            </span>
-                                                            <input type="hidden" name="item_id[]" value="2954">
-
-                                                            <input type="text" id="q_cart" name="quantity[]" class="form-control input-number" value="@(cartItem.Quantity)" min="1" max="3" readonly="">
-                                                            <span class="input-group-btn">
-                                                                <button type="button" class="quantity-right-plus btn btn-number q_inc_dec" data-rec_id="2954" data-type="plus" data-field="">
-                                                                    <i class="bi bi-plus"></i>
-                                                                </button>
-                                                            </span>
-                                                        </div>
-
-                                                    </div>
-                                                    <div class="price-check">
-                                                        <h5>
-                                                            <span>
+                                                            </div>
+                                                            <div class="qunatity-check ml-auto">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-btn">
+                                                                        <button type="button" class="quantity-left-minus btn btn-number q_inc_dec" 
+                                                                                data-cart-item-id="@cartItem.ID" data-type="minus">
+                                                                            <i class="bi bi-dash"></i>
+                                                                        </button>
+                                                                    </span>
+                                                                    <input type="hidden" name="item_id[]" value="@cartItem.ID">
+                                                                    <input type="text" id="q_cart_@cartItem.ID" name="quantity[]" class="form-control input-number" 
+                                                                           value="@(cartItem.Quantity)" min="1" max="@(cartItem.Book.Quantity + cartItem.Quantity)" readonly="">
+                                                                    <span class="input-group-btn">
+                                                                        <button type="button" class="quantity-right-plus btn btn-number q_inc_dec" 
+                                                                                data-cart-item-id="@cartItem.ID" data-type="plus">
+                                                                            <i class="bi bi-plus"></i>
+                                                                        </button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="price-check">
+                                                                <h5>
+                                                                    <span id="item-subtotal-@cartItem.ID">
                                                                 @(string.Format("{0:0,00# VNĐ}", cartItem.Book.Discount * cartItem.Quantity))
-                                                            </span>
-                                                        </h5>
-                                                        <a class="rm-btn" onclick="remove_from_cart('2954')">Remove</a>
+                                                                    </span>
+                                                                </h5>
+                                                                <a class="rm-btn" data-cart-item-id="@cartItem.ID">Remove</a>
+                                                            </div>
+                                                        </div>
+                                                        <p class="text-right">
+                                                        </p>
                                                     </div>
                                                 </div>
-                                                <p class="text-right">
-
-
-                                                </p>
+                                            </div>
+                                }
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-4 mt-2">
+                                <div class="checkoutslip" id="checkoutslip">
+                                    <h2>Order Summary</h2>
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <h5>Subtotal</h5>
+                                        </div>
+                                        <div id="summary_price" class="col-5 text-right">
+                                            <h5>@(string.Format("{0:0,00# VNĐ}", totalPrice))</h5>
+                                        </div>
+                                        <div class="col-7">
+                                            <h5>Tax</h5>
+                                        </div>
+                                        <div class="col-5 text-right text-danger">
+                                            <h5>10%</h5>
+                                        </div>
+                                    </div>
+                                    <div class="gap-cart">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <h4>Total Amount</h4>
+                                            </div>
+                                            <div id="total_price" class="col-5 text-right">
+                                                <h4 id="gross_price">@(string.Format("{0:0,00# VNĐ}", totalPrice + (totalPrice * 0.1)))</h4>
                                             </div>
                                         </div>
                                     </div>
-                                }
-
-
-
-                            </div>
-
-                        </div>
-                        <div class="col-md-12 col-lg-4 mt-2">
-                            <div class="checkoutslip" id="checkoutslip">
-                                <h2>Order Summary</h2>
-                                <div class="row">
-                                    <div class="col-7">
-                                        <h5>Subtotal</h5>
-                                    </div>
-                                    <div id="summary_price" class="col-5 text-right">
-                                        <h5>@(string.Format("{0:0,00# VNĐ}", totalPrice))</h5>
-                                    </div>
-
-                                    <div class="col-7">
-                                        <h5>Tax</h5>
-                                    </div>
-                                    <div class="col-5 text-right text-danger">
-                                        <h5>10%</h5>
-                                    </div>
+                                    <a href="@(RouteConstant.PAY)?totalPrice=@(totalPrice + (totalPrice * 0.1))" id="checkout-btn" class="chakeout-btn btn chakeout-btn w-100">
+                                        Proceed To Address Select
+                                    </a>
                                 </div>
-                                <div class="gap-cart">
-                                    <div class="row">
-                                        <div class="col-7">
-                                            <h4>Total Amount</h4>
-                                        </div>
-                                        <div id="total_price" class="col-5 text-right">
-                                            <h4 id="gross_price">@(string.Format("{0:0,00# VNĐ}", totalPrice + (totalPrice * 0.1)))</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="@(RouteConstant.PAY)?totalPrice=@(totalPrice + (totalPrice * 0.1))" class="chakeout-btn btn chakeout-btn w-100">
-                                    Proceed To Address Select
-                                </a>
-
                             </div>
                         </div>
                     </div>
-                </div>
             }
             else
             {
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h4 class="text-center">Cart is emty!!! <strong>Shopping now!</strong></h4>
+                    <div class="row" id="empty-cart">
+                        <div class="col-lg-12">
+                            <h4 class="text-center">Cart is empty!!! <a href="@(RouteConstant.HOME)" class="text-primary"><strong>Shopping now!</strong></a></h4>
+                        </div>
                     </div>
-                </div>
             }
         </section>
     </div>
 </div>
+
+@section scripts {
+        <script>
+            $(document).ready(function () {
+                // Xử lý nút tăng giảm số lượng
+                $(".q_inc_dec").on("click", function () {
+                    const cartItemId = $(this).data("cart-item-id");
+                    const type = $(this).data("type");
+                    const quantityInput = $("#q_cart_" + cartItemId);
+                    let quantity = parseInt(quantityInput.val());
+
+                    if (type === "plus") {
+                        quantity += 1;
+                    } else if (type === "minus" && quantity > 1) {
+                        quantity -= 1;
+                    }
+
+                    // Cập nhật UI trước để có phản hồi ngay lập tức
+                    quantityInput.val(quantity);
+
+                    // Gọi API để cập nhật số lượng
+                    updateCartQuantity(cartItemId, quantity);
+                });
+
+                // Xử lý nút xóa sản phẩm
+                $(".rm-btn").on("click", function () {
+                    const cartItemId = $(this).data("cart-item-id");
+                    removeFromCart(cartItemId);
+                });
+
+                // Hàm cập nhật số lượng sản phẩm
+                function updateCartQuantity(cartItemId, quantity) {
+                    handleAjax("/Cart/UpdateCartQuantityAPI", { cartItemId: cartItemId, quantity: quantity }, function(res) {
+                        if (res.success) {
+                            // Cập nhật UI
+                            $("#item-subtotal-" + cartItemId).text(formatCurrency(res.data.itemSubtotal));
+                            $("#summary_price h5").text(formatCurrency(res.data.subtotal));
+                            $("#gross_price").text(formatCurrency(res.data.total));
+                            $("#checkout-btn").attr("href", `${routeConstants.PAY}?totalPrice=${res.data.total}`);
+
+                            // Cập nhật số lượng trong giỏ hàng ở header
+                            $("#spanCartItemCount").text(res.data.itemCount);
+                            $("#cart-item-count").text(res.data.cartCount);
+
+                            toastr.success("Cập nhật giỏ hàng thành công");
+                        } else {
+                            // Khôi phục giá trị cũ nếu có lỗi
+                            toastr.error(res.message);
+                        }
+                    });
+                }
+
+                // Hàm xóa sản phẩm khỏi giỏ hàng
+                function removeFromCart(cartItemId) {
+                    if(confirm("Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?")) {
+                        handleAjax("/Cart/RemoveFromCartAPI", { cartItemId: cartItemId }, function(res) {
+                            if (res.success) {
+                                // Xóa phần tử khỏi DOM
+                                $("#cart-item-" + cartItemId).remove();
+
+                                // Cập nhật tổng tiền
+                                $("#summary_price h5").text(formatCurrency(res.data.subtotal));
+                                $("#gross_price").text(formatCurrency(res.data.total));
+                                $("#checkout-btn").attr("href", `${routeConstants.PAY}?totalPrice=${res.data.total}`);
+
+                                // Cập nhật số lượng trong giỏ hàng ở header
+                                $("#spanCartItemCount").text(res.data.itemCount);
+                                $("#cart-item-count").text(res.data.cartCount);
+
+                                // Hiển thị giỏ hàng trống nếu không còn sản phẩm
+                                if (res.data.cartCount === 0) {
+                                    $(".cartpage-main").html(`
+                                        <div class="row" id="empty-cart">
+                                            <div class="col-lg-12">
+                                                <h4 class="text-center">Cart is empty!!! <a href="${routeConstants.HOME}" class="text-primary"><strong>Shopping now!</strong></a></h4>
+                                            </div>
+                                        </div>
+                                    `);
+                                }
+
+                                toastr.success("Đã xóa sản phẩm khỏi giỏ hàng");
+                            } else {
+                                toastr.error(res.message);
+                            }
+                        });
+                    }
+                }
+
+                // Hàm định dạng số tiền
+                function formatCurrency(amount) {
+                    return new Intl.NumberFormat('vi-VN', { 
+                        style: 'currency', 
+                        currency: 'VND',
+                        maximumFractionDigits: 0
+                    }).format(amount).replace('₫', 'VNĐ');
+                }
+            });
+        </script>
+}

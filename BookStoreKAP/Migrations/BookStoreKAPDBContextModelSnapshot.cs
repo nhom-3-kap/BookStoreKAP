@@ -106,7 +106,7 @@ namespace BookStoreKAP.Migrations
                     b.Property<string>("Synopsis")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("TagID")
+                    b.Property<Guid?>("TagID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Thumbnail")
@@ -345,6 +345,8 @@ namespace BookStoreKAP.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("CustomerID");
+
                     b.ToTable("Orders");
                 });
 
@@ -419,6 +421,89 @@ namespace BookStoreKAP.Migrations
                     b.HasIndex("AccessControllerID");
 
                     b.ToTable("Policies");
+                });
+
+            modelBuilder.Entity("BookStoreKAP.Models.Entities.Promotion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<bool>("ApplyToBestSeller")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<double>("DiscountPercent")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("TagID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TagID");
+
+                    b.ToTable("Promotions");
+                });
+
+            modelBuilder.Entity("BookStoreKAP.Models.Entities.PurchaseViewModel", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("BoughtDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Thumbnail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Purchases");
                 });
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Rating", b =>
@@ -667,9 +752,6 @@ namespace BookStoreKAP.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid?>("OrderID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -705,8 +787,6 @@ namespace BookStoreKAP.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("OrderID");
 
                     b.HasIndex("RatingID");
 
@@ -815,9 +895,7 @@ namespace BookStoreKAP.Migrations
 
                     b.HasOne("BookStoreKAP.Models.Entities.Tag", "Tag")
                         .WithMany("Books")
-                        .HasForeignKey("TagID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TagID");
 
                     b.Navigation("Series");
 
@@ -911,6 +989,17 @@ namespace BookStoreKAP.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("BookStoreKAP.Models.Entities.Order", b =>
+                {
+                    b.HasOne("BookStoreKAP.Models.Entities.User", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("BookStoreKAP.Models.Entities.OrderDetail", b =>
                 {
                     b.HasOne("BookStoreKAP.Models.Entities.Book", "Book")
@@ -941,6 +1030,17 @@ namespace BookStoreKAP.Migrations
                     b.Navigation("AccessController");
                 });
 
+            modelBuilder.Entity("BookStoreKAP.Models.Entities.Promotion", b =>
+                {
+                    b.HasOne("BookStoreKAP.Models.Entities.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("BookStoreKAP.Models.Entities.RoleClaim", b =>
                 {
                     b.HasOne("BookStoreKAP.Models.Entities.Role", "Role")
@@ -965,10 +1065,6 @@ namespace BookStoreKAP.Migrations
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.User", b =>
                 {
-                    b.HasOne("BookStoreKAP.Models.Entities.Order", null)
-                        .WithMany("Customers")
-                        .HasForeignKey("OrderID");
-
                     b.HasOne("BookStoreKAP.Models.Entities.Rating", null)
                         .WithMany("Reviewers")
                         .HasForeignKey("RatingID");
@@ -1060,8 +1156,6 @@ namespace BookStoreKAP.Migrations
 
             modelBuilder.Entity("BookStoreKAP.Models.Entities.Order", b =>
                 {
-                    b.Navigation("Customers");
-
                     b.Navigation("OrderDetails");
                 });
 

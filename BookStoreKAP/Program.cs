@@ -81,7 +81,8 @@ builder.Services.AddScoped<UserManager<User>>();
 builder.Services.AddScoped<BookStoreKAPDBContext>();
 builder.Services.AddScoped<RolesController>();
 builder.Services.AddScoped<IPurchaseService, PurchaseService>();
-
+builder.Services.AddScoped<IPromotionService, PromotionService>();
+builder.Services.AddScoped<PromotionPriceUpdateService>();
 #endregion
 
 var app = builder.Build();

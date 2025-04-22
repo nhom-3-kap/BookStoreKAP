@@ -9,7 +9,9 @@
         public double Price { get; set; }
         public string UserName { get; set; }
         public DateTime BoughtDate { get; set; }
-        public int Quantity { get; set; } 
+        public int Quantity { get; set; }
+        public string Thumbnail { get; set; } // Added Thumbnail property
+
 
     }
 }

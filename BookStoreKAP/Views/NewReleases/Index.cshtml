@@ -1,112 +1,218 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = ViewBag.Service;
+    var showBestSellerPromotion = false;
+    var showNewReleasePromotion = false;
+
+    foreach (var book in ViewBag.Books)
+    {
+        if (book.TagID.ToString().ToLower() == "3e5cac9b-6e5a-416d-86f8-52f044d6994e") // Best Seller
+        {
+            showBestSellerPromotion = true;
+        }
+        if (book.TagID.ToString().ToLower() == "ca038048-95d2-4bfd-86d8-740fb2ece1af") // New Release
+        {
+            showNewReleasePromotion = true;
+        }
+    }
+
 }
-<input hidden name ="service" value="@ViewBag.Service"/>
+<input hidden name="service" value="@ViewBag.Service" />
 <input hidden name="genres" value="@ViewBag.GenresID" />
-    <div class="container"> 
-        <div class="breadcrumb-wrap">
-            <a href="@(RouteConstant.HOME)">Home</a>
-            <span>&#10095;</span>
-            <p>@(ViewBag.Hambuger)</p>
-            
+<input hidden name="currentSortBy" value="@ViewBag.SortBy" />
+<div class="container">
+    <div class="breadcrumb-wrap">
+        <a href="@(RouteConstant.HOME)">Home</a>
+        <span>&#10095;</span>
+        <p>@(ViewBag.Hambuger)</p>
+    </div>
+
+    @if (showBestSellerPromotion && ViewBag.CurrentPromotion != null)
+    {
+        <div class="promotion-banner">
+            <h3>Đợt khuyến mãi đặc biệt cho sách Best Seller</h3>
+            <div class="promotion-item">
+                <h4>@ViewBag.CurrentPromotion.Name</h4>
+                <p>@ViewBag.CurrentPromotion.Description</p>
+                <p>Giảm giá: <strong>@ViewBag.CurrentPromotion.DiscountPercent%</strong></p>
+                <p>Thời gian: @ViewBag.CurrentPromotion.StartDate.ToString("dd/MM/yyyy") - @ViewBag.CurrentPromotion.EndDate.ToString("dd/MM/yyyy")</p>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-lg-2">
-                <div class="side-bar">
-                    <div class="side-category">
-                        <h6>PRODUCT SERIES</h6>
-                        
-                        <div class="side-bar-item">
-                            <div class="side-bar-item-wrap-title">
-                            
-                                <p><strong>Books</strong></p>
-                                <span class="wrap-icon"><i class="bi bi-chevron-down "></i></span>
+    }
 
-                            </div>
-                            <div class="side-bar-item-child">
-                                @foreach (var genre in ViewBag.Genres)
-                               {
-                                    <div class="new-releases-child">
-                                        <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
-                                        <a href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@(genre.ID)&Hambuger=@ViewBag.Service">@genre.Name</a>
-                                    </div>
-                                }
-                            </div>
-                            
+    @if (showNewReleasePromotion && ViewBag.CurrentPromotion != null)
+    {
+        <div class="promotion-banner">
+            <h3>Đợt khuyến mãi đặc biệt cho sách New Release</h3>
+            <div class="promotion-item">
+                <h4>@ViewBag.CurrentPromotion.Name</h4>
+                <p>@ViewBag.CurrentPromotion.Description</p>
+                <p>Giảm giá: <strong>@ViewBag.CurrentPromotion.DiscountPercent%</strong></p>
+                <p>Thời gian: @ViewBag.CurrentPromotion.StartDate.ToString("dd/MM/yyyy") - @ViewBag.CurrentPromotion.EndDate.ToString("dd/MM/yyyy")</p>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="side-bar">
+                <div class="side-category">
+                    <h6>PRODUCT SERIES</h6>
+                    <div class="side-bar-item">
+                        <div class="side-bar-item-wrap-title">
+                            <p><strong>Books</strong></p>
+                            <span class="wrap-icon"><i class="bi bi-chevron-down "></i></span>
                         </div>
-                        <div class="side-bar-item">
-                            <div class="side-bar-item-wrap-title">
-                                <p><strong>Magazine</strong></p>
-                                <span class="wrap-icon"><i class="bi bi-chevron-down"></i></span>
-                            </div>
-                            <div class="side-bar-item-child">
-
+                        <div class="side-bar-item-child">
+                            @foreach (var genre in ViewBag.Genres)
+                            {
+                                <div class="new-releases-child">
+                                    <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
+                                    <a href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@(genre.ID)&Hambuger=@ViewBag.Service">@genre.Name</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="side-bar-item">
+                        <div class="side-bar-item-wrap-title">
+                            <p><strong>Magazine</strong></p>
+                            <span class="wrap-icon"><i class="bi bi-chevron-down"></i></span>
+                        </div>
+                        <div class="side-bar-item-child">
                             <div class="new-releases-child">
                                 <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
                                 <a href="@(RouteConstant.LIST)?Service=@(ViewBag.Service)&Hambuger=@ViewBag.Service">Liberated Saigon</a>
                             </div>
-
-                            </div>
                         </div>
-
                     </div>
-                    <div class="side-price">
-                        <h6>PRICE RANGE</h6>
-                        <div >
-                            <div class="side-price-item">
-                                <p>Price Range:</p>
+                </div>
+                <div class="side-price">
+                    <h6>PRICE RANGE</h6>
+                    <div>
+                        <div class="side-price-item">
+                            <p>Price Range:</p>
                             <span>@(string.Format("{0:0,00#} VNĐ", 10000))</span>
-                                <span>-</span>
+                            <span>-</span>
                             <span>@(string.Format("{0:0,00#} VNĐ", 500000))</span>
-                            </div>
-                            <input id ="pricechange" type="range" min="10000" max ="500000"/> 
-                            <p>10000Đ- <span id="currentprice"></span>Đ</p>
                         </div>
-                        
-                       
+                        <input id="pricechange" type="range" min="10000" max="500000" />
+                        <p>10000Đ- <span id="currentprice"></span>Đ</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-10">
-                <div id="book" class="row">
-                    @foreach (var book in ViewBag.Books)
-                    {
-                        <div class="col-lg-3">
-                            <div class="card-product">
-                                <div class="card-product-heading">
+        </div>
+        <div class="col-lg-10">
+            <div id="book" class="row">
+                @foreach (var book in ViewBag.Books)
+                {
+                    <div class="col-lg-3">
+                        <div class="card-product">
+                            <div class="card-product-heading">
                                 <a href="@(RouteConstant.PRODUCT_DETAIL)/@book.ID">
-                                        <img src="@book.Thumbnail" alt="@book.Title" />
-                                    </a>
-                                    <button>
-                                        <i class="bi bi-suit-heart"></i>
-                                    </button>
+                                    <img src="@book.Thumbnail" alt="@book.Title" />
+                                </a>
+                                <button>
+                                    <i class="bi bi-suit-heart"></i>
+                                </button>
+                            </div>
+                            <div class="card-product-content">
+                                <h6 class="card-product-title">
+                                    <a href="#">@book.Title</a>
+                                </h6>
+                                <div class="card-product-desc">
+                                    <span><strong>Book Author: </strong></span>
+                                    <span>@book.Author</span>
                                 </div>
-                                <div class="card-product-content">
-                                    <h6 class="card-product-title">
-                                        <a href="#">@book.Title</a>
-                                    </h6>
-                                    <div class="card-product-desc">
-                                        <span><strong>Book Author: </strong></span>
-                                        <span>@book.Author</span>
+                                @if (book.TagID.ToString().ToLower() == "ca038048-95d2-4bfd-86d8-740fb2ece1af")
+                                {
+                                    <div class="card-product-date">
+                                        <span><strong>Publication: </strong></span>
+                                        <span>@book.CreatedAt.ToString("dd/MM/yyyy")</span>
                                     </div>
-                                    <div class="card-product-wrap-price">
+                                    @if (ViewBag.CurrentPromotion != null)
+                                    {
+                                        <div class="card-product-promo">
+                                            <span class="promo-badge">-@ViewBag.CurrentPromotion.DiscountPercent%</span>
+                                        </div>
+                                    }
+                                }
+                                @if (book.TagID.ToString().ToLower() == "3e5cac9b-6e5a-416d-86f8-52f044d6994e")
+                                {
+                                    <div class="card-product-buy-count">
+                                        <span><strong>Sold: </strong></span>
+                                        <span>@book.BuyCount</span>
+                                    </div>
+                                    @if (ViewBag.CurrentPromotion != null)
+                                    {
+                                        <div class="card-product-promo">
+                                            <span class="promo-badge">-@ViewBag.CurrentPromotion.DiscountPercent%</span>
+                                        </div>
+                                    }
+                                }
+                                <div class="card-product-wrap-price">
                                     <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", book.Discount))</span>
                                     <span class="card-product-old-price">@(string.Format("{0:0,00#} VNĐ", book.Price))</span>
-                                    </div>
                                 </div>
-                                <div class="card-product-footer">
-                                    <div class="card-product-wrap-btn">
+                            </div>
+                            <div class="card-product-footer">
+                                <div class="card-product-wrap-btn">
                                     <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook" data-bookID="@(book.ID)">
-                                           BUY
+                                        BUY
                                     </button>
                                     <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart" data-bookID="@(book.ID)">ADD TO CART</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                    }
-                </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Phân trang -->
+            <div class="pagination-container">
+                <nav>
+                    <ul class="pagination">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@ViewBag.GenresID&page=@(ViewBag.CurrentPage - 1)&Hambuger=@ViewBag.Hambuger">Previous</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">Previous</span>
+                            </li>
+                        }
+
+                        @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
+                        {
+                            if (i == ViewBag.CurrentPage)
+                            {
+                                <li class="page-item active">
+                                    <span class="page-link">@i</span>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@ViewBag.GenresID&page=@i&Hambuger=@ViewBag.Hambuger">@i</a>
+                                </li>
+                            }
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@ViewBag.GenresID&page=@(ViewBag.CurrentPage + 1)&Hambuger=@ViewBag.Hambuger">Next</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">Next</span>
+                            </li>
+                        }
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -128,18 +234,14 @@
                                 toastr.success(res.message);
                                 const count = getCountCartAPI();
                                 $("#spanCartItemCount").text(count);
-
                                 location.href = "https://localhost:5001/Cart";
                             } else {
                                 toastr.error(res.message)
                             }
                         })
-
                     }
-
                 })
             })
-
             $(".btnAddToCart").each(function () {
                 $(this).on("click", function () {
                     const _this = this;
@@ -165,69 +267,220 @@
             })
         }
 
-        attachEventHandlers();
+        // Khởi tạo các event handler cho lần đầu
+        if (res.success) {
+            renderBooks(res.data.Books, service);
+            renderPagination(res.data.Pagination, service, genres);
+            attachEventHandlers(); // ✅ Gán lại sau render
+        }
+
+        let currentPage = 1;
+
+                // Thêm vào file script.js hoặc trong phần JS của trang
         $(document).ready(function () {
+            // Hiển thị giá trị ban đầu của thanh trượt
+            $("#currentprice").text("10000");
+
+            // Lấy trang hiện tại từ URL nếu có
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('page')) {
+                currentPage = parseInt(urlParams.get('page')) || 1;
+            }
+
+            // Xử lý sự kiện thay đổi giá
             $("#pricechange").on("change", function () {
-                const value = $(this).val()
-                $("#currentprice").text(value)
-                const service = $("input[name='service']").val()
-                const genres = $("input[name='genres']").val()
-                const input = location.href.split("?")[1].split("&")[0].split("=")
-                console.log(input)
+                const value = $(this).val();
+                $("#currentprice").text(value);
+
+                const service = $("input[name='service']").val();
+                const genres = $("input[name='genres']").val();
+                const inputValue = urlParams.get('input');
+
+                loadBooks(service, genres, inputValue, value, currentPage);
+            });
+
+            // Xử lý sự kiện click vào nút phân trang
+            $(document).on('click', '.pagination .page-link', function(e) {
+                e.preventDefault();
+                const pageUrl = $(this).attr('href');
+                if (pageUrl) {
+                    const pageUrlParams = new URLSearchParams(new URL(pageUrl).search);
+                    const newPage = parseInt(pageUrlParams.get('page')) || 1;
+
+                    const service = $("input[name='service']").val();
+                    const genres = $("input[name='genres']").val();
+                    const inputValue = urlParams.get('input');
+                    const priceValue = $("#pricechange").val();
+
+                    loadBooks(service, genres, inputValue, priceValue, newPage);
+                    currentPage = newPage;
+
+                    // Cập nhật URL không làm tải lại trang
+                    const newUrl = new URL(window.location.href);
+                    newUrl.searchParams.set('page', newPage);
+                    window.history.pushState({}, '', newUrl);
+                }
+            });
+
+            // Hàm load sách theo điều kiện
+            function loadBooks(service, genres, input, maxPrice, page) {
                 handleAjax("/List/SortPriceBook", {
                     req: {
-                        MinPrice: 10000, MaxPrice: value, Service: service, GenreID: genres, input: input[0] !== "input" ? undefined : input[1]
-
+                        MinPrice: 10000,
+                        MaxPrice: maxPrice,
+                        Service: service,
+                        GenreID: genres,
+                        input: input,
+                        Page: page
                     }
                 }, (res) => {
                     if (res.success) {
-                        const html = res.data.map((book) => {
-                            const formattedDiscount = book.discount.toLocaleString('vi-VN') + ' VNĐ';
-                            const formattedPrice = book.price.toLocaleString('vi-VN') + ' VNĐ';
-
-                            return `
-        
-                                                 <div class="col-lg-3">
-                                                    <div class="card-product">
-                                                        <div class="card-product-heading">
-                                                            <a href="@(RouteConstant.PRODUCT_DETAIL)/${book.id}">
-                                                                             <img src="${book.thumbnail}" alt="${book.title}" />
-                                                            </a>
-                                                            <button>
-                                                                <i class="bi bi-suit-heart"></i>
-                                                            </button>
-                                                        </div>
-                                                        <div class="card-product-content">
-                                                            <h6 class="card-product-title">
-                                                                                <a href="#">${book.title}</a>
-                                                            </h6>
-                                                            <div class="card-product-desc">
-                                                                <span><strong>Book Author: </strong></span>
-                                                                                <span>${book.author}</span>
-                                                            </div>
-                                                            <div class="card-product-wrap-price">
-                                                                                <span class="card-product-current-price">${formattedDiscount} </span>
-                                                                                <span class="card-product-old-price">${formattedPrice} </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card-product-footer">
-                                                            <div class="card-product-wrap-btn">
-                                                                                <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook" data-bookID="${book.id}">BUY</button>
-                                                                        <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart " data-bookID="${book.id}">ADD TO CART</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                        `
-                        }).join("")
-                        $("#book").html(html);
+                        renderBooks(res.data.Books, service);
+                        renderPagination(res.data.Pagination, service, genres);
                         attachEventHandlers();
                     }
                 });
-            });
+            }
 
+            // Hiển thị sách
+            function renderBooks(books, service) {
+                const html = books.map((book) => {
+                    const formattedDiscount = book.discount.toLocaleString('vi-VN') + ' VNĐ';
+                    const formattedPrice = ( book.price).toLocaleString('vi-VN') + ' VNĐ';
+
+                    const NEW_RELEASE_TAG_ID = "ca038048-95d2-4bfd-86d8-740fb2ece1af";
+                    const BEST_SELLER_TAG_ID = "3e5cac9b-6e5a-416d-86f8-52f044d6994e";
+
+                    const bookTagId = book.tagID ? book.tagID.toLowerCase() : "";
+                    let additionalInfo = '';
+
+                    if (bookTagId === NEW_RELEASE_TAG_ID.toLowerCase() || service === "New Release") {
+                        const createdDate = new Date(book.createdAt);
+                        additionalInfo = `
+                            <div class="card-product-date">
+                                <span><strong>Publication: </strong></span>
+                                <span>${createdDate.toLocaleDateString('vi-VN')}</span>
+                            </div>
+                        `;
+
+                        // Hiển thị huy hiệu khuyến mãi nếu có
+                        if (book.price && promotion.discountPercent < book.price) {
+                            const discountPercent = Math.round((1 - promotion.discountPercent / book.price) * 100);
+                            additionalInfo += `
+                                <div class="card-product-promo">
+                                    <span class="promo-badge">-${discountPercent}%</span>
+                                </div>
+                            `;
+                        }
+                    } else if (bookTagId === BEST_SELLER_TAG_ID.toLowerCase() || service === "Best Seller") {
+                        additionalInfo = `
+                            <div class="card-product-buy-count">
+                                <span><strong>Sold: </strong></span>
+                                <span>${book.buyCount}</span>
+                            </div>
+                        `;
+
+                        // Hiển thị huy hiệu khuyến mãi nếu có
+                        if (book.price && promotion.discountPercent < book.price) {
+                            const price = Math.round((1 - promotion.discountPercent / book.price) * 100);
+                            additionalInfo += `
+                                <div class="card-product-promo">
+                                    <span class="promo-badge">-${discountPercent}%</span>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    return `
+                        <div class="col-lg-3">
+                            <div class="card-product">
+                                <div class="card-product-heading">
+                                    <a href="/ProductDetail/${book.id}">
+                                        <img src="${book.thumbnail}" alt="${book.title}" />
+                                    </a>
+                                    <button>
+                                        <i class="bi bi-suit-heart"></i>
+                                    </button>
+                                </div>
+                                <div class="card-product-content">
+                                    <h6 class="card-product-title">
+                                        <a href="#">${book.title}</a>
+                                    </h6>
+                                    <div class="card-product-desc">
+                                        <span><strong>Book Author: </strong></span>
+                                        <span>${book.author}</span>
+                                    </div>
+                                    ${additionalInfo}
+                                    <div class="card-product-wrap-price">
+                                        <span class="card-product-current-price">${formattedDiscount}</span>
+                                        <span class="card-product-old-price">${formattedPrice}</span>
+                                    </div>
+                                </div>
+                                <div class="card-product-footer">
+                                    <div class="card-product-wrap-btn">
+                                        <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook" data-bookID="${book.id}">BUY</button>
+                                        <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart" data-bookID="${book.id}">ADD TO CART</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+
+                $("#book").html(html);
+            }
+
+            // Hiển thị phân trang
+            function renderPagination(pagination, service, genres) {
+                const { currentPage, totalPages } = pagination;
+                let paginationHtml = '';
+
+                if (totalPages > 1) {
+                    paginationHtml += '<nav><ul class="pagination">';
+
+                    // Nút Previous
+                    if (currentPage > 1) {
+                        paginationHtml += `<li class="page-item">
+                            <a class="page-link" href="/List?Service=${service}&genresId=${genres}&page=${currentPage - 1}">Previous</a>
+                        </li>`;
+                    } else {
+                        paginationHtml += `<li class="page-item disabled">
+                            <span class="page-link">Previous</span>
+                        </li>`;
+                    }
+
+                    // Các nút số trang
+                    const startPage = Math.max(1, currentPage - 2);
+                    const endPage = Math.min(totalPages, currentPage + 2);
+
+                    for (let i = startPage; i <= endPage; i++) {
+                        if (i === currentPage) {
+                            paginationHtml += `<li class="page-item active">
+                                <span class="page-link">${i}</span>
+                            </li>`;
+                        } else {
+                            paginationHtml += `<li class="page-item">
+                                <a class="page-link" href="/List?Service=${service}&genresId=${genres}&page=${i}">${i}</a>
+                            </li>`;
+                        }
+                    }
+
+                    // Nút Next
+                    if (currentPage < totalPages) {
+                        paginationHtml += `<li class="page-item">
+                            <a class="page-link" href="/List?Service=${service}&genresId=${genres}&page=${currentPage + 1}">Next</a>
+                        </li>`;
+                    } else {
+                        paginationHtml += `<li class="page-item disabled">
+                            <span class="page-link">Next</span>
+                        </li>`;
+                    }
+
+                    paginationHtml += '</ul></nav>';
+                }
+
+                $(".pagination-container").html(paginationHtml);
+            }
         });
-        
     </script>
-}
-
+}   

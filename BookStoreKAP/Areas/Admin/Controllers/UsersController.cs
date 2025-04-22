@@ -61,7 +61,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
             ViewBag.ReqSearch = q;
             ViewBag.Roles = _roleManager.Roles.ToList();
-            ViewBag.Pagination = new PaginationModel()
+            ViewBag.Pagination = new PaginationDTO()
             {
                 TotalItems = totalItems,
                 CurrentPage = q.Page,

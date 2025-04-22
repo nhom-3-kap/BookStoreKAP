@@ -121,7 +121,7 @@ namespace BookStoreKAP.Controllers
         public IActionResult CreateQRPaymentAPI(double totalPrice)
         {
             // Khởi tạo dịch vụ QRCodeService với thông tin cần thiết
-            var qrCodeService = new QrCodeService(BankName.MBBank, "0902905361");
+            var qrCodeService = new QrCodeService(BankName.MBBank, "0376976198");
             var qrString = qrCodeService.BuildQRString(totalPrice, "Send to KAPBookStore");
             // Tạo đối tượng QRCodeGenerator
             var qrGenerator = new QRCodeGenerator();
@@ -140,7 +140,6 @@ namespace BookStoreKAP.Controllers
                 TempData[ToastrConstant.ERROR_MSG] = "User not found";
                 return RedirectToAction("Index", "Home");
             }
-
             var query = from od in _context.OrderDetails
                         join o in _context.Orders on od.OrderID equals o.ID
                         join b in _context.Books on od.BookID equals b.ID
@@ -153,29 +152,25 @@ namespace BookStoreKAP.Controllers
                             Price = od.Price,
                             Quantity = od.Quantity,
                             UserName = user.UserName,
-                            BoughtDate = o.OrderDate
+                            BoughtDate = o.OrderDate,
+                            Thumbnail = b.Thumbnail // Added Thumbnail property
                         };
-
             // Tìm kiếm theo tên sách hoặc tác giả
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(x => x.Title.Contains(search) || x.Author.Contains(search));
             }
-
             // Phân trang
             int totalItems = query.Count();
             var purchases = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
             ViewBag.Search = search;
             ViewBag.Page = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
             return View(purchases);
         }
-
         // THÊM CÁC CHỨC NĂNG MỚI
 
-        
-        
+
+
     }
 }

@@ -21,6 +21,7 @@ namespace BookStoreKAP.Models.Entities
         public int PublicationYear { get; set; } = 0;
         public double Price { get; set; } = 0;
         public double Discount { get; set; } = 0;
+
         public int Quantity { get; set; } = 0;
 
         [AllowNull]

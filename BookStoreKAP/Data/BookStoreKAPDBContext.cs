@@ -149,9 +149,13 @@ namespace BookStoreKAP.Data
 
 			builder.Entity<Role>().Property(e => e.Id).HasDefaultValueSql("NEWID()");
 			builder.Entity<Role>().Property(e => e.ConcurrencyStamp).HasDefaultValueSql("NEWID()");
-			// Configuration Many to Many
-			#region Table BookGenres
-			builder.Entity<BookGenre>().HasAlternateKey(bg => new { bg.GenreID, bg.BookID });
+
+            builder.Entity<Promotion>().Property(e => e.Id).HasDefaultValueSql("NEWID()");
+            builder.Entity<Promotion>().Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
+
+            // Configuration Many to Many
+            #region Table BookGenres
+            builder.Entity<BookGenre>().HasAlternateKey(bg => new { bg.GenreID, bg.BookID });
 			builder.Entity<BookGenre>().HasOne(bg => bg.Book).WithMany(b => b.BookGenres).HasForeignKey(bg => bg.BookID);
 			builder.Entity<BookGenre>().HasOne(bg => bg.Genre).WithMany(g => g.BookGenres).HasForeignKey(bg => bg.GenreID);
 			#endregion
@@ -196,6 +200,7 @@ namespace BookStoreKAP.Data
 		public DbSet<Cart> Carts { get; set; }
 		public DbSet<CartItem> CartItems { get; set; }
         public DbSet<PurchaseViewModel> Purchases { get; set; }
+        public DbSet<Promotion> Promotions { get; set; }
 
 
     }

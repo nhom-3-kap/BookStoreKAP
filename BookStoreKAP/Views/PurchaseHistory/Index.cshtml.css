@@ -1,0 +1,96 @@
+﻿.breadcrumb-wrap {
+    display: flex;
+    column-gap: 12px;
+    margin: 40px 0px 22px 0px;
+}
+.breadcrumb-wrap a{
+    color: #888;
+    font-weight: 600;
+}
+    .breadcrumb-wrap a:hover {
+        color: #000;
+    }
+    .breadcrumb-wrap b {
+        font-weight: 600;
+
+    }
+    .header{
+        font-weight: 600;
+        margin-bottom: 30px;
+
+    }
+.side-bar > div > h6{
+    color: #ff0000;
+
+    font-weight: 600;
+}
+.side-bar-item {
+    border-top: 1px solid #333;
+    padding: 8px 0px 6px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    overflow: hidden;
+    height: 38px;
+    transition: height 0.2s ease-in-out;
+}
+.side-bar-item:last-child {
+    border: none;
+
+    
+}
+.side-price-item > span{
+    color: #ff0000;
+
+}
+.side-price-item  {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+}
+.side-category{
+    margin-bottom: 20px;
+}
+.col-lg-4 {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+.wrap-icon.rotate {
+    transform: rotate(-180deg);
+}
+.wrap-icon {
+    transition: 0.3s;
+    transform: rotate(0deg);
+}
+.side-bar-item > .side-bar-item-wrap-title > p {
+    user-select: none;
+}
+.side-bar-item-wrap-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+.side-bar-item-child{
+    margin-left: 16px;
+
+}
+.side-bar-item-child > a{
+    font-weight: 600;
+    font-size: 16px;
+    display: block;
+    
+}
+.new-releases-child {
+    display: flex;
+    
+   
+}
+.new-releases-child > a{
+        color: black;
+}
+.right-icon {
+        font-size: 12px;
+        padding: 5px;
+}
+
+

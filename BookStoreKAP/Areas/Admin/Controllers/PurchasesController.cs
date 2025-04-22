@@ -43,7 +43,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 .Take(q.PageSize)
                 .ToList();
             ViewBag.SearchValue = q;
-            ViewBag.Pagination = new PaginationModel()
+            ViewBag.Pagination = new PaginationDTO()
             {
                 TotalItems = totalItems,
                 CurrentPage = q.Page,
@@ -120,5 +120,6 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 return Ok(new ResponseAPI<string>() { Success = false, Message = ex.Message });
             }
         }
+
     }
 }

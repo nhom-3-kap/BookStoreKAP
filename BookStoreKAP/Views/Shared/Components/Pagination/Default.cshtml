@@ -1,4 +1,5 @@
-﻿@model BookStoreKAP.Models.DTO.PaginationModel
+﻿@using BookStoreKAP.Models.DTO
+@model PaginationDTO
 @{
     int totalPages = (int)Math.Ceiling(Model.TotalItems / (double)Model.PageSize);
     int currentPage = Model.CurrentPage;

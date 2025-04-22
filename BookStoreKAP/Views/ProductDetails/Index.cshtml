@@ -1,14 +1,12 @@
 @model BookDetailVM
-
 <div class="all-details">
     <section class="product-details">
-
         <div class="image-box">
-            <img src="@Model.Book.Thumbnail" alt="World's Best Girlfriend">
+            <img src="@Model.Book.Thumbnail" alt="@Model.Book.Title">
         </div>
         <div class="details">
             <h1>@Model.Book.Title</h1>
-           
+
             <h5>
                 <strong>Book Publisher:</strong>
                 @Model.Book.Publisher
@@ -19,15 +17,13 @@
             </h5>
             <h5>
                 <strong>Genre: </strong>
-                @foreach(var bookGenre in Model.Book.BookGenres)
+                @foreach (var bookGenre in Model.Book.BookGenres)
                 {
                     @bookGenre.Genre.Name
-                    <span>&nbsp;</span>
+                        <span>&nbsp;</span>
                 }
-
             </h5>
             <h5><strong>Series: </strong> @Model.Book.Series.Name</h5>
-
             <div class="price-book">
                 <p class="pr">Price:  </p>
                 <p class="price">  @(string.Format("{0:0,00#} VNĐ", Model.Book.Discount)) <span>@(string.Format("{0:0,00#} VNĐ", Model.Book.Price))</span></p>
@@ -38,12 +34,10 @@
                 </span>
             </div>
             <div class="product-actions">
-                <input type="number" id="quantity" name="quantity" value="1" min="1" max=@Model.Book.Quantity>
-                <button class="add-to-cart  btnAddToCart" data-bookID="@(Model.Book.ID)">ADD TO CART</button>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="@Model.Book.Quantity">
+                <button class="add-to-cart btnAddToCart" data-bookID="@(Model.Book.ID)">ADD TO CART</button>
                 <button class="add-to-wishlist">♡ ADD TO WISHLIST</button>
             </div>
-
-
         </div>
     </section>
     <section class="description">
@@ -60,7 +54,6 @@
             <span class="rating-star">&#9733;</span>
             <span class="rating-star">&#9733;</span>
             <span class="rating-star">&#9733;</span>
-
         </div>
         <div class="review-text">
             <label for="review-text">Your review *</label>
@@ -70,33 +63,55 @@
     </div>
 </div>
 @section scripts {
-    <script src="/js/home.js"></script>
-    <script>
-        $(document).ready(function () {
-            $(".btnAddToCart").each(function () {
-                $(this).on("click", function () {
-                    const _this = this;
-                    $(_this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...`).prop("disabled", true);
-                    if (!getAuthenticated()) {
-                        $("#modalLogin").modal("show");
-                    } else {
-                        const bookID = $(_this).attr("data-bookID");
-                        handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
-                            if (res.success) {
-                                toastr.success(res.message);
-                                const count = getCountCartAPI();
-                                $("#spanCartItemCount").text(count);
-                            } else {
-                                toastr.error(res.message);
+        <script src="/js/home.js"></script>
+        <script>
+            $(document).ready(function () {
+                $(".btnAddToCart").each(function () {
+                    $(this).on("click", function () {
+                        const _this = this;
+                        $(_this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...`).prop("disabled", true);
+                        if (!getAuthenticated()) {
+                            $("#modalLogin").modal("show");
+                        } else {
+                            const bookID = $(_this).attr("data-bookID");
+                            const quantity = parseInt($("#quantity").val());
+
+                            if (isNaN(quantity) || quantity <= 0) {
+                                toastr.error("Vui lòng nhập số lượng hợp lệ");
+                                $(_this).html(`ADD TO CART`).prop("disabled", false);
+                                return;
                             }
-                        });
+
+                            handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID, Quantity: quantity } }, (res) => {
+                                if (res.success) {
+                                    toastr.success(res.message);
+                                    const count = getCountCartAPI();
+                                    $("#spanCartItemCount").text(count);
+                                } else {
+                                    toastr.error(res.message);
+                                }
+                            });
+                        }
+                        setTimeout(() => {
+                            $(_this).html(`ADD TO CART`).prop("disabled", false);
+                        }, 100)
+                    });
+                });
+
+                // Giới hạn số lượng không được vượt quá số lượng trong kho
+                $("#quantity").on("input", function() {
+                    const max = parseInt($(this).attr("max"));
+                    const val = parseInt($(this).val());
+
+                    if (val > max) {
+                        $(this).val(max);
+                        toastr.warning("Số lượng vượt quá số lượng trong kho!");
                     }
-                    setTimeout(() => {
-                        $(_this).html(`ADD TO CART`).prop("disabled", false);
-                    }, 100)
+
+                    if (val < 1) {
+                        $(this).val(1);
+                    }
                 });
             });
-
-        });
-    </script>
+        </script>
 }

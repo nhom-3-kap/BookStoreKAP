@@ -27,7 +27,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             var paged = genres.Skip((q.Page - 1) * q.PageSize).Take(q.PageSize).ToList();
 
             ViewBag.SearchValue = q;
-            ViewBag.Pagination = new PaginationModel()
+            ViewBag.Pagination = new PaginationDTO()
             {
                 TotalItems = totalItems,
                 CurrentPage = q.Page,

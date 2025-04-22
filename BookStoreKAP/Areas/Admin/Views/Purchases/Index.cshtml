@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Purchases Management";
     ReqQuerySearchPurchase searchValue = ViewBag.SearchValue ?? new ReqQuerySearchPurchase();
-    PaginationModel pagination = ViewBag.Pagination ?? new PaginationModel();
+    PaginationDTO pagination = ViewBag.Pagination ?? new PaginationDTO();
     var totalPages = (int)Math.Ceiling(pagination.TotalItems / (double)pagination.PageSize);
 }
 <div class="container">

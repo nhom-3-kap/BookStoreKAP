@@ -8,6 +8,9 @@
         public string SortBy { get; set; }
         public string SortDirection { get; set; }
         public string menuKey { get; set; }
+        public string PromotionType { get; set; }
+        public string SeriesID { get; set; }
+
 
     }
 }

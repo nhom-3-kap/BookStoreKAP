@@ -62,15 +62,36 @@ namespace BookStoreKAP.Controllers
 
         // 4. Modify the Index method in HomeController to ensure sorting on the homepage
         // In HomeController.cs
-        public IActionResult Index()
+        public IActionResult Index(string seriesIds = null, int minPrice = 10000, int maxPrice = 500000)
         {
             // Xác định và cập nhật sách theo Tags trước khi hiển thị
             UpdateBookTags();
 
+            // Lấy danh sách genres cho bộ lọc
+            var genres = _context.Genres.ToList();
+            ViewBag.Genres = genres;
+
+            // Thiết lập giá trị mặc định cho bộ lọc
+            ViewBag.MinPrice = minPrice;
+            ViewBag.MaxPrice = maxPrice;
+
             // Lấy danh sách tags cùng với các sách đã được gán tag
             var tags = _context.Tags
-                        .Include(x => x.Books)
+                        .Include(x => x.Books.Where(b => b.Price >= minPrice && b.Price <= maxPrice))
                         .ToList();
+
+            // Nếu có lọc theo series
+            if (!string.IsNullOrEmpty(seriesIds))
+            {
+                var seriesIdsList = seriesIds.Split(',').Select(Guid.Parse).ToList();
+                foreach (var tag in tags)
+                {
+                    if (tag.Books != null)
+                    {
+                        tag.Books = tag.Books.Where(b => b.SeriesID.HasValue && seriesIdsList.Contains(b.SeriesID.Value)).ToList();
+                    }
+                }
+            }
 
             // ĐẢM BẢO sách Best Seller được sắp xếp theo BuyCount trong trang chủ
             var bestSellerTag = tags.FirstOrDefault(t => t.ID == BEST_SELLER_TAG_ID);
@@ -88,6 +109,46 @@ namespace BookStoreKAP.Controllers
             ViewBag.BestSellerPromotions = bestSellerPromotions;
 
             return View(tags);
+        }
+
+        // API endpoint để lọc sách theo nhiều điều kiện
+        [HttpPost]
+        public IActionResult FilterBooks(string seriesIds, int minPrice = 10000, int maxPrice = 500000)
+        {
+            try
+            {
+                UpdateBookTags();
+
+                var tags = _context.Tags
+                    .Include(x => x.Books.Where(b => b.Price >= minPrice && b.Price <= maxPrice))
+                    .ToList();
+
+                // Nếu có lọc theo series
+                if (!string.IsNullOrEmpty(seriesIds))
+                {
+                    var seriesIdsList = seriesIds.Split(',').Select(Guid.Parse).ToList();
+                    foreach (var tag in tags)
+                    {
+                        if (tag.Books != null)
+                        {
+                            tag.Books = tag.Books.Where(b => b.SeriesID.HasValue && seriesIdsList.Contains(b.SeriesID.Value)).ToList();
+                        }
+                    }
+                }
+
+                // Sắp xếp Best Seller
+                var bestSellerTag = tags.FirstOrDefault(t => t.ID == BEST_SELLER_TAG_ID);
+                if (bestSellerTag != null && bestSellerTag.Books != null && bestSellerTag.Books.Any())
+                {
+                    bestSellerTag.Books = bestSellerTag.Books.OrderByDescending(b => b.BuyCount).ToList();
+                }
+
+                return Json(new { success = true, data = tags });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         public IActionResult Privacy()
@@ -116,6 +177,22 @@ namespace BookStoreKAP.Controllers
         public IActionResult HandleSearch(SearchDTO req)
         {
             return Redirect($"{RouteConstant.LIST}?input={req.KeySearch}&Hambuger=Search");
+        }
+        // API để kết thúc chiến dịch khuyến mãi
+        [HttpPost("/Promotion/End")]
+        public IActionResult EndPromotion(Guid promotionId)
+        {
+            var promotion = _context.Promotions.Find(promotionId);
+            if (promotion != null)
+            {
+                // Kết thúc chiến dịch bằng cách đặt IsActive = false
+                promotion.IsActive = false;
+                promotion.EndDate = DateTime.Now;
+                _context.SaveChanges();
+                return Ok(new ResponseAPI<Promotion>() { Success = true, Message = "Promotion ended successfully", Data = promotion });
+            }
+
+            return NotFound(new ResponseAPI<string>() { Success = false, Message = "Promotion not found", Data = null });
         }
     }
 }

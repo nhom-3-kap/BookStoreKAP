@@ -95,6 +95,15 @@
 
 
 /* Thêm vào file site.css hoặc styles.css */
+
+.tag-best {
+    color: #ff0000;
+    border: solid;
+}
+.tag-new {
+    color: #ff0000;
+    border: solid;
+}
 .promotion-banner {
     margin-bottom: 20px;
 }

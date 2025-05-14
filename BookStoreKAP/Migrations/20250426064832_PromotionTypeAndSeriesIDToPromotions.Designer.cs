@@ -4,6 +4,7 @@ using BookStoreKAP.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreKAP.Migrations
 {
     [DbContext(typeof(BookStoreKAPDBContext))]
-    partial class BookStoreKAPDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250426064832_PromotionTypeAndSeriesIDToPromotions")]
+    partial class PromotionTypeAndSeriesIDToPromotions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,7 +103,7 @@ namespace BookStoreKAP.Migrations
                     b.Property<Guid?>("RatingID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("SeriesID")
+                    b.Property<Guid>("SeriesID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Synopsis")
@@ -915,7 +918,9 @@ namespace BookStoreKAP.Migrations
 
                     b.HasOne("BookStoreKAP.Models.Entities.Series", "Series")
                         .WithMany("Books")
-                        .HasForeignKey("SeriesID");
+                        .HasForeignKey("SeriesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BookStoreKAP.Models.Entities.Tag", "Tag")
                         .WithMany("Books")

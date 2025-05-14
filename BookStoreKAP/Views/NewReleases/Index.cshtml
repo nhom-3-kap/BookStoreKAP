@@ -2,7 +2,6 @@
     ViewData["Title"] = ViewBag.Service;
     var showBestSellerPromotion = false;
     var showNewReleasePromotion = false;
-
     foreach (var book in ViewBag.Books)
     {
         if (book.TagID.ToString().ToLower() == "3e5cac9b-6e5a-416d-86f8-52f044d6994e") // Best Seller
@@ -14,7 +13,6 @@
             showNewReleasePromotion = true;
         }
     }
-
 }
 <input hidden name="service" value="@ViewBag.Service" />
 <input hidden name="genres" value="@ViewBag.GenresID" />
@@ -25,33 +23,6 @@
         <span>&#10095;</span>
         <p>@(ViewBag.Hambuger)</p>
     </div>
-
-    @if (showBestSellerPromotion && ViewBag.CurrentPromotion != null)
-    {
-        <div class="promotion-banner">
-            <h3>Đợt khuyến mãi đặc biệt cho sách Best Seller</h3>
-            <div class="promotion-item">
-                <h4>@ViewBag.CurrentPromotion.Name</h4>
-                <p>@ViewBag.CurrentPromotion.Description</p>
-                <p>Giảm giá: <strong>@ViewBag.CurrentPromotion.DiscountPercent%</strong></p>
-                <p>Thời gian: @ViewBag.CurrentPromotion.StartDate.ToString("dd/MM/yyyy") - @ViewBag.CurrentPromotion.EndDate.ToString("dd/MM/yyyy")</p>
-            </div>
-        </div>
-    }
-
-    @if (showNewReleasePromotion && ViewBag.CurrentPromotion != null)
-    {
-        <div class="promotion-banner">
-            <h3>Đợt khuyến mãi đặc biệt cho sách New Release</h3>
-            <div class="promotion-item">
-                <h4>@ViewBag.CurrentPromotion.Name</h4>
-                <p>@ViewBag.CurrentPromotion.Description</p>
-                <p>Giảm giá: <strong>@ViewBag.CurrentPromotion.DiscountPercent%</strong></p>
-                <p>Thời gian: @ViewBag.CurrentPromotion.StartDate.ToString("dd/MM/yyyy") - @ViewBag.CurrentPromotion.EndDate.ToString("dd/MM/yyyy")</p>
-            </div>
-        </div>
-    }
-
     <div class="row">
         <div class="col-lg-2">
             <div class="side-bar">
@@ -59,17 +30,23 @@
                     <h6>PRODUCT SERIES</h6>
                     <div class="side-bar-item">
                         <div class="side-bar-item-wrap-title">
-                            <p><strong>Books</strong></p>
+                            <p><strong>Genres</strong></p>
                             <span class="wrap-icon"><i class="bi bi-chevron-down "></i></span>
                         </div>
                         <div class="side-bar-item-child">
-                            @foreach (var genre in ViewBag.Genres)
-                            {
-                                <div class="new-releases-child">
-                                    <span class="right-icon"><i class="bi bi-chevron-double-right"></i></span>
-                                    <a href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@(genre.ID)&Hambuger=@ViewBag.Service">@genre.Name</a>
+                            <div class="genre-filter-container">
+                                @foreach (var genre in ViewBag.Genres)
+                                {
+                                    <div class="genre-checkbox">
+                                        <input type="checkbox" id="genre-@genre.ID" class="genre-filter" value="@genre.ID" />
+                                        <label for="genre-@genre.ID">@genre.Name</label>
+                                    </div>
+                                }
+                                <div class="genre-filter-buttons">
+                                    <button id="applyGenreFilter" class="btn btn-sm btn-primary">Apply</button>
+                                    <button id="clearGenreFilter" class="btn btn-sm btn-secondary">Clear</button>
                                 </div>
-                            }
+                            </div>
                         </div>
                     </div>
                     <div class="side-bar-item">
@@ -94,8 +71,8 @@
                             <span>-</span>
                             <span>@(string.Format("{0:0,00#} VNĐ", 500000))</span>
                         </div>
-                        <input id="pricechange" type="range" min="10000" max="500000" />
-                        <p>10000Đ- <span id="currentprice"></span>Đ</p>
+                        <input id="pricechange" type="range" min="10000" max="500000" value="500000" />
+                        <p>10000Đ- <span id="currentprice">500000</span>Đ</p>
                     </div>
                 </div>
             </div>
@@ -165,7 +142,9 @@
                     </div>
                 }
             </div>
-
+            <div id="noBooks" class="alert alert-info d-none">
+                No books match your selected criteria. Please try different filters.
+            </div>
             <!-- Phân trang -->
             <div class="pagination-container">
                 <nav>
@@ -182,7 +161,6 @@
                                 <span class="page-link">Previous</span>
                             </li>
                         }
-
                         @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
                         {
                             if (i == ViewBag.CurrentPage)
@@ -198,7 +176,6 @@
                                 </li>
                             }
                         }
-
                         @if (ViewBag.CurrentPage < ViewBag.TotalPages)
                         {
                             <li class="page-item">
@@ -219,84 +196,41 @@
 </div>
 @section Scripts {
     <script>
-        function attachEventHandlers() {
-            $(".btnBuyBook").each(function () {
-                $(this).on("click", function () {
-                    const _this = this;
-                    console.log(1);
-                    if (!getAuthenticated()) {
-                        $("#modalLogin").modal("show");
-                    }
-                    else {
-                        const bookID = $(_this).attr("data-bookID");
-                        handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
-                            if (res.success) {
-                                toastr.success(res.message);
-                                const count = getCountCartAPI();
-                                $("#spanCartItemCount").text(count);
-                                location.href = "https://localhost:5001/Cart";
-                            } else {
-                                toastr.error(res.message)
-                            }
-                        })
-                    }
-                })
-            })
-            $(".btnAddToCart").each(function () {
-                $(this).on("click", function () {
-                    const _this = this;
-                    $(_this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...`).prop("disabled", true);
-                    if (!getAuthenticated()) {
-                        $("#modalLogin").modal("show");
-                    } else {
-                        const bookID = $(_this).attr("data-bookID");
-                        handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
-                            if (res.success) {
-                                toastr.success(res.message);
-                                const count = getCountCartAPI();
-                                $("#spanCartItemCount").text(count);
-                            } else {
-                                toastr.error(res.message);
-                            }
-                        });
-                    }
-                    setTimeout(() => {
-                        $(_this).html(`ADD TO CART`).prop("disabled", false)
-                    }, 100)
-                })
-            })
-        }
-
-        // Khởi tạo các event handler cho lần đầu
-        if (res.success) {
-            renderBooks(res.data.Books, service);
-            renderPagination(res.data.Pagination, service, genres);
-            attachEventHandlers(); // ✅ Gán lại sau render
-        }
-
-        let currentPage = 1;
-
-                // Thêm vào file script.js hoặc trong phần JS của trang
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Hiển thị giá trị ban đầu của thanh trượt
-            $("#currentprice").text("10000");
+            $("#currentprice").text("500000");
 
-            // Lấy trang hiện tại từ URL nếu có
+            // Lấy tham số từ URL
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('page')) {
-                currentPage = parseInt(urlParams.get('page')) || 1;
-            }
+            let currentPage = parseInt(urlParams.get('page')) || 1;
+            
+            // Lưu trữ các thể loại đã chọn
+            let selectedGenres = [];
 
             // Xử lý sự kiện thay đổi giá
-            $("#pricechange").on("change", function () {
+            $("#pricechange").on("input", function() {
                 const value = $(this).val();
                 $("#currentprice").text(value);
+            });
 
-                const service = $("input[name='service']").val();
-                const genres = $("input[name='genres']").val();
-                const inputValue = urlParams.get('input');
+            $("#pricechange").on("change", function() {
+                applyFilters();
+            });
 
-                loadBooks(service, genres, inputValue, value, currentPage);
+            // Xử lý nút Apply cho bộ lọc thể loại
+            $("#applyGenreFilter").on("click", function() {
+                selectedGenres = [];
+                $(".genre-filter:checked").each(function() {
+                    selectedGenres.push($(this).val());
+                });
+                applyFilters();
+            });
+
+            // Xử lý nút Clear cho bộ lọc thể loại
+            $("#clearGenreFilter").on("click", function() {
+                $(".genre-filter").prop("checked", false);
+                selectedGenres = [];
+                applyFilters();
             });
 
             // Xử lý sự kiện click vào nút phân trang
@@ -305,55 +239,76 @@
                 const pageUrl = $(this).attr('href');
                 if (pageUrl) {
                     const pageUrlParams = new URLSearchParams(new URL(pageUrl).search);
-                    const newPage = parseInt(pageUrlParams.get('page')) || 1;
-
-                    const service = $("input[name='service']").val();
-                    const genres = $("input[name='genres']").val();
-                    const inputValue = urlParams.get('input');
-                    const priceValue = $("#pricechange").val();
-
-                    loadBooks(service, genres, inputValue, priceValue, newPage);
-                    currentPage = newPage;
-
-                    // Cập nhật URL không làm tải lại trang
-                    const newUrl = new URL(window.location.href);
-                    newUrl.searchParams.set('page', newPage);
-                    window.history.pushState({}, '', newUrl);
+                    currentPage = parseInt(pageUrlParams.get('page')) || 1;
+                    applyFilters();
                 }
             });
 
+            // Hàm áp dụng tất cả các bộ lọc
+            function applyFilters() {
+                const service = $("input[name='service']").val();
+                const inputValue = urlParams.get('input') || "";
+                const priceValue = $("#pricechange").val();
+                
+                // Hiển thị trạng thái đang tải
+                $("#book").html('<div class="col-12 text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+                
+                loadBooks(service, selectedGenres, inputValue, priceValue, currentPage);
+            }
+
             // Hàm load sách theo điều kiện
-            function loadBooks(service, genres, input, maxPrice, page) {
+            function loadBooks(service, genreIds, input, maxPrice, page) {
                 handleAjax("/List/SortPriceBook", {
                     req: {
                         MinPrice: 10000,
-                        MaxPrice: maxPrice,
+                        MaxPrice: parseInt(maxPrice),
                         Service: service,
-                        GenreID: genres,
-                        input: input,
-                        Page: page
+                        GenreID: genreIds,
+                        Input: input,
+                        Page: page,
+                        PageSize: 4
                     }
                 }, (res) => {
                     if (res.success) {
-                        renderBooks(res.data.Books, service);
-                        renderPagination(res.data.Pagination, service, genres);
+                        if (res.data.Books && res.data.Books.length > 0) {
+                            $("#book").removeClass("d-none");
+                            $("#noBooks").addClass("d-none");
+                            renderBooks(res.data.Books, service, res.data.Promotions);
+                            renderPagination(res.data.Pagination);
+                        } else {
+                            $("#book").addClass("d-none");
+                            $("#noBooks").removeClass("d-none");
+                            $(".pagination-container").html('');
+                        }
                         attachEventHandlers();
+                        
+                        // Cập nhật URL không làm tải lại trang
+                        const newUrl = new URL(window.location.href);
+                        newUrl.searchParams.set('page', page);
+                        if (genreIds && genreIds.length > 0) {
+                            newUrl.searchParams.set('genreFilter', genreIds.join(','));
+                        } else {
+                            newUrl.searchParams.delete('genreFilter');
+                        }
+                        window.history.pushState({}, '', newUrl);
+                    } else {
+                        toastr.error("Failed to load books");
                     }
                 });
             }
 
             // Hiển thị sách
-            function renderBooks(books, service) {
+            function renderBooks(books, service, promotion) {
+                const NEW_RELEASE_TAG_ID = "ca038048-95d2-4bfd-86d8-740fb2ece1af";
+                const BEST_SELLER_TAG_ID = "3e5cac9b-6e5a-416d-86f8-52f044d6994e";
+                
                 const html = books.map((book) => {
                     const formattedDiscount = book.discount.toLocaleString('vi-VN') + ' VNĐ';
-                    const formattedPrice = ( book.price).toLocaleString('vi-VN') + ' VNĐ';
-
-                    const NEW_RELEASE_TAG_ID = "ca038048-95d2-4bfd-86d8-740fb2ece1af";
-                    const BEST_SELLER_TAG_ID = "3e5cac9b-6e5a-416d-86f8-52f044d6994e";
-
+                    const formattedPrice = book.price.toLocaleString('vi-VN') + ' VNĐ';
                     const bookTagId = book.tagID ? book.tagID.toLowerCase() : "";
                     let additionalInfo = '';
-
+                    
+                    // Hiển thị thông tin bổ sung dựa vào loại sách
                     if (bookTagId === NEW_RELEASE_TAG_ID.toLowerCase() || service === "New Release") {
                         const createdDate = new Date(book.createdAt);
                         additionalInfo = `
@@ -362,13 +317,11 @@
                                 <span>${createdDate.toLocaleDateString('vi-VN')}</span>
                             </div>
                         `;
-
-                        // Hiển thị huy hiệu khuyến mãi nếu có
-                        if (book.price && promotion.discountPercent < book.price) {
-                            const discountPercent = Math.round((1 - promotion.discountPercent / book.price) * 100);
+                        // Hiển thị khuyến mãi nếu có
+                        if (promotion && promotion.newRelease && book.price) {
                             additionalInfo += `
                                 <div class="card-product-promo">
-                                    <span class="promo-badge">-${discountPercent}%</span>
+                                    <span class="promo-badge">-${promotion.newRelease.discountPercent}%</span>
                                 </div>
                             `;
                         }
@@ -379,18 +332,16 @@
                                 <span>${book.buyCount}</span>
                             </div>
                         `;
-
-                        // Hiển thị huy hiệu khuyến mãi nếu có
-                        if (book.price && promotion.discountPercent < book.price) {
-                            const price = Math.round((1 - promotion.discountPercent / book.price) * 100);
+                        // Hiển thị khuyến mãi nếu có
+                        if (promotion && promotion.bestSeller && book.price) {
                             additionalInfo += `
                                 <div class="card-product-promo">
-                                    <span class="promo-badge">-${discountPercent}%</span>
+                                    <span class="promo-badge">-${promotion.bestSeller.discountPercent}%</span>
                                 </div>
                             `;
                         }
                     }
-
+                    
                     return `
                         <div class="col-lg-3">
                             <div class="card-product">
@@ -426,33 +377,33 @@
                         </div>
                     `;
                 }).join("");
-
+                
                 $("#book").html(html);
             }
 
             // Hiển thị phân trang
-            function renderPagination(pagination, service, genres) {
-                const { currentPage, totalPages } = pagination;
+            function renderPagination(pagination) {
+                const { currentPage, totalPages, service, genreID } = pagination;
                 let paginationHtml = '';
-
+                
                 if (totalPages > 1) {
                     paginationHtml += '<nav><ul class="pagination">';
-
+                    
                     // Nút Previous
                     if (currentPage > 1) {
                         paginationHtml += `<li class="page-item">
-                            <a class="page-link" href="/List?Service=${service}&genresId=${genres}&page=${currentPage - 1}">Previous</a>
+                            <a class="page-link" href="/List?Service=${service}&page=${currentPage - 1}">Previous</a>
                         </li>`;
                     } else {
                         paginationHtml += `<li class="page-item disabled">
                             <span class="page-link">Previous</span>
                         </li>`;
                     }
-
+                    
                     // Các nút số trang
                     const startPage = Math.max(1, currentPage - 2);
                     const endPage = Math.min(totalPages, currentPage + 2);
-
+                    
                     for (let i = startPage; i <= endPage; i++) {
                         if (i === currentPage) {
                             paginationHtml += `<li class="page-item active">
@@ -460,27 +411,90 @@
                             </li>`;
                         } else {
                             paginationHtml += `<li class="page-item">
-                                <a class="page-link" href="/List?Service=${service}&genresId=${genres}&page=${i}">${i}</a>
+                                <a class="page-link" href="/List?Service=${service}&page=${i}">${i}</a>
                             </li>`;
                         }
                     }
-
+                    
                     // Nút Next
                     if (currentPage < totalPages) {
                         paginationHtml += `<li class="page-item">
-                            <a class="page-link" href="/List?Service=${service}&genresId=${genres}&page=${currentPage + 1}">Next</a>
+                            <a class="page-link" href="/List?Service=${service}&page=${currentPage + 1}">Next</a>
                         </li>`;
                     } else {
                         paginationHtml += `<li class="page-item disabled">
                             <span class="page-link">Next</span>
                         </li>`;
                     }
-
+                    
                     paginationHtml += '</ul></nav>';
                 }
-
+                
                 $(".pagination-container").html(paginationHtml);
+            }
+
+            // Gán sự kiện cho các nút
+            function attachEventHandlers() {
+                $(".btnBuyBook").each(function () {
+                    $(this).on("click", function () {
+                        const _this = this;
+                        if (!getAuthenticated()) {
+                            $("#modalLogin").modal("show");
+                        }
+                        else {
+                            const bookID = $(_this).attr("data-bookID");
+                            handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
+                                if (res.success) {
+                                    toastr.success(res.message);
+                                    const count = getCountCartAPI();
+                                    $("#spanCartItemCount").text(count);
+                                    location.href = "https://localhost:5001/Cart";
+                                } else {
+                                    toastr.error(res.message)
+                                }
+                            })
+                        }
+                    })
+                })
+                
+                $(".btnAddToCart").each(function () {
+                    $(this).on("click", function () {
+                        const _this = this;
+                        $(_this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...`).prop("disabled", true);
+                        
+                        if (!getAuthenticated()) {
+                            $("#modalLogin").modal("show");
+                        } else {
+                            const bookID = $(_this).attr("data-bookID");
+                            handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
+                                if (res.success) {
+                                    toastr.success(res.message);
+                                    const count = getCountCartAPI();
+                                    $("#spanCartItemCount").text(count);
+                                } else {
+                                    toastr.error(res.message);
+                                }
+                            });
+                        }
+                        
+                        setTimeout(() => {
+                            $(_this).html(`ADD TO CART`).prop("disabled", false)
+                        }, 100)
+                    })
+                })
+            }
+
+            // Khởi tạo các event handler cho lần đầu
+            attachEventHandlers();
+
+            // Kiểm tra URL để đặt các bộ lọc ban đầu
+            if (urlParams.has('genreFilter')) {
+                const genreFilters = urlParams.get('genreFilter').split(',');
+                genreFilters.forEach(id => {
+                    $(`#genre-${id}`).prop('checked', true);
+                    selectedGenres.push(id);
+                });
             }
         });
     </script>
-}   
+}

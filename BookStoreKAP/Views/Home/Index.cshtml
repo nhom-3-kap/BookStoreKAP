@@ -3,125 +3,388 @@
     ViewData["Title"] = "Home";
 }
 
-@for (int i=0; i<Model.Count; i++)
-{
-    <div class="container mt-4">
-        <section class="section-new-release">
-            <div class="wrap-title">
-                <div class="title-img">
-                    <img src="/images/Heading-Line-L.png" alt="heading left" />
-                </div>
-                <span class="title">@Model[i].Name</span>
-                <div class="title-img">
-                    <img src="/images/Heading-Line-R.png" alt="heading left" />
-                </div>
-            </div>
-
-            <div class="wrap-carousel">
-                <div class="owl-carousel kap-carousel-newreleases" id="kap-carousel-newreleases-@(i+1)">
-                    @foreach (var item in Model[i].Books)
-                    {
-                        if (item.Quantity > 0)
-                        {
-                            <div class="owl-carousel-item">
-
-                            <div class="card-product">
-                                <div class="card-product-heading">
-                                    <a href="@(RouteConstant.PRODUCT_DETAIL)/@item.ID">
-                                        <img src="@item.Thumbnail" />
-                                    </a>
-                                    <button>
-                                        <i class="bi bi-suit-heart"></i>
-                                    </button>
-                                </div>
-                                <div class="card-product-content">
-                                    <h6 class="card-product-title">
-                                        <a href="#">
-                                            @(item.Title)
-                                        </a>
-                                    </h6>
-                                    <div class="card-product-desc">
-                                        <span>
-                                            <strong>Book Author: </strong>
-                                        </span>
-                                        <span>
-                                            @item.Author
-                                        </span>
-                                    </div>
-                                    <div class="card-product-wrap-price">
-                                        <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", item.Discount))</span>
-                                        <span class="card-product-old-price">@(string.Format("{0:0,00#} VNĐ", item.Price))</span>
+<div class="container">
+    <!-- Bộ lọc -->
+    <div class="row mb-4 mt-4">
+        <div class="col-lg-12">
+            <div class="filter-container">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Bộ lọc sách</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    <label><strong>Series:</strong></label>
+                                    <div class="series-filters">
+                                        @foreach (var genre in ViewBag.Genres)
+                                        {
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input series-checkbox" type="checkbox" value="@genre.ID" id="genre_@genre.ID">
+                                                <label class="form-check-label" for="genre_@genre.ID">@genre.Name</label>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
-                                <div class="card-product-fotter">
-
-                                    <div class="card-product-wrap-btn">
-                                            <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook" data-bookID="@(item.ID)"
-                                                   >
-                                                BUY
-                                            </button>
-                                        <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart" data-bookID="@(item.ID)" >ADD TO CART</button>
-                                    </div>
-
-                                    <div class="card-product-wrap-star">
-                                        <button><i class="bi bi-star"></i></button>
-                                        <button><i class="bi bi-star"></i></button>
-                                        <button><i class="bi bi-star"></i></button>
-                                        <button><i class="bi bi-star"></i></button>
-                                        <button><i class="bi bi-star"></i></button>
-                                    </div>
-
-                                </div>
-
                             </div>
-
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label><strong>Khoảng giá:</strong></label>
+                                    <div class="price-range">
+                                        <input id="priceSlider" type="range" class="form-range" min="10000" max="500000" step="10000" value="@(ViewBag.MaxPrice ?? 500000)">
+                                        <div class="d-flex justify-content-between">
+                                            <span>10.000đ</span>
+                                            <span id="currentPrice">@(ViewBag.MaxPrice?.ToString("#,##0") ?? "500,000")đ</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        }
-                    }
-
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button id="btnApplyFilter" class="btn btn-primary">Áp dụng bộ lọc</button>
+                                <button id="btnResetFilter" class="btn btn-outline-secondary">Đặt lại</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="carousel-controls" id="carousel-controls-@(i+1)">
-                    <button class="control control-left"><i class="bi bi-arrow-left"></i></button>
-                    <button class="control control-right"><i class="bi bi-arrow-right"></i></button>
-                </div>
-
-                <div class="w-100 d-flex justify-content-center align-items-center">
-                    <a href="@(RouteConstant.LIST)?Service=@(Model[i].Name)&Hambuger=@(Model[i].Name)" style="display: inline-flex; text-align: center;" class="kap-btn kap-btn-solid carousel-btn-more">View More</a>
-                </div>
-
             </div>
-
-        </section>
+        </div>
     </div>
-} 
+
+    <!-- Nội dung sách theo tag -->
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        <div class="container mt-4 tag-section" id="tag-section-@Model[i].ID">
+            <section class="section-new-release">
+                <div class="wrap-title">
+                    <div class="title-img">
+                        <img src="/images/Heading-Line-L.png" alt="heading left" />
+                    </div>
+                    <span class="title">@Model[i].Name</span>
+                    <div class="title-img">
+                        <img src="/images/Heading-Line-R.png" alt="heading left" />
+                    </div>
+                </div>
+                <div class="wrap-carousel">
+                    <div class="owl-carousel kap-carousel-newreleases" id="kap-carousel-newreleases-@(i+1)">
+                        @if (Model[i].Books != null && Model[i].Books.Any())
+                        {
+                            @foreach (var item in Model[i].Books)
+                            {
+                                if (item.Quantity > 0)
+                                {
+                                    <div class="owl-carousel-item">
+                                        <div class="card-product">
+                                            <div class="card-product-heading">
+                                                <a href="@(RouteConstant.PRODUCT_DETAIL)/@item.ID">
+                                                    <img src="@item.Thumbnail" />
+                                                </a>
+                                                <button>
+                                                    <i class="bi bi-suit-heart"></i>
+                                                </button>
+                                            </div>
+                                            <div class="card-product-content">
+                                                <h6 class="card-product-title">
+                                                    <a href="#">
+                                                        @(item.Title)
+                                                    </a>
+                                                </h6>
+                                                <div class="card-product-desc">
+                                                    <span>
+                                                        <strong>Book Author: </strong>
+                                                    </span>
+                                                    <span>
+                                                        @item.Author
+                                                    </span>
+                                                </div>
+                                                <div class="card-product-wrap-price">
+                                                    @if (item.Discount != item.Price)
+                                                    {
+                                                        <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", item.Discount))</span>
+                                                                            <span class="card-product-old-price">@(string.Format("{0:0,00#} VNĐ", item.Price))</span>
+                                                    }
+                                                    else
+                                                    {
+                                                                            <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", item.Discount))</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="card-product-fotter">
+                                                <div class="card-product-wrap-btn">
+                                                    <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook" data-bookID="@(item.ID)">
+                                                        BUY
+                                                    </button>
+                                                    <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart" data-bookID="@(item.ID)">ADD TO CART</button>
+                                                </div>
+                                                <div class="card-product-wrap-star">
+                                                    <button><i class="bi bi-star"></i></button>
+                                                    <button><i class="bi bi-star"></i></button>
+                                                    <button><i class="bi bi-star"></i></button>
+                                                    <button><i class="bi bi-star"></i></button>
+                                                    <button><i class="bi bi-star"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <div class="no-books-found">Không tìm thấy sách phù hợp với bộ lọc đã chọn</div>
+                        }
+                    </div>
+                    <div class="carousel-controls" id="carousel-controls-@(i+1)">
+                        <button class="control control-left"><i class="bi bi-arrow-left"></i></button>
+                        <button class="control control-right"><i class="bi bi-arrow-right"></i></button>
+                    </div>
+                    <div class="w-100 d-flex justify-content-center align-items-center">
+                        <a href="@(RouteConstant.LIST)?Service=@(Model[i].Name)&Hambuger=@(Model[i].Name)" style="display: inline-flex; text-align: center;" class="kap-btn kap-btn-solid carousel-btn-more">View More</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    }
+</div>
 
 @section scripts {
     <script src="/js/home.js"></script>
     <script>
         $(document).ready(function () {
+            // Cập nhật giá trị hiển thị của thanh trượt
+            $("#priceSlider").on("input", function() {
+                const value = $(this).val();
+                $("#currentPrice").text(Number(value).toLocaleString('vi-VN') + 'đ');
+            });
+
+            // Nút áp dụng bộ lọc
+            $("#btnApplyFilter").on("click", function() {
+                applyFilters();
+            });
+
+            // Nút đặt lại bộ lọc
+            $("#btnResetFilter").on("click", function() {
+                resetFilters();
+            });
+
+            // Hàm áp dụng bộ lọc
+            function applyFilters() {
+                const selectedSeries = [];
+                $(".series-checkbox:checked").each(function() {
+                    selectedSeries.push($(this).val());
+                });
+
+                const maxPrice = $("#priceSlider").val();
+
+                // Gọi API để lọc sách
+                $.ajax({
+                    url: '/Home/FilterBooks',
+                    type: 'POST',
+                    data: {
+                        seriesIds: selectedSeries.join(','),
+                        minPrice: 10000,
+                        maxPrice: maxPrice
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            updateBookSections(response.data);
+                            reinitializeCarousels();
+                            reattachEventHandlers();
+                        } else {
+                            toastr.error('Có lỗi xảy ra khi lọc sách: ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        toastr.error('Không thể kết nối đến máy chủ');
+                    }
+                });
+            }
+
+            // Hàm đặt lại bộ lọc
+            function resetFilters() {
+                $(".series-checkbox").prop('checked', false);
+                $("#priceSlider").val(500000);
+                $("#currentPrice").text('500,000đ');
+
+                // Tải lại trang để hiển thị tất cả sách
+                location.reload();
+            }
+
+            // Cập nhật các phần sách
+            function updateBookSections(tags) {
+                tags.forEach(function(tag, index) {
+                    const carouselId = `#kap-carousel-newreleases-${index + 1}`;
+                    const carousel = $(carouselId);
+
+                    // Xóa tất cả các item hiện tại
+                    carousel.trigger('destroy.owl.carousel');
+                    carousel.empty();
+
+                    // Kiểm tra nếu có sách
+                    if (tag.books && tag.books.length > 0) {
+                        // Thêm sách mới vào carousel
+                        tag.books.forEach(function(book) {
+                            if (book.quantity > 0) {
+                                const bookHtml = `
+                                    <div class="owl-carousel-item">
+                                        <div class="card-product">
+                                            <div class="card-product-heading">
+                                                <a href="/ProductDetail/${book.id}">
+                                                    <img src="${book.thumbnail}" />
+                                                </a>
+                                                <button>
+                                                    <i class="bi bi-suit-heart"></i>
+                                                </button>
+                                            </div>
+                                            <div class="card-product-content">
+                                                <h6 class="card-product-title">
+                                                    <a href="#">${book.title}</a>
+                                                </h6>
+                                                <div class="card-product-desc">
+                                                    <span><strong>Book Author: </strong></span>
+                                                    <span>${book.author}</span>
+                                                </div>
+                                                <div class="card-product-wrap-price">
+                                                    <span class="card-product-current-price">${Number(book.discount).toLocaleString('vi-VN')} VNĐ</span>
+                                                    <span class="card-product-old-price">${Number(book.price).toLocaleString('vi-VN')} VNĐ</span>
+                                                </div>
+                                            </div>
+                                            <div class="card-product-fotter">
+                                                <div class="card-product-wrap-btn">
+                                                    <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook" data-bookID="${book.id}">BUY</button>
+                                                    <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart" data-bookID="${book.id}">ADD TO CART</button>
+                                                </div>
+                                                <div class="card-product-wrap-star">
+                                                    <button><i class="bi bi-star"></i></button>
+                                                    <button><i class="bi bi-star"></i></button>
+                                                    <button><i class="bi bi-star"></i></button>
+                                                    <button><i class="bi bi-star"></i></button>
+                                                    <button><i class="bi bi-star"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                carousel.append(bookHtml);
+                            }
+                        });
+                    } else {
+                        // Hiển thị thông báo khi không có sách
+                        carousel.append('<div class="no-books-found">Không tìm thấy sách phù hợp với bộ lọc đã chọn</div>');
+                    }
+
+                    // Hiển thị hoặc ẩn section dựa trên số lượng sách
+                    const tagSection = $(`#tag-section-${tag.id}`);
+                    if (tag.books && tag.books.length > 0) {
+                        tagSection.show();
+                    } else {
+                        tagSection.hide();
+                    }
+                });
+            }
+
+            // Khởi tạo lại carousel sau khi cập nhật dữ liệu
+            function reinitializeCarousels() {
+                $('.kap-carousel-newreleases').each(function(index) {
+                    const carouselId = `kap-carousel-newreleases-${index + 1}`;
+                    const controlsId = `carousel-controls-${index + 1}`;
+
+                    $(this).owlCarousel({
+                        loop: true,
+                        margin: 10,
+                        nav: false,
+                        dots: false,
+                        responsive: {
+                            0: { items: 1 },
+                            600: { items: 2 },
+                            1000: { items: 5 }
+                        }
+                    });
+
+                    // Thiết lập lại nút điều khiển
+                    $(`#${controlsId} .control-left`).on('click', function() {
+                        $(`#${carouselId}`).trigger('prev.owl.carousel');
+                    });
+
+                    $(`#${controlsId} .control-right`).on('click', function() {
+                        $(`#${carouselId}`).trigger('next.owl.carousel');
+                    });
+                });
+            }
+
+            // Gán lại các sự kiện cho các nút mua và thêm vào giỏ hàng
+            function reattachEventHandlers() {
+                // Xử lý nút BUY
+                $(".btnBuyBook").each(function () {
+                    $(this).off('click').on("click", function () {
+                        const _this = this;
+                        if (!getAuthenticated()) {
+                            $("#modalLogin").modal("show");
+                        }
+                        else {
+                            const bookID = $(_this).attr("data-bookID");
+                            handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
+                                if (res.success) {
+                                    toastr.success(res.message);
+                                    const count = getCountCartAPI();
+                                    $("#spanCartItemCount").text(count);
+                                    location.href = "https://localhost:5001/Cart";
+                                } else {
+                                    toastr.error(res.message);
+                                }
+                            });
+                        }
+                    });
+                });
+
+                // Xử lý nút ADD TO CART
+                $(".btnAddToCart").each(function () {
+                    $(this).off('click').on("click", function () {
+                        const _this = this;
+                        $(_this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...`).prop("disabled", true);
+                        if (!getAuthenticated()) {
+                            $("#modalLogin").modal("show");
+                        } else {
+                            const bookID = $(_this).attr("data-bookID");
+                            handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
+                                if (res.success) {
+                                    toastr.success(res.message);
+                                    const count = getCountCartAPI();
+                                    $("#spanCartItemCount").text(count);
+                                } else {
+                                    toastr.error(res.message);
+                                }
+                            });
+                        }
+                        setTimeout(() => {
+                            $(_this).html(`ADD TO CART`).prop("disabled", false);
+                        }, 100)
+                    });
+                });
+            }
+
+            // Khởi tạo các sự kiện nút mua và thêm vào giỏ hàng ban đầu
             $(".btnBuyBook").each(function () {
                 $(this).on("click", function () {
                     const _this = this;
                     if (!getAuthenticated()) {
                         $("#modalLogin").modal("show");
                     }
-                    else
-                    {
+                    else {
                         const bookID = $(_this).attr("data-bookID");
                         handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
                             if (res.success) {
                                 toastr.success(res.message);
                                 const count = getCountCartAPI();
                                 $("#spanCartItemCount").text(count);
-                                const cartLink = `@Url.RouteUrl(RouteConstant.CART)`;
                                 location.href = "https://localhost:5001/Cart";
                             } else {
                                 toastr.error(res.message);
                             }
                         });
-                      
                     }
-
                 });
             });
 
@@ -144,11 +407,10 @@
                         });
                     }
                     setTimeout(() => {
-                        $(_this).html(`ADD TO CART`).prop("disabled", false); 
+                        $(_this).html(`ADD TO CART`).prop("disabled", false);
                     }, 100)
                 });
             });
-            
         });
     </script>
 }

@@ -97,3 +97,57 @@
     font-size: 16px;
     color: var(--white-color);
 }
+.filter-container {
+    margin-bottom: 30px;
+}
+
+    .filter-container .card-header {
+        background-color: #da1f26 !important;
+    }
+
+.series-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.form-check-inline {
+    margin-right: 15px;
+}
+
+.form-check-input:checked {
+    background-color: #da1f26;
+    border-color: #da1f26;
+}
+
+.price-range {
+    padding: 10px 0;
+}
+
+#priceSlider {
+    width: 100%;
+    cursor: pointer;
+}
+
+    #priceSlider::-webkit-slider-thumb {
+        background: #da1f26;
+    }
+
+    #priceSlider::-moz-range-thumb {
+        background: #da1f26;
+    }
+
+#currentPrice {
+    font-weight: bold;
+    color: #da1f26;
+}
+
+#btnApplyFilter {
+    background-color: #da1f26;
+    border-color: #da1f26;
+}
+
+    #btnApplyFilter:hover {
+        background-color: #b71c22;
+        border-color: #b71c22;
+    }

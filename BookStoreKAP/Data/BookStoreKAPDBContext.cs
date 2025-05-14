@@ -1,6 +1,7 @@
 ﻿using BookStoreKAP.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace BookStoreKAP.Data
 {
@@ -24,9 +25,10 @@ namespace BookStoreKAP.Data
 			builder.Entity<UserLogin>(entity => { entity.ToTable("UserLogins"); });
 			builder.Entity<RoleClaim>(entity => { entity.ToTable("RoleClaims"); });
 			builder.Entity<UserToken>(entity => { entity.ToTable("UserTokens"); });
+            builder.Entity<PromotionBook>().ToTable("PromotionBook");
 
-			// Drop foreign keys and primary keys before altering column types
-			builder.Entity<UserToken>().HasIndex(ut => ut.UserId).IsUnique(false);
+            // Drop foreign keys and primary keys before altering column types
+            builder.Entity<UserToken>().HasIndex(ut => ut.UserId).IsUnique(false);
 			builder.Entity<UserRole>().HasIndex(ur => ur.UserId).IsUnique(false);
 			builder.Entity<UserLogin>().HasIndex(ul => ul.UserId).IsUnique(false);
 			builder.Entity<UserClaim>().HasIndex(uc => uc.UserId).IsUnique(false);
@@ -201,6 +203,7 @@ namespace BookStoreKAP.Data
 		public DbSet<CartItem> CartItems { get; set; }
         public DbSet<PurchaseViewModel> Purchases { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<PromotionBook> PromotionBooks { get; set; }
 
 
     }

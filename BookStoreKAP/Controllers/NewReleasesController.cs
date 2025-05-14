@@ -32,11 +32,9 @@ namespace BookStoreKAP.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.Input = input;
 
-            // Tìm Tag theo tên Service
             var tag = _context.Tags.FirstOrDefault(t => t.Name.ToLower() == (Service ?? "").ToLower());
             var tagId = tag?.ID;
 
-            // Truy xuất chiến dịch khuyến mãi hiện tại
             var currentDate = DateTime.Now;
             var activePromotions = _context.Promotions
                 .Where(p => p.StartDate <= currentDate && p.EndDate >= currentDate && p.IsActive)
@@ -46,7 +44,6 @@ namespace BookStoreKAP.Controllers
             var bestSellerPromo = activePromotions.FirstOrDefault(p => p.TagID == BEST_SELLER_TAG_ID);
             var newReleasePromo = activePromotions.FirstOrDefault(p => p.TagID == NEW_RELEASE_TAG_ID);
 
-            // Truyền thông tin khuyến mãi cho view
             ViewBag.BestSellerPromotion = bestSellerPromo;
             ViewBag.NewReleasePromotion = newReleasePromo;
             ViewBag.CurrentPromotion = null;
@@ -56,7 +53,6 @@ namespace BookStoreKAP.Controllers
             else if (tagId == NEW_RELEASE_TAG_ID)
                 ViewBag.CurrentPromotion = newReleasePromo;
 
-            // Lấy danh sách BestSellerPromotions cho banner
             if (Service == "Best Seller")
             {
                 ViewBag.BestSellerPromotions = _context.Promotions
@@ -64,7 +60,6 @@ namespace BookStoreKAP.Controllers
                     .ToList();
             }
 
-            // Xử lý danh sách sách
             IQueryable<Book> booksQuery;
             if (string.IsNullOrEmpty(input))
             {
@@ -118,36 +113,15 @@ namespace BookStoreKAP.Controllers
                     booksQuery = booksQuery.OrderByDescending(b => b.CreatedAt);
             }
 
-            // Tính toán thông tin phân trang
             var totalItems = booksQuery.Count();
             var totalPages = (int)Math.Ceiling(totalItems / (double)PAGE_SIZE);
-
-            // Đảm bảo trang hiện tại nằm trong phạm vi hợp lệ
             page = Math.Max(1, Math.Min(page, totalPages > 0 ? totalPages : 1));
 
-            // Lấy sách cho trang hiện tại
             var booksForCurrentPage = booksQuery
                 .Skip((page - 1) * PAGE_SIZE)
                 .Take(PAGE_SIZE)
                 .ToList();
 
-            // Áp dụng giảm giá theo chiến dịch nếu có
-            foreach (var book in booksForCurrentPage)
-            {
-                // Kiểm tra xem sách có khuyến mãi tương ứng không
-                book.Discount = book.Price; // Mặc định không có khuyến mãi
-
-                if (book.TagID == BEST_SELLER_TAG_ID && bestSellerPromo != null)
-                {
-                    book.Discount = Math.Round(book.Price - (book.Price * bestSellerPromo.DiscountPercent / 100), 0);
-                }
-                else if (book.TagID == NEW_RELEASE_TAG_ID && newReleasePromo != null)
-                {
-                    book.Discount = Math.Round(book.Price - (book.Price * newReleasePromo.DiscountPercent / 100), 0);
-                }
-            }
-
-            // Thiết lập các ViewBag cho phân trang
             ViewBag.Books = booksForCurrentPage;
             ViewBag.TotalPages = totalPages;
             ViewBag.CurrentPage = page;
@@ -157,58 +131,44 @@ namespace BookStoreKAP.Controllers
         }
 
         [HttpPost("/List/SortPriceBook")]
-        public IActionResult SortPriceBook(ReqBookByDK req)
+        public IActionResult SortPriceBook([FromBody] ReqBookByDK req)
         {
             var currentDate = DateTime.Now;
-            // Lấy thông tin khuyến mãi hiện tại
+
             var activePromotions = _context.Promotions
-                .Where(p =>p.IsActive)
+                .Where(p => p.IsActive)
                 .ToList();
 
             var bestSellerPromo = activePromotions.FirstOrDefault(p => p.TagID == BEST_SELLER_TAG_ID);
             var newReleasePromo = activePromotions.FirstOrDefault(p => p.TagID == NEW_RELEASE_TAG_ID);
 
-            // Xây dựng truy vấn
-            IQueryable<Book> query;
-            if (!string.IsNullOrEmpty(req.input))
-            {
-                query = _context.BookGenres
-                    .Where(b => (b.Book.Title.Contains(req.input ?? "") ||
-                                b.Book.Author.Contains(req.input ?? "") ||
-                                b.Book.Publisher.Contains(req.input ?? "") ||
-                                b.Genre.Name.Contains(req.input ?? "")) &&
-                                b.Book.Price <= req.MaxPrice &&
-                                b.Book.Price >= req.MinPrice &&
-                                b.Book.Tag.Name.Contains(req.Service ?? "") &&
-                                (req.GenreID == Guid.Empty || b.GenreID == req.GenreID))
-                    .Select(B => B.Book)
-                    .Distinct();
-            }
-            else
-            {
-                query = _context.BookGenres
-                    .Where(b => b.Book.Price <= req.MaxPrice &&
-                               b.Book.Price >= req.MinPrice &&
-                               b.Book.Tag.Name.Contains(req.Service ?? "") &&
-                               (req.GenreID == Guid.Empty || b.GenreID == req.GenreID))
-                    .Select(B => B.Book)
-                    .Distinct();
-            }
+            var tag = _context.Tags.FirstOrDefault(t => t.Name.ToLower() == req.Service.ToLower());
+            var tagId = tag?.ID;
+            if (req.GenreID == null) req.GenreID = new List<Guid>();
 
-            // Sắp xếp theo BuyCount nếu là sách Best Seller
-            if (req.Service == "Best Seller" || req.Service == "Bestseller" ||
-                query.Any(b => b.TagID == BEST_SELLER_TAG_ID))
-            {
+            var query = _context.BookGenres
+                .Include(bg => bg.Book)
+                .Where(bg =>
+                    bg.Book.Price >= req.MinPrice &&
+                    bg.Book.Price <= req.MaxPrice &&
+                    (tagId == null || bg.Book.TagID == tagId) &&
+                    (string.IsNullOrEmpty(req.Input) ||
+                        bg.Book.Title.Contains(req.Input) ||
+                        bg.Book.Author.Contains(req.Input) ||
+                        bg.Book.Publisher.Contains(req.Input) ||
+                        bg.Genre.Name.Contains(req.Input)) &&
+                    (req.GenreID == null || req.GenreID.Count == 0 || req.GenreID.Contains(bg.GenreID))
+                )
+                .Select(bg => bg.Book)
+                .Distinct();
+
+            if (tagId == BEST_SELLER_TAG_ID)
                 query = query.OrderByDescending(b => b.BuyCount);
-            }
             else
-            {
                 query = query.OrderByDescending(b => b.CreatedAt);
-            }
 
-            // Phân trang
             int page = req.Page > 0 ? req.Page : 1;
-            int pageSize = PAGE_SIZE;
+            int pageSize = req.PageSize > 0 ? req.PageSize : PAGE_SIZE;
             int totalItems = query.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
@@ -217,28 +177,14 @@ namespace BookStoreKAP.Controllers
                 .Take(pageSize)
                 .ToList();
 
-            // Áp dụng khuyến mãi cho từng sách
             foreach (var book in books)
             {
-                // Mặc định không có khuyến mãi
                 book.Discount = book.Price;
-
                 if (book.TagID == BEST_SELLER_TAG_ID && bestSellerPromo != null)
-                {
                     book.Discount = Math.Round(book.Price - (book.Price * bestSellerPromo.DiscountPercent / 100), 0);
-                }
                 else if (book.TagID == NEW_RELEASE_TAG_ID && newReleasePromo != null)
-                {
                     book.Discount = Math.Round(book.Price - (book.Price * newReleasePromo.DiscountPercent / 100), 0);
-                }
             }
-
-            // Thêm thông tin về khuyến mãi vào response để frontend hiển thị
-            var promotions = new
-            {
-                BestSeller = bestSellerPromo,
-                NewRelease = newReleasePromo
-            };
 
             return Ok(new ResponseAPI<object>()
             {
@@ -247,7 +193,11 @@ namespace BookStoreKAP.Controllers
                 Data = new
                 {
                     Books = books,
-                    Promotions = promotions,
+                    Promotions = new
+                    {
+                        BestSeller = bestSellerPromo,
+                        NewRelease = newReleasePromo
+                    },
                     Pagination = new
                     {
                         CurrentPage = page,
@@ -256,19 +206,17 @@ namespace BookStoreKAP.Controllers
                         PageSize = pageSize,
                         Service = req.Service,
                         GenreID = req.GenreID,
-                        Input = req.input
+                        Input = req.Input
                     }
                 }
             });
         }
 
-        // Thêm API để tạo chiến dịch khuyến mãi mới 
         [HttpPost("/Promotion/Create")]
         public IActionResult CreatePromotion(Promotion promotion)
         {
             if (ModelState.IsValid)
             {
-                // Kiểm tra xem đã có chiến dịch nào cho tag này chưa
                 var existingPromo = _context.Promotions
                     .FirstOrDefault(p => p.TagID == promotion.TagID && p.IsActive &&
                                    ((p.StartDate <= promotion.StartDate && p.EndDate >= promotion.StartDate) ||
@@ -276,7 +224,6 @@ namespace BookStoreKAP.Controllers
 
                 if (existingPromo != null)
                 {
-                    // Cập nhật chiến dịch hiện có
                     existingPromo.Name = promotion.Name;
                     existingPromo.Description = promotion.Description;
                     existingPromo.StartDate = promotion.StartDate;
@@ -287,19 +234,16 @@ namespace BookStoreKAP.Controllers
                 }
                 else
                 {
-                    // Nếu không có ngày kết thúc, tự động thiết lập thời hạn 1 tháng
                     if (promotion.EndDate == DateTime.MinValue || promotion.EndDate == null)
                     {
                         promotion.StartDate = DateTime.Now;
                         promotion.EndDate = DateTime.Now.AddMonths(1);
                     }
 
-                    // Thiết lập các giá trị quan trọng
                     promotion.Id = Guid.NewGuid();
                     promotion.IsActive = true;
                     promotion.CreatedAt = DateTime.Now;
 
-                    // Tạo chiến dịch mới
                     _context.Promotions.Add(promotion);
                 }
 
@@ -310,14 +254,12 @@ namespace BookStoreKAP.Controllers
             return BadRequest(new ResponseAPI<string>() { Success = false, Message = "Invalid model data", Data = null });
         }
 
-        // API để kết thúc chiến dịch khuyến mãi
         [HttpPost("/Promotion/End")]
         public IActionResult EndPromotion(Guid promotionId)
         {
             var promotion = _context.Promotions.Find(promotionId);
             if (promotion != null)
             {
-                // Kết thúc chiến dịch bằng cách đặt IsActive = false
                 promotion.IsActive = false;
                 promotion.EndDate = DateTime.Now;
                 _context.SaveChanges();

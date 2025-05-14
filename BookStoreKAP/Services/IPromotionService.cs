@@ -52,11 +52,11 @@ namespace BookStoreKAP.Services
         {
             var currentDate = DateTime.Now;
             return _context.Promotions
-                .Where(p => p.TagID == tagId && 
-                       p.StartDate <= currentDate && 
-                       p.EndDate >= currentDate && 
-                       p.IsActive)
-                .OrderByDescending(p => p.DiscountPercent)  // Get best discount if multiple
+                .Where(p => p.TagID != null && p.TagID == tagId &&
+                            p.StartDate <= currentDate &&
+                            p.EndDate >= currentDate &&
+                            p.IsActive)
+                .OrderByDescending(p => p.DiscountPercent)
                 .FirstOrDefault();
         }
 

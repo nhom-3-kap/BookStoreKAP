@@ -31,21 +31,33 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         [PermissionFilter(Name = "CanView")]
         public IActionResult Index(ReqQuerySearchPromotion searchModel, int page = 1)
         {
-            // Set dữ liệu cho form tìm kiếm
-            ViewBag.Tags = _context.Tags.ToList();
+            // Set data for search form
+            ViewBag.Series = _context.Series.ToList();
             ViewBag.SearchValue = searchModel;
-            // Truy vấn chiến dịch khuyến mãi
-            var query = _context.Promotions.AsQueryable();
-            // Áp dụng các điều kiện tìm kiếm
+
+            // Query promotions
+            var query = _context.Promotions
+                .Include(p => p.Series)
+                .AsQueryable();
+
+            // Apply search conditions
             if (!string.IsNullOrEmpty(searchModel.Name))
             {
                 query = query.Where(p => p.Name.Contains(searchModel.Name));
             }
-            if (!string.IsNullOrEmpty(searchModel.TagID))
+
+            if (!string.IsNullOrEmpty(searchModel.PromotionType))
             {
-                var tagId = Guid.Parse(searchModel.TagID);
-                query = query.Where(p => p.TagID == tagId);
+                int promotionType = int.Parse(searchModel.PromotionType);
+                query = query.Where(p => p.PromotionType == promotionType);
             }
+
+            if (!string.IsNullOrEmpty(searchModel.SeriesID))
+            {
+                var seriesId = Guid.Parse(searchModel.SeriesID);
+                query = query.Where(p => p.SeriesID == seriesId);
+            }
+
             if (!string.IsNullOrEmpty(searchModel.Status))
             {
                 var currentDate = DateTime.Now;
@@ -62,9 +74,11 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                         break;
                 }
             }
-            // Sắp xếp theo ngày tạo mới nhất
+
+            // Sort by most recent start date
             query = query.OrderByDescending(p => p.StartDate);
-            // Tính toán thông tin phân trang
+
+            // Calculate pagination info
             int totalItems = query.Count();
             var pagination = new PaginationDTO
             {
@@ -76,24 +90,46 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 Action = "Index",
                 Controller = "Promotions"
             };
-            // Lấy dữ liệu cho trang hiện tại và chuyển sang ViewModel
-            var promotions = query
+
+            // Get data for current page and convert to ViewModel
+            var promotionsData = query
                 .Skip((page - 1) * PAGE_SIZE)
                 .Take(PAGE_SIZE)
-                .Include(p => p.Tag)
-                .ToList()
-                .Select(p => new PromotionViewModel
-                {
-                    ID = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    TagID = p.TagID,
-                    TagName = p.Tag.Name,
-                    StartDate = p.StartDate,
-                    EndDate = p.EndDate,
-                    DiscountPercent = p.DiscountPercent
-                })
                 .ToList();
+
+            var promotions = promotionsData.Select(p => new PromotionViewModel
+            {
+                ID = p.Id,
+                Name = p.Name ?? "",
+                Description = p.Description ?? "",
+                PromotionType = p.PromotionType,
+                SeriesID = p.SeriesID,
+                SeriesName = p.Series?.Name ?? "",
+                StartDate = p.StartDate,
+                EndDate = p.EndDate,
+                DiscountPercent = p.DiscountPercent
+            }).ToList();
+
+            // Load book data for specific book promotions
+            foreach (var promo in promotions.Where(p => p.PromotionType == 2))
+            {
+                var promotionBooks = _context.PromotionBooks
+                    .Where(pb => pb.PromotionId == promo.ID)
+                    .Include(pb => pb.Book)
+                    .ToList();
+
+                promo.SelectedBooks = promotionBooks.Select(pb => new BookBasicViewModel
+                {
+                    Id = pb.BookId,
+                    Title = pb.Book.Title,
+                    Author = pb.Book.Author,
+                    Price = pb.Book.Discount,
+                    Thumbnail = pb.Book.Thumbnail
+                }).ToList();
+
+                promo.SelectedBookIds = promotionBooks.Select(pb => pb.BookId).ToList();
+            }
+
             ViewBag.Pagination = pagination;
             return View(promotions);
         }
@@ -101,15 +137,24 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         [PermissionFilter(Name = "CanCreate")]
         public IActionResult Create()
         {
-            ViewBag.Tags = _context.Tags.ToList();
-            ViewBag.BestSellerTagId = BEST_SELLER_TAG_ID;
-            ViewBag.NewReleaseTagId = NEW_RELEASE_TAG_ID;
+            ViewBag.Series = _context.Series.ToList();
+            ViewBag.Books = _context.Books
+                .Select(b => new BookBasicViewModel
+                {
+                    Id = b.ID,
+                    Title = b.Title,
+                    Author = b.Author,
+                    Price = b.Price,
+                    Thumbnail = b.Thumbnail
+                })
+                .ToList();
 
             return View(new PromotionViewModel
             {
-                StartDate = DateTime.Now.AddDays(0),
+                StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddMonths(1),
-                DiscountPercent = 10
+                DiscountPercent = 10,
+                PromotionType = 1 // Default to Series-based promotion
             });
         }
 
@@ -117,66 +162,87 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(PromotionViewModel model)
         {
-            //if (ModelState.IsValid)
-            //{
-                try
-                {
-                    // Kiểm tra xem đã có promotion nào đang hoạt động với cùng tag không 
-                    var currentDate = DateTime.Now;
-                    var existingActivePromotion = await _context.Promotions
-                        .FirstOrDefaultAsync(p => p.TagID == model.TagID &&
-                                                p.StartDate <= model.EndDate &&
-                                                p.EndDate >= model.StartDate);
+            try
+            {
+                // Validate based on promotion type
+                bool isValid = ValidatePromotionModel(model);
 
-                    if (existingActivePromotion != null)
+                if (!isValid)
+                {
+                    PrepareViewBagForForm();
+                    return View(model);
+                }
+
+                // Check for overlapping promotions
+                if (!await ValidateOverlappingPromotions(model))
+                {
+                    PrepareViewBagForForm();
+                    return View(model);
+                }
+
+                var promotion = new Promotion
+                {
+                    Id = Guid.NewGuid(),
+                    Name = model.Name,
+                    Description = model.Description,
+                    DiscountPercent = model.DiscountPercent,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate.Date.AddDays(1).AddTicks(-1), // Set to end of day
+                    PromotionType = model.PromotionType,
+                    CreatedAt = DateTime.Now,
+                    IsActive = true
+                };
+
+                // Set appropriate IDs based on promotion type
+                switch (model.PromotionType)
+                {
+                    case 1: // Series-based
+                        promotion.SeriesID = model.SeriesID;
+                        break;
+                    case 2: // Books-based
+                        promotion.SeriesID = null;
+                        break;
+                }
+
+                _context.Promotions.Add(promotion);
+                await _context.SaveChangesAsync();
+
+                // For specific books promotion, add entries to junction table
+                if (model.PromotionType == 2 && model.SelectedBookIds != null && model.SelectedBookIds.Any())
+                {
+                    foreach (var bookId in model.SelectedBookIds)
                     {
-                        TempData[ToastrConstant.ERROR_MSG] = "Đã tồn tại một khuyến mãi cho thể loại này trong khoảng thời gian đã chọn!";
-                        ViewBag.Tags = _context.Tags.ToList();
-                        ViewBag.BestSellerTagId = BEST_SELLER_TAG_ID;
-                        ViewBag.NewReleaseTagId = NEW_RELEASE_TAG_ID;
-                        return View(model);
+                        _context.PromotionBooks.Add(new PromotionBook
+                        {
+                            Id = Guid.NewGuid(),
+                            PromotionId = promotion.Id,
+                            BookId = bookId
+                        });
                     }
-
-                    var promotion = new Promotion
-                    {
-                        Id = Guid.NewGuid(), // Tạo ID mới cho promotion
-                        Name = model.Name,
-                        Description = model.Description,
-                        DiscountPercent = model.DiscountPercent,
-                        StartDate = model.StartDate,
-                        EndDate = model.EndDate,
-                        TagID = model.TagID,
-                        CreatedAt = DateTime.Now,
-                        IsActive = true // Mặc định promotion là active
-                    };
-
-                    _context.Promotions.Add(promotion);
                     await _context.SaveChangesAsync();
-
-                    // Áp dụng giảm giá cho các sách thuộc Tag nếu khuyến mãi đang hoạt động
-                    await UpdateBooksDiscount(promotion);
-
-                    TempData[ToastrConstant.SUCCESS_MSG] = "Khuyến mãi đã được tạo thành công!";
-                    return RedirectToAction(nameof(Index), new { menuKey = "PM" });
                 }
-                catch (Exception ex)
-                {
-                    TempData[ToastrConstant.ERROR_MSG] = $"Lỗi khi tạo khuyến mãi: {ex.Message}";
-                }
-            //}
 
-            // Nếu ModelState không hợp lệ, trả về view
-            ViewBag.Tags = _context.Tags.ToList();
-            ViewBag.BestSellerTagId = BEST_SELLER_TAG_ID;
-            ViewBag.NewReleaseTagId = NEW_RELEASE_TAG_ID;
-            return View(model);
+                // Apply discount to books
+                await UpdateBooksDiscount(promotion);
+
+                TempData[ToastrConstant.SUCCESS_MSG] = "Khuyến mãi đã được tạo thành công!";
+                return RedirectToAction(nameof(Index), new { menuKey = "PM" });
+            }
+            catch (Exception ex)
+            {
+                TempData[ToastrConstant.ERROR_MSG] = $"Lỗi khi tạo khuyến mãi: {ex.Message}";
+                PrepareViewBagForForm();
+                return View(model);
+            }
         }
+
 
         [PermissionFilter(Name = "CanViewEdit")]
         public async Task<IActionResult> Modify(Guid id)
         {
             var promotion = await _context.Promotions
                 .Include(p => p.Tag)
+                .Include(p => p.Series)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (promotion == null)
@@ -188,35 +254,64 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             var viewModel = new PromotionViewModel
             {
                 ID = promotion.Id,
-                Name = promotion.Name,
-                Description = promotion.Description,
+                Name = promotion.Name ?? "", // Handle null name
+                Description = promotion.Description ?? "", // Handle null description
+                PromotionType = promotion.PromotionType,
                 DiscountPercent = promotion.DiscountPercent,
                 StartDate = promotion.StartDate,
                 EndDate = promotion.EndDate,
-                TagID = promotion.TagID,
-                TagName = promotion.Tag?.Name
+                TagID = promotion.TagID, // Already nullable
+                TagName = promotion.Tag?.Name ?? "", // Null conditional
+                SeriesID = promotion.SeriesID, // Already nullable
+                SeriesName = promotion.Series?.Name ?? "" // Null conditional
             };
 
-            ViewBag.Tags = _context.Tags.ToList();
-            ViewBag.BestSellerTagId = BEST_SELLER_TAG_ID;
-            ViewBag.NewReleaseTagId = NEW_RELEASE_TAG_ID;
+            // Load selected books for specific books promotion
+            if (promotion.PromotionType == 3)
+            {
+                var promotionBooks = await _context.PromotionBooks
+                    .Where(pb => pb.PromotionId == promotion.Id)
+                    .Include(pb => pb.Book)
+                    .ToListAsync();
+
+                viewModel.SelectedBookIds = promotionBooks
+                    .Where(pb => pb.Book != null) // Filter out any null books
+                    .Select(pb => pb.BookId)
+                    .ToList();
+
+                viewModel.SelectedBooks = promotionBooks
+                    .Where(pb => pb.Book != null) // Filter out any null books
+                    .Select(pb => new BookBasicViewModel
+                    {
+                        Id = pb.BookId,
+                        Title = pb.Book.Title ?? "", // Handle null title
+                        Author = pb.Book.Author ?? "", // Handle null author
+                        Price = pb.Book.Price,
+                        Thumbnail = pb.Book.Thumbnail ?? "" // Handle null thumbnail
+                    })
+                    .ToList();
+            }
+
+            PrepareViewBagForForm();
             return View("Create", viewModel);
         }
+
 
         [PermissionFilter(Name = "CanSaveEdit")]
         [HttpPost]
         public async Task<IActionResult> Modify(PromotionViewModel model)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    ViewBag.Tags = _context.Tags.ToList();
-            //    ViewBag.BestSellerTagId = BEST_SELLER_TAG_ID;
-            //    ViewBag.NewReleaseTagId = NEW_RELEASE_TAG_ID;
-            //    return View("Create", model);
-            //}
-
             try
             {
+                // Validate based on promotion type
+                bool isValid = ValidatePromotionModel(model);
+
+                if (!isValid)
+                {
+                    PrepareViewBagForForm();
+                    return View("Create", model);
+                }
+
                 var promotion = await _context.Promotions.FindAsync(model.ID);
                 if (promotion == null)
                 {
@@ -224,60 +319,89 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     return RedirectToAction(nameof(Index), new { menuKey = "PM" });
                 }
 
-                // Kiểm tra xem đã có promotion nào đang hoạt động với cùng tag không (ngoại trừ promotion hiện tại)
-                var currentDate = DateTime.Now;
-                var existingActivePromotion = await _context.Promotions
-                    .FirstOrDefaultAsync(p => p.Id != model.ID &&
-                                            p.TagID == model.TagID &&
-                                            p.StartDate <= model.EndDate &&
-                                            p.EndDate >= model.StartDate);
+                // Store original values for comparison
+                var oldPromotionType = promotion.PromotionType;
+                var oldSeriesID = promotion.SeriesID;
 
-                if (existingActivePromotion != null)
+                // Check for overlapping promotions
+                if (!await ValidateOverlappingPromotions(model, promotion.Id))
                 {
-                    TempData[ToastrConstant.ERROR_MSG] = "Đã tồn tại một khuyến mãi cho thể loại này trong khoảng thời gian đã chọn!";
-                    ViewBag.Tags = _context.Tags.ToList();
-                    ViewBag.BestSellerTagId = BEST_SELLER_TAG_ID;
-                    ViewBag.NewReleaseTagId = NEW_RELEASE_TAG_ID;
+                    PrepareViewBagForForm();
                     return View("Create", model);
                 }
 
-                // Lưu TagID cũ để kiểm tra xem có thay đổi không
-                var oldTagID = promotion.TagID;
-
+                // Update promotion details
                 promotion.Name = model.Name;
                 promotion.Description = model.Description;
                 promotion.DiscountPercent = model.DiscountPercent;
-                promotion.StartDate = model.StartDate.Date;
-                promotion.EndDate = model.EndDate.Date.AddDays(1).AddTicks(-1);
-                promotion.TagID = model.TagID;
+                promotion.StartDate = model.StartDate;
+                promotion.EndDate = model.EndDate.Date.AddDays(1).AddTicks(-1); // End of day
+                promotion.PromotionType = model.PromotionType;
+
+                // Update appropriate IDs based on promotion type
+                switch (model.PromotionType)
+                {
+                    case 1: // Series-based
+                        promotion.SeriesID = model.SeriesID;
+                        break;
+                    case 2: // Books-based
+                        promotion.SeriesID = null;
+                        break;
+                }
 
                 await _context.SaveChangesAsync();
 
-                // Xử lý cập nhật giá sách
-                if (oldTagID != promotion.TagID)
+                // Handle specific books if promotion type is 2
+                if (model.PromotionType == 2)
                 {
-                    // Reset giá sách ở tag cũ
-                    var oldTagBooks = await _context.Books.Where(b => b.TagID == oldTagID).ToListAsync();
-                    foreach (var book in oldTagBooks)
-                    {
-                        book.Discount = book.Price;
-                    }
+                    // Remove existing entries
+                    var existingPromotionBooks = _context.PromotionBooks.Where(pb => pb.PromotionId == promotion.Id);
+                    _context.PromotionBooks.RemoveRange(existingPromotionBooks);
                     await _context.SaveChangesAsync();
 
-                    // Kiểm tra xem có promotion nào khác đang active cho tag cũ không
-                    var activePromotionForOldTag = await _context.Promotions
-                        .FirstOrDefaultAsync(p => p.TagID == oldTagID &&
-                                              p.StartDate <= currentDate &&
-                                              p.EndDate >= currentDate);
-
-                    if (activePromotionForOldTag != null)
+                    // Add new entries
+                    if (model.SelectedBookIds != null && model.SelectedBookIds.Any())
                     {
-                        // Áp dụng lại promotion đang active cho tag cũ
-                        await UpdateBooksDiscount(activePromotionForOldTag);
+                        foreach (var bookId in model.SelectedBookIds)
+                        {
+                            _context.PromotionBooks.Add(new PromotionBook
+                            {
+                                Id = Guid.NewGuid(),
+                                PromotionId = promotion.Id,
+                                BookId = bookId
+                            });
+                        }
+                        await _context.SaveChangesAsync();
                     }
                 }
 
-                // Cập nhật giá sách cho tag mới
+                // Reset discounts on previously affected books if promotion type/target changed
+                if (oldPromotionType != promotion.PromotionType ||
+                    (oldPromotionType == 1 && oldSeriesID != promotion.SeriesID))
+                {
+                    await ResetDiscountsForPreviousTarget(oldPromotionType, null, oldSeriesID);
+
+                    // If promotion type was 2 (specific books) and there were selected books, reset discount for those books
+                    if (oldPromotionType == 2)
+                    {
+                        var oldPromotionBookIds = await _context.PromotionBooks
+                            .Where(pb => pb.PromotionId == promotion.Id)
+                            .Select(pb => pb.BookId)
+                            .ToListAsync();
+
+                        foreach (var bookId in oldPromotionBookIds)
+                        {
+                            var book = await _context.Books.FindAsync(bookId);
+                            if (book != null)
+                            {
+                                book.Discount = book.Price;
+                            }
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+                // Apply new discounts
                 await UpdateBooksDiscount(promotion);
 
                 TempData[ToastrConstant.SUCCESS_MSG] = "Khuyến mãi đã được cập nhật thành công!";
@@ -286,9 +410,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 TempData[ToastrConstant.ERROR_MSG] = $"Lỗi khi cập nhật khuyến mãi: {ex.Message}";
-                ViewBag.Tags = _context.Tags.ToList();
-                ViewBag.BestSellerTagId = BEST_SELLER_TAG_ID;
-                ViewBag.NewReleaseTagId = NEW_RELEASE_TAG_ID;
+                PrepareViewBagForForm();
                 return View("Create", model);
             }
         }
@@ -306,33 +428,24 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     return Json(new { success = false, message = "Không tìm thấy khuyến mãi!" });
                 }
 
-                // Lưu TagID để cập nhật giá sách
+                // Store info to reset books later
+                var promotionType = promotion.PromotionType;
                 var tagID = promotion.TagID;
+                var seriesID = promotion.SeriesID;
+
+                // Remove promotion books junction entries if it's a specific books promotion
+                if (promotionType == 3)
+                {
+                    var promotionBooks = _context.PromotionBooks.Where(pb => pb.PromotionId == id);
+                    _context.PromotionBooks.RemoveRange(promotionBooks);
+                }
+
+                // Remove the promotion
                 _context.Promotions.Remove(promotion);
                 await _context.SaveChangesAsync();
 
-                // Kiểm tra xem có promotion nào khác cho tag này không
-                var currentDate = DateTime.Now;
-                var activePromotion = await _context.Promotions
-                    .FirstOrDefaultAsync(p => p.TagID == tagID &&
-                                          p.StartDate <= currentDate &&
-                                          p.EndDate >= currentDate);
-
-                if (activePromotion != null)
-                {
-                    // Nếu có promotion khác, áp dụng promotion đó
-                    await UpdateBooksDiscount(activePromotion);
-                }
-                else
-                {
-                    // Nếu không có promotion nào, reset giá sách
-                    var books = await _context.Books.Where(b => b.TagID == tagID).ToListAsync();
-                    foreach (var book in books)
-                    {
-                        book.Discount = book.Price;
-                    }
-                    await _context.SaveChangesAsync();
-                }
+                // Reset book discounts and check for other active promotions
+                await ResetDiscountsAndApplyActivePromotions(promotionType, tagID, seriesID);
 
                 await transaction.CommitAsync();
                 return Json(new { success = true, message = "Khuyến mãi đã được xóa thành công!" });
@@ -357,33 +470,17 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     return Json(new { success = false, message = "Không tìm thấy khuyến mãi!" });
                 }
 
+                // Store info to reset books later
+                var promotionType = promotion.PromotionType;
                 var tagID = promotion.TagID;
+                var seriesID = promotion.SeriesID;
+
+                // End the promotion
                 promotion.EndDate = DateTime.Now.AddSeconds(-1);
                 await _context.SaveChangesAsync();
 
-                // Kiểm tra xem có promotion nào khác đang active cho tag này không
-                var currentDate = DateTime.Now;
-                var activePromotion = await _context.Promotions
-                    .FirstOrDefaultAsync(p => p.Id != id &&
-                                          p.TagID == tagID &&
-                                          p.StartDate <= currentDate &&
-                                          p.EndDate >= currentDate);
-
-                if (activePromotion != null)
-                {
-                    // Nếu có promotion khác, áp dụng promotion đó
-                    await UpdateBooksDiscount(activePromotion);
-                }
-                else
-                {
-                    // Nếu không có promotion nào, reset giá sách
-                    var books = await _context.Books.Where(b => b.TagID == tagID).ToListAsync();
-                    foreach (var book in books)
-                    {
-                        book.Discount = book.Price;
-                    }
-                    await _context.SaveChangesAsync();
-                }
+                // Reset book discounts and check for other active promotions
+                await ResetDiscountsAndApplyActivePromotions(promotionType, tagID, seriesID);
 
                 await transaction.CommitAsync();
                 return Json(new { success = true, message = "Khuyến mãi đã kết thúc thành công!" });
@@ -395,52 +492,360 @@ namespace BookStoreKAP.Areas.Admin.Controllers
             }
         }
 
-        // Helper method để cập nhật giá sách khi thêm/sửa promotion
+        // Helper method to populate ViewBag for form
+        private void PrepareViewBagForForm()
+        {
+            ViewBag.Series = _context.Series.ToList();
+            ViewBag.Books = _context.Books
+                .Select(b => new BookBasicViewModel
+                {
+                    Id = b.ID,
+                    Title = b.Title,
+                    Author = b.Author,
+                    Price = b.Price,
+                    Thumbnail = b.Thumbnail
+                })
+                .ToList();
+        }
+
+        // Helper method to validate promotion model based on type
+        private bool ValidatePromotionModel(PromotionViewModel model)
+        {
+            bool isValid = true;
+
+            // Validate end date is after start date
+            if (model.EndDate <= model.StartDate)
+            {
+                TempData[ToastrConstant.ERROR_MSG] = "Ngày kết thúc phải sau ngày bắt đầu!";
+                return false;
+            }
+
+            // Validate fields based on promotion type
+            switch (model.PromotionType)
+            {
+                case 1: // Series-based
+                    if (model.SeriesID == null || model.SeriesID == Guid.Empty)
+                    {
+                        TempData[ToastrConstant.ERROR_MSG] = "Vui lòng chọn series sách!";
+                        isValid = false;
+                    }
+                    break;
+
+                case 2: // Specific books
+                    if (model.SelectedBookIds == null || !model.SelectedBookIds.Any())
+                    {
+                        TempData[ToastrConstant.ERROR_MSG] = "Vui lòng chọn ít nhất một cuốn sách!";
+                        isValid = false;
+                    }
+                    break;
+
+                default:
+                    TempData[ToastrConstant.ERROR_MSG] = "Loại khuyến mãi không hợp lệ!";
+                    isValid = false;
+                    break;
+            }
+
+            return isValid;
+        }
+
+        // Helper method to validate overlapping promotions
+        private async Task<bool> ValidateOverlappingPromotions(PromotionViewModel model, Guid? currentPromotionId = null)
+        {
+            var currentDate = DateTime.Now;
+            var query = _context.Promotions.AsQueryable();
+
+            // Exclude current promotion if editing
+            if (currentPromotionId.HasValue)
+            {
+                query = query.Where(p => p.Id != currentPromotionId.Value);
+            }
+
+            // Check for overlapping time periods based on promotion type
+            switch (model.PromotionType)
+            {
+                case 1: // Series-based
+                    if (model.SeriesID.HasValue) // Verify SeriesID has value
+                    {
+                        var existingSeriesPromotion = await query
+                            .FirstOrDefaultAsync(p => p.PromotionType == 1 &&
+                                                 p.SeriesID.HasValue && // Verify p.SeriesID has value
+                                                 p.SeriesID == model.SeriesID &&
+                                                 p.StartDate <= model.EndDate &&
+                                                 p.EndDate >= model.StartDate);
+
+                        if (existingSeriesPromotion != null)
+                        {
+                            TempData[ToastrConstant.ERROR_MSG] = "Đã tồn tại một khuyến mãi cho series này trong khoảng thời gian đã chọn!";
+                            return false;
+                        }
+                    }
+                    break;
+
+                case 2: // Specific books
+                        // For specific books, we need to check if any of the selected books are in another promotion
+                    if (model.SelectedBookIds != null && model.SelectedBookIds.Any())
+                    {
+                        foreach (var bookId in model.SelectedBookIds)
+                        {
+                            var existingBookPromotion = await _context.PromotionBooks
+                                .Where(pb => pb.BookId == bookId)
+                                .Join(query.Where(p => p.PromotionType == 2 &&
+                                                    p.StartDate <= model.EndDate &&
+                                                    p.EndDate >= model.StartDate),
+                                      pb => pb.PromotionId,
+                                      p => p.Id,
+                                      (pb, p) => new { Book = pb, Promotion = p })
+                                .FirstOrDefaultAsync();
+
+                            if (existingBookPromotion != null)
+                            {
+                                var book = await _context.Books.FindAsync(bookId);
+                                if (book != null) // Add null check
+                                {
+                                    TempData[ToastrConstant.ERROR_MSG] = $"Sách \"{book.Title}\" đã có trong một khuyến mãi khác trong khoảng thời gian đã chọn!";
+                                }
+                                else
+                                {
+                                    TempData[ToastrConstant.ERROR_MSG] = "Một sách đã chọn đã có trong một khuyến mãi khác trong khoảng thời gian đã chọn!";
+                                }
+                                return false;
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            return true;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBooksBySeries(Guid seriesId)
+        {
+            try
+            {
+                var books = await _context.Books
+                    .Where(b => b.SeriesID == seriesId)
+                    .Select(b => new BookBasicViewModel
+                    {
+                        Id = b.ID,
+                        Title = b.Title,
+                        Author = b.Author,
+                        Price = b.Price,
+                        Thumbnail = b.Thumbnail
+                    })
+                    .ToListAsync();
+
+                return Json(books);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
+        // Helper method to update book discounts when adding/modifying promotion
         private async Task UpdateBooksDiscount(Promotion promotion)
         {
             var currentDate = DateTime.Now;
             var isActive = promotion.StartDate <= currentDate && promotion.EndDate >= currentDate && promotion.IsActive;
 
-            // Xác định danh sách sách cần cập nhật
-            var booksQuery = _context.Books.Where(b => b.TagID == promotion.TagID);
-            var books = await booksQuery.ToListAsync();
+            // Define query to get books based on promotion type
+            IQueryable<Book> booksQuery;
+            switch (promotion.PromotionType)
+            {
+                case 1: // Series-based
+                    if (promotion.SeriesID.HasValue) // Verify SeriesID has value
+                    {
+                        booksQuery = _context.Books.Where(b => b.SeriesID == promotion.SeriesID);
+                    }
+                    else
+                    {
+                        return; // No SeriesID, nothing to update
+                    }
+                    break;
 
-            // Cập nhật giá sách
+                case 2: // Specific books
+                    var bookIds = _context.PromotionBooks
+                        .Where(pb => pb.PromotionId == promotion.Id)
+                        .Select(pb => pb.BookId);
+
+                    if (!bookIds.Any())
+                    {
+                        return; // No books selected, nothing to update
+                    }
+
+                    booksQuery = _context.Books.Where(b => bookIds.Contains(b.ID));
+                    break;
+
+                default:
+                    return; // Invalid promotion type
+            }
+
+            var books = await booksQuery.ToListAsync();
+            if (books == null || !books.Any())
+            {
+                return; // No books found, nothing to update
+            }
+
+            // Update book discounts
             foreach (var book in books)
             {
+                if (book == null) continue; // Skip null books
+
                 if (isActive)
                 {
-                    // Áp dụng giảm giá nếu promotion đang active
+                    // Apply discount if promotion is active
                     book.Discount = Math.Round(book.Price * (1 - promotion.DiscountPercent / 100), 0);
                 }
                 else
                 {
-                    // Kiểm tra xem có promotion nào khác đang active cho tag này không
-                    var activePromotion = await _context.Promotions
-                        .Where(p => p.TagID == promotion.TagID &&
-                               p.Id != promotion.Id &&
-                               p.StartDate <= currentDate &&
-                               p.EndDate >= currentDate &&
-                               p.IsActive)
-                        .OrderByDescending(p => p.DiscountPercent) // Lấy khuyến mãi có % giảm giá cao nhất
-                        .FirstOrDefaultAsync();
-
-                    if (activePromotion != null)
-                    {
-                        // Áp dụng khuyến mãi khác nếu có
-                        book.Discount = Math.Round(book.Price * (1 - activePromotion.DiscountPercent / 100), 0);
-                    }
-                    else
-                    {
-                        // Đặt lại giá gốc nếu không có khuyến mãi nào khác
-                        book.Discount = book.Price;
-                    }
+                    // Reset to original price if not active
+                    book.Discount = book.Price;
                 }
             }
 
             await _context.SaveChangesAsync();
         }
 
+        // Helper method to reset discounts when promotion type changes
+        private async Task ResetDiscountsForPreviousTarget(int oldPromotionType, Guid? oldTagID, Guid? oldSeriesID)
+        {
+            IQueryable<Book> booksQuery = null;
+
+            switch (oldPromotionType)
+            {
+                case 1: // Series-based
+                    if (oldSeriesID.HasValue)
+                    {
+                        booksQuery = _context.Books.Where(b => b.SeriesID == oldSeriesID);
+                        var seriesBooks = await booksQuery.ToListAsync();
+
+                        foreach (var book in seriesBooks)
+                        {
+                            if (book == null) continue; // Skip null books
+                            book.Discount = book.Price;
+                        }
+                    }
+                    break;
+
+                case 2: // Specific books - handled separately in Modify method
+                    break;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        // Helper method to reset discounts and apply active promotions
+        private async Task ResetDiscountsAndApplyActivePromotions(int promotionType, Guid? tagID, Guid? seriesID)
+        {
+            var currentDate = DateTime.Now;
+            IQueryable<Book> booksQuery;
+
+            switch (promotionType)
+            {
+                case 1: // Series-based
+                    if (seriesID.HasValue)
+                    {
+                        // Get books for this series
+                        booksQuery = _context.Books.Where(b => b.SeriesID == seriesID);
+                        var seriesBooks = await booksQuery.ToListAsync();
+
+                        // Reset discounts
+                        foreach (var book in seriesBooks)
+                        {
+                            book.Discount = book.Price;
+                        }
+                        await _context.SaveChangesAsync();
+
+                        // Find another active promotion for this series
+                        var activeSeriesPromotion = await _context.Promotions
+                            .Where(p => p.PromotionType == 1 &&
+                                   p.SeriesID == seriesID &&
+                                   p.StartDate <= currentDate &&
+                                   p.EndDate >= currentDate &&
+                                   p.IsActive)
+                            .OrderByDescending(p => p.DiscountPercent)
+                            .FirstOrDefaultAsync();
+
+                        if (activeSeriesPromotion != null)
+                        {
+                            await UpdateBooksDiscount(activeSeriesPromotion);
+                        }
+                    }
+                    break;
+
+                case 2: // Specific books
+                        // Get list of books from PromotionBooks table
+                    var bookIds = await _context.PromotionBooks
+                        .Where(pb => pb.PromotionId == seriesID) // seriesID here is actually promotionId
+                        .Select(pb => pb.BookId)
+                        .ToListAsync();
+
+                    if (bookIds.Any())
+                    {
+                        // Reset discount for these books
+                        foreach (var bookId in bookIds)
+                        {
+                            var book = await _context.Books.FindAsync(bookId);
+                            if (book != null)
+                            {
+                                book.Discount = book.Price;
+
+                                // Find other active promotions for this book
+                                var activeBookPromotion = await FindActivePromotionForBook(bookId, currentDate);
+                                if (activeBookPromotion != null)
+                                {
+                                    // Apply discount from active promotion
+                                    book.Discount = Math.Round(book.Price * (1 - activeBookPromotion.DiscountPercent / 100), 0);
+                                }
+                            }
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                    break;
+            }
+        }
+        private async Task<Promotion> FindActivePromotionForBook(Guid bookId, DateTime currentDate)
+        {
+            // Find promotion type 2 (specific books)
+            var bookSpecificPromotion = await _context.PromotionBooks
+                .Where(pb => pb.BookId == bookId)
+                .Join(_context.Promotions.Where(p =>
+                    p.PromotionType == 2 &&
+                    p.StartDate <= currentDate &&
+                    p.EndDate >= currentDate &&
+                    p.IsActive),
+                      pb => pb.PromotionId,
+                      p => p.Id,
+                      (pb, p) => p)
+                .OrderByDescending(p => p.DiscountPercent)
+                .FirstOrDefaultAsync();
+
+            if (bookSpecificPromotion != null)
+            {
+                return bookSpecificPromotion;
+            }
+
+            // Find promotion type 1 (series-based)
+            var book = await _context.Books.FindAsync(bookId);
+            if (book != null && book.SeriesID.HasValue)
+            {
+                var seriesPromotion = await _context.Promotions
+                    .Where(p => p.PromotionType == 1 &&
+                           p.SeriesID == book.SeriesID &&
+                           p.StartDate <= currentDate &&
+                           p.EndDate >= currentDate &&
+                           p.IsActive)
+                    .OrderByDescending(p => p.DiscountPercent)
+                    .FirstOrDefaultAsync();
+
+                if (seriesPromotion != null)
+                {
+                    return seriesPromotion;
+                }
+            }
+
+            return null;
+        }
         private bool PromotionExists(Guid id)
         {
             return _context.Promotions.Any(e => e.Id == id);

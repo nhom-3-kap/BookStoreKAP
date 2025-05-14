@@ -36,8 +36,8 @@ namespace BookStoreKAP.Models.Entities
         public Tag Tag { get; set; }
 
         [ForeignKey(nameof(SeriesID))]
-        public Guid SeriesID { get; set; }
-        public Series Series { get; set; }
+        public Guid? SeriesID { get; set; }
+        public Series? Series { get; set; }
 
         public ICollection<OrderDetail> OrderDetails { get; set; }
 

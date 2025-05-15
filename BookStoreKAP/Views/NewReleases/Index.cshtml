@@ -1,22 +1,10 @@
 ﻿@{
     ViewData["Title"] = ViewBag.Service;
-    var showBestSellerPromotion = false;
-    var showNewReleasePromotion = false;
-    foreach (var book in ViewBag.Books)
-    {
-        if (book.TagID.ToString().ToLower() == "3e5cac9b-6e5a-416d-86f8-52f044d6994e") // Best Seller
-        {
-            showBestSellerPromotion = true;
-        }
-        if (book.TagID.ToString().ToLower() == "ca038048-95d2-4bfd-86d8-740fb2ece1af") // New Release
-        {
-            showNewReleasePromotion = true;
-        }
-    }
 }
 <input hidden name="service" value="@ViewBag.Service" />
-<input hidden name="genres" value="@ViewBag.GenresID" />
+<input hidden name="genresId" value="@ViewBag.GenresID" />
 <input hidden name="currentSortBy" value="@ViewBag.SortBy" />
+
 <div class="container">
     <div class="breadcrumb-wrap">
         <a href="@(RouteConstant.HOME)">Home</a>
@@ -27,28 +15,28 @@
         <div class="col-lg-2">
             <div class="side-bar">
                 <div class="side-category">
-                    <h6>PRODUCT SERIES</h6>
-                    <div class="side-bar-item">
-                        <div class="side-bar-item-wrap-title">
-                            <p><strong>Genres</strong></p>
-                            <span class="wrap-icon"><i class="bi bi-chevron-down "></i></span>
-                        </div>
-                        <div class="side-bar-item-child">
-                            <div class="genre-filter-container">
+                    <h6>Genres</h6>
+                        <form id="filterForm" method="get" action="@RouteConstant.LIST">
+                            <input type="hidden" name="Service" value="@ViewBag.Service" />
+                            <input type="hidden" name="Hambuger" value="@ViewBag.Hambuger" />
+
+                            <div class="side-bar-item-child">
                                 @foreach (var genre in ViewBag.Genres)
                                 {
-                                    <div class="genre-checkbox">
-                                        <input type="checkbox" id="genre-@genre.ID" class="genre-filter" value="@genre.ID" />
-                                        <label for="genre-@genre.ID">@genre.Name</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input genre-checkbox" type="checkbox" name="genresId" value="@genre.ID"
+                                        @(ViewBag.GenresID != null && ViewBag.GenresID.Contains(genre.ID.ToString()) ? "checked" : "") />
+                                        <label class="form-check-label">@genre.Name</label>
                                     </div>
                                 }
-                                <div class="genre-filter-buttons">
-                                    <button id="applyGenreFilter" class="btn btn-sm btn-primary">Apply</button>
-                                    <button id="clearGenreFilter" class="btn btn-sm btn-secondary">Clear</button>
-                                </div>
+
+                                <button type="submit" class="btn btn-primary mt-2">Apply Filters</button>
+                                <button type="button" class="btn btn-secondary mt-2" id="clearFilters">Clear</button>
+
                             </div>
-                        </div>
-                    </div>
+
+                        </form>
+
                     <div class="side-bar-item">
                         <div class="side-bar-item-wrap-title">
                             <p><strong>Magazine</strong></p>
@@ -71,79 +59,86 @@
                             <span>-</span>
                             <span>@(string.Format("{0:0,00#} VNĐ", 500000))</span>
                         </div>
-                        <input id="pricechange" type="range" min="10000" max="500000" value="500000" />
-                        <p>10000Đ- <span id="currentprice">500000</span>Đ</p>
+                        <input type="hidden" name="maxPrice" id="hiddenMaxPrice" value="@ViewBag.MaxPrice" />
+                        <input id="pricechange" type="range" min="10000" max="500000" value="@ViewBag.MaxPrice" />
+                        <p>10000Đ - <span id="currentprice">@ViewBag.MaxPrice</span>Đ</p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-10">
             <div id="book" class="row">
-                @foreach (var book in ViewBag.Books)
+                @if (ViewBag.Books != null && ViewBag.Books.Count > 0)
                 {
-                    <div class="col-lg-3">
-                        <div class="card-product">
-                            <div class="card-product-heading">
-                                <a href="@(RouteConstant.PRODUCT_DETAIL)/@book.ID">
-                                    <img src="@book.Thumbnail" alt="@book.Title" />
-                                </a>
-                                <button>
-                                    <i class="bi bi-suit-heart"></i>
-                                </button>
-                            </div>
-                            <div class="card-product-content">
-                                <h6 class="card-product-title">
-                                    <a href="#">@book.Title</a>
-                                </h6>
-                                <div class="card-product-desc">
-                                    <span><strong>Book Author: </strong></span>
-                                    <span>@book.Author</span>
-                                </div>
-                                @if (book.TagID.ToString().ToLower() == "ca038048-95d2-4bfd-86d8-740fb2ece1af")
-                                {
-                                    <div class="card-product-date">
-                                        <span><strong>Publication: </strong></span>
-                                        <span>@book.CreatedAt.ToString("dd/MM/yyyy")</span>
-                                    </div>
-                                    @if (ViewBag.CurrentPromotion != null)
-                                    {
-                                        <div class="card-product-promo">
-                                            <span class="promo-badge">-@ViewBag.CurrentPromotion.DiscountPercent%</span>
-                                        </div>
-                                    }
-                                }
-                                @if (book.TagID.ToString().ToLower() == "3e5cac9b-6e5a-416d-86f8-52f044d6994e")
-                                {
-                                    <div class="card-product-buy-count">
-                                        <span><strong>Sold: </strong></span>
-                                        <span>@book.BuyCount</span>
-                                    </div>
-                                    @if (ViewBag.CurrentPromotion != null)
-                                    {
-                                        <div class="card-product-promo">
-                                            <span class="promo-badge">-@ViewBag.CurrentPromotion.DiscountPercent%</span>
-                                        </div>
-                                    }
-                                }
-                                <div class="card-product-wrap-price">
-                                    <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", book.Discount))</span>
-                                    <span class="card-product-old-price">@(string.Format("{0:0,00#} VNĐ", book.Price))</span>
-                                </div>
-                            </div>
-                            <div class="card-product-footer">
-                                <div class="card-product-wrap-btn">
-                                    <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook" data-bookID="@(book.ID)">
-                                        BUY
+                    foreach (var book in ViewBag.Books)
+                    {
+                        <div class="col-lg-3">
+                            <div class="card-product">
+                                <div class="card-product-heading">
+                                    <a href="@(RouteConstant.PRODUCT_DETAIL)/@book.ID">
+                                        <img src="@book.Thumbnail" alt="@book.Title" />
+                                    </a>
+                                    <button>
+                                        <i class="bi bi-suit-heart"></i>
                                     </button>
-                                    <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart" data-bookID="@(book.ID)">ADD TO CART</button>
+                                </div>
+                                <div class="card-product-content">
+                                    <h6 class="card-product-title">
+                                        <a href="#">@book.Title</a>
+                                    </h6>
+                                    <div class="card-product-desc">
+                                        <span><strong>Book Author: </strong></span>
+                                        <span>@book.Author</span>
+                                    </div>
+                                    @if (book.TagID.ToString().ToLower() == "ca038048-95d2-4bfd-86d8-740fb2ece1af")
+                                    {
+                                        <div class="card-product-date">
+                                            <span><strong>Publication: </strong></span>
+                                            <span>@book.CreatedAt.ToString("dd/MM/yyyy")</span>
+                                        </div>
+                                        @if (ViewBag.CurrentPromotion != null)
+                                        {
+                                            <div class="card-product-promo">
+                                                <span class="promo-badge">-@ViewBag.CurrentPromotion.DiscountPercent%</span>
+                                            </div>
+                                        }
+                                    }
+                                    @if (book.TagID.ToString().ToLower() == "3e5cac9b-6e5a-416d-86f8-52f044d6994e")
+                                    {
+                                        <div class="card-product-buy-count">
+                                            <span><strong>Sold: </strong></span>
+                                            <span>@book.BuyCount</span>
+                                        </div>
+                                        @if (ViewBag.CurrentPromotion != null)
+                                        {
+                                            <div class="card-product-promo">
+                                                <span class="promo-badge">-@ViewBag.CurrentPromotion.DiscountPercent%</span>
+                                            </div>
+                                        }
+                                    }
+                                    <div class="card-product-wrap-price">
+                                        <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", book.Discount))</span>
+                                        <span class="card-product-old-price">@(string.Format("{0:0,00#} VNĐ", book.Price))</span>
+                                    </div>
+                                </div>
+                                <div class="card-product-footer">
+                                    <div class="card-product-wrap-btn">
+                                        <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook" data-bookID="@(book.ID)">
+                                            BUY
+                                        </button>
+                                        <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart" data-bookID="@(book.ID)">ADD TO CART</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12 text-center">
+                        <p>No books matching your filters were found.</p>
                     </div>
                 }
-            </div>
-            <div id="noBooks" class="alert alert-info d-none">
-                No books match your selected criteria. Please try different filters.
             </div>
             <!-- Phân trang -->
             <div class="pagination-container">
@@ -152,7 +147,11 @@
                         @if (ViewBag.CurrentPage > 1)
                         {
                             <li class="page-item">
-                                <a class="page-link" href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@ViewBag.GenresID&page=@(ViewBag.CurrentPage - 1)&Hambuger=@ViewBag.Hambuger">Previous</a>
+                                <a class="page-link" href="@(RouteConstant.LIST)?Service=@ViewBag.Service&page=@(ViewBag.CurrentPage - 1)&Hambuger=@ViewBag.Hambuger
+                                    @foreach (var genreId in (ViewBag.GenresID as List<string> ?? new List<string>()))
+                                    {
+                                        @($"&genresId={genreId}")
+                                    }">Previous</a>
                             </li>
                         }
                         else
@@ -172,14 +171,22 @@
                             else
                             {
                                 <li class="page-item">
-                                    <a class="page-link" href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@ViewBag.GenresID&page=@i&Hambuger=@ViewBag.Hambuger">@i</a>
+                                    <a class="page-link" href="@(RouteConstant.LIST)?Service=@ViewBag.Service&page=@i&Hambuger=@ViewBag.Hambuger
+                                        @foreach (var genreId in (ViewBag.GenresID as List<string> ?? new List<string>()))
+                                        {
+                                            @($"&genresId={genreId}")
+                                        }">@i</a>
                                 </li>
                             }
                         }
                         @if (ViewBag.CurrentPage < ViewBag.TotalPages)
                         {
                             <li class="page-item">
-                                <a class="page-link" href="@(RouteConstant.LIST)?Service=@ViewBag.Service&genresId=@ViewBag.GenresID&page=@(ViewBag.CurrentPage + 1)&Hambuger=@ViewBag.Hambuger">Next</a>
+                                <a class="page-link" href="@(RouteConstant.LIST)?Service=@ViewBag.Service&page=@(ViewBag.CurrentPage + 1)&Hambuger=@ViewBag.Hambuger
+                                    @foreach (var genreId in (ViewBag.GenresID as List<string> ?? new List<string>()))
+                                    {
+                                        @($"&genresId={genreId}")
+                                    }">Next</a>
                             </li>
                         }
                         else
@@ -196,305 +203,191 @@
 </div>
 @section Scripts {
     <script>
-        $(document).ready(function() {
-            // Hiển thị giá trị ban đầu của thanh trượt
-            $("#currentprice").text("500000");
+        // Hàm dùng để gắn sự kiện cho các nút BUY và ADD TO CART
+        function attachEventHandlers() {
+            $(".btnBuyBook").each(function () {
+                $(this).on("click", function () {
+                    const _this = this;
+                    console.log(1);
+                    if (!getAuthenticated()) {
+                        $("#modalLogin").modal("show");
+                    }
+                    else {
+                        const bookID = $(_this).attr("data-bookID");
+                        handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
+                            if (res.success) {
+                                toastr.success(res.message);
+                                const count = getCountCartAPI();
+                                $("#spanCartItemCount").text(count);
+                                location.href = "https://localhost:5001/Cart";
+                            } else {
+                                toastr.error(res.message)
+                            }
+                        })
+                    }
+                })
+            })
+            $(".btnAddToCart").each(function () {
+                $(this).on("click", function () {
+                    const _this = this;
+                    $(_this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...`).prop("disabled", true);
+                    if (!getAuthenticated()) {
+                        $("#modalLogin").modal("show");
+                    } else {
+                        const bookID = $(_this).attr("data-bookID");
+                        handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
+                            if (res.success) {
+                                toastr.success(res.message);
+                                const count = getCountCartAPI();
+                                $("#spanCartItemCount").text(count);
+                            } else {
+                                toastr.error(res.message);
+                            }
+                        });
+                    }
+                    setTimeout(() => {
+                        $(_this).html(`ADD TO CART`).prop("disabled", false)
+                    }, 100)
+                })
+            })
+        }
 
-            // Lấy tham số từ URL
-            const urlParams = new URLSearchParams(window.location.search);
-            let currentPage = parseInt(urlParams.get('page')) || 1;
-            
-            // Lưu trữ các thể loại đã chọn
+        // Thêm vào file script.js hoặc trong phần JS của trang
+        $(document).ready(function () {
+            let currentPage = 1;
             let selectedGenres = [];
 
-            // Xử lý sự kiện thay đổi giá
-            $("#pricechange").on("input", function() {
-                const value = $(this).val();
-                $("#currentprice").text(value);
+            // Hiển thị giá trị ban đầu của thanh trượt
+            $("#currentprice").text("500000");
+            $("#pricechange").val(500000);
+
+            // Lấy trang hiện tại từ URL nếu có
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('page')) {
+                currentPage = parseInt(urlParams.get('page')) || 1;
+            }
+
+            // Kiểm tra nếu có genres trong URL
+            if(urlParams.has('genresId')) {
+                // Lấy tất cả các giá trị genresId từ URL
+                const genreIds = urlParams.getAll('genresId');
+                if(genreIds && genreIds.length > 0) {
+                    // Đánh dấu tất cả các checkbox tương ứng
+                    genreIds.forEach(id => {
+                        $(`.genre-checkbox[value="${id}"]`).prop('checked', true);
+                        selectedGenres.push(id);
+                    });
+                }
+            }
+
+            // Xử lý sự kiện khi checkbox được click
+            $(".genre-checkbox").on("change", function() {
+                const genreId = $(this).val();
+                if($(this).is(':checked')) {
+                    // Thêm vào mảng nếu được chọn
+                    if(!selectedGenres.includes(genreId)) {
+                        selectedGenres.push(genreId);
+                    }
+                } else {
+                    // Xóa khỏi mảng nếu bỏ chọn
+                    selectedGenres = selectedGenres.filter(id => id !== genreId);
+                }
             });
 
+            // Xử lý nút Clear
+            $("#clearFilters").on("click", function() {
+                // Reset các checkbox
+                $(".genre-checkbox").prop('checked', false);
+                selectedGenres = [];
+                // Reset giá về mặc định
+                $("#pricechange").val(500000);
+                $("#currentprice").text("500000");
+
+                // Chuyển hướng về URL không có filter
+                const service = $("input[name='service']").val();
+                const hambuger = $("input[name='Hambuger']").val();
+                window.location.href = `@RouteConstant.LIST?Service=${service}&Hambuger=${hambuger}`;
+            });
+                    // Hiển thị giá trị ban đầu của thanh trượt từ URL
+        const maxPriceParam = urlParams.get('maxPrice') || '500000';
+        $("#pricechange").val(maxPriceParam);
+        $("#currentprice").text(maxPriceParam);
+        $("#hiddenMaxPrice").val(maxPriceParam);
+
+            // Xử lý sự kiện thay đổi giá
+        $("#pricechange").on("input", function () {
+            const value = $(this).val();
+            $("#currentprice").text(value);
+            $("#hiddenMaxPrice").val(value);
+        });
+
+            // Click nút Apply sau khi thay đổi giá
             $("#pricechange").on("change", function() {
                 applyFilters();
             });
 
-            // Xử lý nút Apply cho bộ lọc thể loại
-            $("#applyGenreFilter").on("click", function() {
-                selectedGenres = [];
-                $(".genre-filter:checked").each(function() {
-                    selectedGenres.push($(this).val());
-                });
-                applyFilters();
-            });
-
-            // Xử lý nút Clear cho bộ lọc thể loại
-            $("#clearGenreFilter").on("click", function() {
-                $(".genre-filter").prop("checked", false);
-                selectedGenres = [];
-                applyFilters();
-            });
-
-            // Xử lý sự kiện click vào nút phân trang
-            $(document).on('click', '.pagination .page-link', function(e) {
+            // Xử lý form submit cho nhiều genres
+            document.getElementById("filterForm").addEventListener("submit", function (e) {
                 e.preventDefault();
-                const pageUrl = $(this).attr('href');
-                if (pageUrl) {
-                    const pageUrlParams = new URLSearchParams(new URL(pageUrl).search);
-                    currentPage = parseInt(pageUrlParams.get('page')) || 1;
-                    applyFilters();
+                const form = this;
+                const service = form.querySelector("input[name='Service']").value;
+                const hambuger = form.querySelector("input[name='Hambuger']").value;
+
+                // Get all checked genre checkboxes
+                const checkedGenres = Array.from(form.querySelectorAll(".genre-checkbox:checked"))
+                    .map(cb => cb.value);
+
+                let url = `@RouteConstant.LIST?Service=${service}&Hambuger=${hambuger}`;
+
+                // Add all genres to URL
+                checkedGenres.forEach(genreId => {
+                    url += `&genresId=${genreId}`;
+                });
+
+                // Add price range if changed
+                const priceValue = $("#hiddenMaxPrice").val();
+                if (priceValue && priceValue < 500000) {
+                    url += `&maxPrice=${priceValue}`;
                 }
+
+
+                console.log("Submitting with URL:", url);
+                window.location.href = url;
             });
 
-            // Hàm áp dụng tất cả các bộ lọc
+            // Hàm áp dụng bộ lọc (sẽ được gọi khi thay đổi giá)
             function applyFilters() {
-                const service = $("input[name='service']").val();
-                const inputValue = urlParams.get('input') || "";
-                const priceValue = $("#pricechange").val();
-                
-                // Hiển thị trạng thái đang tải
-                $("#book").html('<div class="col-12 text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>');
-                
-                loadBooks(service, selectedGenres, inputValue, priceValue, currentPage);
+                // Use the form submit handler instead
+                document.getElementById("filterForm").dispatchEvent(new Event('submit'));
             }
 
-            // Hàm load sách theo điều kiện
-            function loadBooks(service, genreIds, input, maxPrice, page) {
-                handleAjax("/List/SortPriceBook", {
-                    req: {
-                        MinPrice: 10000,
-                        MaxPrice: parseInt(maxPrice),
-                        Service: service,
-                        GenreID: genreIds,
-                        Input: input,
-                        Page: page,
-                        PageSize: 4
-                    }
-                }, (res) => {
-                    if (res.success) {
-                        if (res.data.Books && res.data.Books.length > 0) {
-                            $("#book").removeClass("d-none");
-                            $("#noBooks").addClass("d-none");
-                            renderBooks(res.data.Books, service, res.data.Promotions);
-                            renderPagination(res.data.Pagination);
-                        } else {
-                            $("#book").addClass("d-none");
-                            $("#noBooks").removeClass("d-none");
-                            $(".pagination-container").html('');
-                        }
-                        attachEventHandlers();
-                        
-                        // Cập nhật URL không làm tải lại trang
-                        const newUrl = new URL(window.location.href);
-                        newUrl.searchParams.set('page', page);
-                        if (genreIds && genreIds.length > 0) {
-                            newUrl.searchParams.set('genreFilter', genreIds.join(','));
-                        } else {
-                            newUrl.searchParams.delete('genreFilter');
-                        }
-                        window.history.pushState({}, '', newUrl);
-                    } else {
-                        toastr.error("Failed to load books");
-                    }
-                });
-            }
-
-            // Hiển thị sách
-            function renderBooks(books, service, promotion) {
-                const NEW_RELEASE_TAG_ID = "ca038048-95d2-4bfd-86d8-740fb2ece1af";
-                const BEST_SELLER_TAG_ID = "3e5cac9b-6e5a-416d-86f8-52f044d6994e";
-                
-                const html = books.map((book) => {
-                    const formattedDiscount = book.discount.toLocaleString('vi-VN') + ' VNĐ';
-                    const formattedPrice = book.price.toLocaleString('vi-VN') + ' VNĐ';
-                    const bookTagId = book.tagID ? book.tagID.toLowerCase() : "";
-                    let additionalInfo = '';
-                    
-                    // Hiển thị thông tin bổ sung dựa vào loại sách
-                    if (bookTagId === NEW_RELEASE_TAG_ID.toLowerCase() || service === "New Release") {
-                        const createdDate = new Date(book.createdAt);
-                        additionalInfo = `
-                            <div class="card-product-date">
-                                <span><strong>Publication: </strong></span>
-                                <span>${createdDate.toLocaleDateString('vi-VN')}</span>
-                            </div>
-                        `;
-                        // Hiển thị khuyến mãi nếu có
-                        if (promotion && promotion.newRelease && book.price) {
-                            additionalInfo += `
-                                <div class="card-product-promo">
-                                    <span class="promo-badge">-${promotion.newRelease.discountPercent}%</span>
-                                </div>
-                            `;
-                        }
-                    } else if (bookTagId === BEST_SELLER_TAG_ID.toLowerCase() || service === "Best Seller") {
-                        additionalInfo = `
-                            <div class="card-product-buy-count">
-                                <span><strong>Sold: </strong></span>
-                                <span>${book.buyCount}</span>
-                            </div>
-                        `;
-                        // Hiển thị khuyến mãi nếu có
-                        if (promotion && promotion.bestSeller && book.price) {
-                            additionalInfo += `
-                                <div class="card-product-promo">
-                                    <span class="promo-badge">-${promotion.bestSeller.discountPercent}%</span>
-                                </div>
-                            `;
-                        }
-                    }
-                    
-                    return `
-                        <div class="col-lg-3">
-                            <div class="card-product">
-                                <div class="card-product-heading">
-                                    <a href="/ProductDetail/${book.id}">
-                                        <img src="${book.thumbnail}" alt="${book.title}" />
-                                    </a>
-                                    <button>
-                                        <i class="bi bi-suit-heart"></i>
-                                    </button>
-                                </div>
-                                <div class="card-product-content">
-                                    <h6 class="card-product-title">
-                                        <a href="#">${book.title}</a>
-                                    </h6>
-                                    <div class="card-product-desc">
-                                        <span><strong>Book Author: </strong></span>
-                                        <span>${book.author}</span>
-                                    </div>
-                                    ${additionalInfo}
-                                    <div class="card-product-wrap-price">
-                                        <span class="card-product-current-price">${formattedDiscount}</span>
-                                        <span class="card-product-old-price">${formattedPrice}</span>
-                                    </div>
-                                </div>
-                                <div class="card-product-footer">
-                                    <div class="card-product-wrap-btn">
-                                        <button class="card-product-btn kap-btn kap-btn-primary btnBuyBook" data-bookID="${book.id}">BUY</button>
-                                        <button class="card-product-btn kap-btn kap-btn-secondary btnAddToCart" data-bookID="${book.id}">ADD TO CART</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join("");
-                
-                $("#book").html(html);
-            }
-
-            // Hiển thị phân trang
-            function renderPagination(pagination) {
-                const { currentPage, totalPages, service, genreID } = pagination;
-                let paginationHtml = '';
-                
-                if (totalPages > 1) {
-                    paginationHtml += '<nav><ul class="pagination">';
-                    
-                    // Nút Previous
-                    if (currentPage > 1) {
-                        paginationHtml += `<li class="page-item">
-                            <a class="page-link" href="/List?Service=${service}&page=${currentPage - 1}">Previous</a>
-                        </li>`;
-                    } else {
-                        paginationHtml += `<li class="page-item disabled">
-                            <span class="page-link">Previous</span>
-                        </li>`;
-                    }
-                    
-                    // Các nút số trang
-                    const startPage = Math.max(1, currentPage - 2);
-                    const endPage = Math.min(totalPages, currentPage + 2);
-                    
-                    for (let i = startPage; i <= endPage; i++) {
-                        if (i === currentPage) {
-                            paginationHtml += `<li class="page-item active">
-                                <span class="page-link">${i}</span>
-                            </li>`;
-                        } else {
-                            paginationHtml += `<li class="page-item">
-                                <a class="page-link" href="/List?Service=${service}&page=${i}">${i}</a>
-                            </li>`;
-                        }
-                    }
-                    
-                    // Nút Next
-                    if (currentPage < totalPages) {
-                        paginationHtml += `<li class="page-item">
-                            <a class="page-link" href="/List?Service=${service}&page=${currentPage + 1}">Next</a>
-                        </li>`;
-                    } else {
-                        paginationHtml += `<li class="page-item disabled">
-                            <span class="page-link">Next</span>
-                        </li>`;
-                    }
-                    
-                    paginationHtml += '</ul></nav>';
-                }
-                
-                $(".pagination-container").html(paginationHtml);
-            }
-
-            // Gán sự kiện cho các nút
-            function attachEventHandlers() {
-                $(".btnBuyBook").each(function () {
-                    $(this).on("click", function () {
-                        const _this = this;
-                        if (!getAuthenticated()) {
-                            $("#modalLogin").modal("show");
-                        }
-                        else {
-                            const bookID = $(_this).attr("data-bookID");
-                            handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
-                                if (res.success) {
-                                    toastr.success(res.message);
-                                    const count = getCountCartAPI();
-                                    $("#spanCartItemCount").text(count);
-                                    location.href = "https://localhost:5001/Cart";
-                                } else {
-                                    toastr.error(res.message)
-                                }
-                            })
-                        }
-                    })
-                })
-                
-                $(".btnAddToCart").each(function () {
-                    $(this).on("click", function () {
-                        const _this = this;
-                        $(_this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...`).prop("disabled", true);
-                        
-                        if (!getAuthenticated()) {
-                            $("#modalLogin").modal("show");
-                        } else {
-                            const bookID = $(_this).attr("data-bookID");
-                            handleAjax("/Cart/AddToCartAPI", { req: { BookID: bookID } }, (res) => {
-                                if (res.success) {
-                                    toastr.success(res.message);
-                                    const count = getCountCartAPI();
-                                    $("#spanCartItemCount").text(count);
-                                } else {
-                                    toastr.error(res.message);
-                                }
-                            });
-                        }
-                        
-                        setTimeout(() => {
-                            $(_this).html(`ADD TO CART`).prop("disabled", false)
-                        }, 100)
-                    })
-                })
-            }
-
-            // Khởi tạo các event handler cho lần đầu
+            // Attach event handlers cho các nút BUY và ADD TO CART
             attachEventHandlers();
-
-            // Kiểm tra URL để đặt các bộ lọc ban đầu
-            if (urlParams.has('genreFilter')) {
-                const genreFilters = urlParams.get('genreFilter').split(',');
-                genreFilters.forEach(id => {
-                    $(`#genre-${id}`).prop('checked', true);
-                    selectedGenres.push(id);
-                });
-            }
         });
     </script>
+    <style>
+        .genre-filters {
+            padding: 0 10px;
+        }
+
+        .genre-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+            .genre-checkbox input {
+                margin-right: 10px;
+            }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+            .filter-buttons button {
+                flex: 1;
+            }
+    </style>
 }

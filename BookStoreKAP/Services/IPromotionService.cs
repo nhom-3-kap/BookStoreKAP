@@ -72,7 +72,7 @@ namespace BookStoreKAP.Services
                 Id = Guid.NewGuid(),
                 Name = model.Name,
                 Description = model.Description,
-                TagID = model.TagID,
+                //TagID = model.TagID,
                 StartDate = model.StartDate,
                 EndDate = model.EndDate,
                 DiscountPercent = model.DiscountPercent,
@@ -94,7 +94,7 @@ namespace BookStoreKAP.Services
 
             promotion.Name = model.Name;
             promotion.Description = model.Description;
-            promotion.TagID = model.TagID;
+            //promotion.TagID = model.TagID;
             promotion.StartDate = model.StartDate;
             promotion.EndDate = model.EndDate;
             promotion.DiscountPercent = model.DiscountPercent;

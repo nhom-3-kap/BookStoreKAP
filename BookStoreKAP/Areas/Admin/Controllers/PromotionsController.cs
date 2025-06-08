@@ -260,14 +260,14 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 DiscountPercent = promotion.DiscountPercent,
                 StartDate = promotion.StartDate,
                 EndDate = promotion.EndDate,
-                TagID = promotion.TagID, // Already nullable
+                //TagID = promotion.TagID, // Already nullable
                 TagName = promotion.Tag?.Name ?? "", // Null conditional
                 SeriesID = promotion.SeriesID, // Already nullable
                 SeriesName = promotion.Series?.Name ?? "" // Null conditional
             };
 
             // Load selected books for specific books promotion
-            if (promotion.PromotionType == 3)
+            if (promotion.PromotionType == 2) // sửa từ 3 thành 2
             {
                 var promotionBooks = await _context.PromotionBooks
                     .Where(pb => pb.PromotionId == promotion.Id)
@@ -275,22 +275,23 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     .ToListAsync();
 
                 viewModel.SelectedBookIds = promotionBooks
-                    .Where(pb => pb.Book != null) // Filter out any null books
+                    .Where(pb => pb.Book != null)
                     .Select(pb => pb.BookId)
                     .ToList();
 
                 viewModel.SelectedBooks = promotionBooks
-                    .Where(pb => pb.Book != null) // Filter out any null books
+                    .Where(pb => pb.Book != null)
                     .Select(pb => new BookBasicViewModel
                     {
                         Id = pb.BookId,
-                        Title = pb.Book.Title ?? "", // Handle null title
-                        Author = pb.Book.Author ?? "", // Handle null author
+                        Title = pb.Book.Title ?? "",
+                        Author = pb.Book.Author ?? "",
                         Price = pb.Book.Price,
-                        Thumbnail = pb.Book.Thumbnail ?? "" // Handle null thumbnail
+                        Thumbnail = pb.Book.Thumbnail ?? ""
                     })
                     .ToList();
             }
+
 
             PrepareViewBagForForm();
             return View("Create", viewModel);
@@ -379,7 +380,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 if (oldPromotionType != promotion.PromotionType ||
                     (oldPromotionType == 1 && oldSeriesID != promotion.SeriesID))
                 {
-                    await ResetDiscountsForPreviousTarget(oldPromotionType, null, oldSeriesID);
+                    await ResetDiscountsForPreviousTarget(oldPromotionType, oldSeriesID);
 
                     // If promotion type was 2 (specific books) and there were selected books, reset discount for those books
                     if (oldPromotionType == 2)
@@ -430,7 +431,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
                 // Store info to reset books later
                 var promotionType = promotion.PromotionType;
-                var tagID = promotion.TagID;
+                //var tagID = promotion.TagID;
                 var seriesID = promotion.SeriesID;
 
                 // Remove promotion books junction entries if it's a specific books promotion
@@ -445,7 +446,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
 
                 // Reset book discounts and check for other active promotions
-                await ResetDiscountsAndApplyActivePromotions(promotionType, tagID, seriesID);
+                await ResetDiscountsAndApplyActivePromotions(promotionType, seriesID);
 
                 await transaction.CommitAsync();
                 return Json(new { success = true, message = "Khuyến mãi đã được xóa thành công!" });
@@ -472,15 +473,18 @@ namespace BookStoreKAP.Areas.Admin.Controllers
 
                 // Store info to reset books later
                 var promotionType = promotion.PromotionType;
-                var tagID = promotion.TagID;
+                //var tagID = promotion.TagID;
                 var seriesID = promotion.SeriesID;
 
                 // End the promotion
-                promotion.EndDate = DateTime.Now.AddSeconds(-1);
+                promotion.EndDate = DateTime.Today.AddSeconds(-1);
+                promotion.IsActive = false; // Mark as inactive
+
                 await _context.SaveChangesAsync();
 
                 // Reset book discounts and check for other active promotions
-                await ResetDiscountsAndApplyActivePromotions(promotionType, tagID, seriesID);
+                await ResetAllDiscountsForPromotion(promotion);
+
 
                 await transaction.CommitAsync();
                 return Json(new { success = true, message = "Khuyến mãi đã kết thúc thành công!" });
@@ -490,6 +494,45 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                 await transaction.RollbackAsync();
                 return Json(new { success = false, message = $"Lỗi khi kết thúc khuyến mãi: {ex.Message}" });
             }
+        }
+        private async Task ResetAllDiscountsForPromotion(Promotion promotion)
+        {
+            IQueryable<Book> booksQuery;
+
+            switch (promotion.PromotionType)
+            {
+                case 1: // Series-based
+                    if (promotion.SeriesID.HasValue)
+                    {
+                        booksQuery = _context.Books.Where(b => b.SeriesID == promotion.SeriesID);
+                    }
+                    else return;
+                    break;
+
+                case 2: // Books-based
+                    var bookIds = await _context.PromotionBooks
+                        .Where(pb => pb.PromotionId == promotion.Id)
+                        .Select(pb => pb.BookId)
+                        .ToListAsync();
+
+                    booksQuery = _context.Books.Where(b => bookIds.Contains(b.ID));
+                    break;
+
+                default:
+                    return;
+            }
+
+            var books = await booksQuery.ToListAsync();
+
+            foreach (var book in books)
+            {
+                if (book != null)
+                {
+                    book.Discount = book.Price;
+                }
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         // Helper method to populate ViewBag for form
@@ -707,7 +750,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
         // Helper method to reset discounts when promotion type changes
-        private async Task ResetDiscountsForPreviousTarget(int oldPromotionType, Guid? oldTagID, Guid? oldSeriesID)
+        private async Task ResetDiscountsForPreviousTarget(int oldPromotionType, Guid? oldSeriesID)
         {
             IQueryable<Book> booksQuery = null;
 
@@ -735,7 +778,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
         }
 
         // Helper method to reset discounts and apply active promotions
-        private async Task ResetDiscountsAndApplyActivePromotions(int promotionType, Guid? tagID, Guid? seriesID)
+        private async Task ResetDiscountsAndApplyActivePromotions(int promotionType, Guid? seriesID)
         {
             var currentDate = DateTime.Now;
             IQueryable<Book> booksQuery;

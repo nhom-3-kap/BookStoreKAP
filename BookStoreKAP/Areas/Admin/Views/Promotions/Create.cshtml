@@ -177,7 +177,7 @@
                 
                 // Set minimum date for start date to today
                 const today = new Date().toISOString().split('T')[0];
-                $("#txtStartDate").attr("min", today);
+                // $("#txtStartDate").attr("min", today);
                 
                 // Ensure end date is after start date
                 $("#txtStartDate").on("change", function() {
@@ -204,7 +204,7 @@
                 // Gợi ý khi chọn series
                 $("#cboSeries").on("change", function() {
                     const selectedText = $(this).find("option:selected").text();
-                    if (selectedText && selectedText !== "-- Chọn series sách --") {
+                    if (selectedText && selectedText !== "-- Chọn Genres sách --") {
                         const suggestedName = "Khuyến mãi series " + selectedText;
                         const suggestedDesc = "Giảm giá đặc biệt cho series " + selectedText + ".";
                         // Chỉ gợi ý nếu người dùng chưa nhập thông tin

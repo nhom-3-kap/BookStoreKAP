@@ -8,7 +8,7 @@ namespace BookStoreKAP.Models.Entities
         public int SubTotal { get; set; }
         public double Total { get; set; }
         public string Address { get; set; }
-        public StatusType Status { get; set; }
+        public int Status { get; set; }
         public string PaymentMethod { get; set; }
 
         [ForeignKey(nameof(Customer))]
@@ -18,10 +18,10 @@ namespace BookStoreKAP.Models.Entities
         public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 
-    public enum StatusType
-	{
-		WAITING_FOR_PROGRESSING,
-		APPROVED,
-		DENIED
-	}
+ //   public enum StatusType
+	//{
+	//	WAITING_FOR_PROGRESSING,
+	//	APPROVED,
+	//	DENIED
+	//}
 }

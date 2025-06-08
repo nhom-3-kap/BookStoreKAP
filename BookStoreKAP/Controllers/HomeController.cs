@@ -29,10 +29,10 @@ namespace BookStoreKAP.Controllers
         {
             // Reset tags trước khi cập nhật
             var allBooks = _context.Books.ToList();
-            foreach (var book in allBooks)
-            {
-                book.TagID = null;
-            }
+            //foreach (var book in allBooks)
+            //{
+            //    book.TagID = null;
+            //}
             _context.SaveChanges();
 
             // 1. Xác định sách New Release: sách có CreatedAt trong vòng 1 tháng

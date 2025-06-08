@@ -37,7 +37,8 @@ namespace BookStoreKAP.Controllers
                 Address = req.Address,
                 CustomerID = user.Id,
                 PaymentMethod = req.PaymentMethod,
-                OrderDate = DateTime.Now, // Cập nhật thời gian hiện tại
+                OrderDate = DateTime.Now,
+                Status=1// Cập nhật thời gian hiện tại
             };
             _context.Orders.Add(order);
             _context.SaveChanges();
@@ -92,10 +93,10 @@ namespace BookStoreKAP.Controllers
             var NEW_RELEASE_TAG_ID = new Guid("CA038048-95D2-4BFD-86D8-740FB2ECE1AF");
             // Reset tags trước khi cập nhật
             var allBooks = _context.Books.ToList();
-            foreach (var book in allBooks)
-            {
-                book.TagID = null;
-            }
+            //foreach (var book in allBooks)
+            //{
+            //    book.TagID = null;
+            //}
             _context.SaveChanges();
             // 1. Xác định sách New Release: sách có CreatedAt trong vòng 1 tháng
             var oneMonthAgo = DateTime.Now.AddMonths(-1);

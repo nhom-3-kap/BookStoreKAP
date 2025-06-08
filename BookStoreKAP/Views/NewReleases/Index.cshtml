@@ -90,35 +90,37 @@
                                         <span><strong>Book Author: </strong></span>
                                         <span>@book.Author</span>
                                     </div>
-                                    @if (book.TagID.ToString().ToLower() == "ca038048-95d2-4bfd-86d8-740fb2ece1af")
-                                    {
+                                    
                                         <div class="card-product-date">
                                             <span><strong>Publication: </strong></span>
                                             <span>@book.CreatedAt.ToString("dd/MM/yyyy")</span>
                                         </div>
-                                        @if (ViewBag.CurrentPromotion != null)
-                                        {
-                                            <div class="card-product-promo">
-                                                <span class="promo-badge">-@ViewBag.CurrentPromotion.DiscountPercent%</span>
-                                            </div>
-                                        }
-                                    }
-                                    @if (book.TagID.ToString().ToLower() == "3e5cac9b-6e5a-416d-86f8-52f044d6994e")
-                                    {
+                                        
+                                            @* <div class="card-product-promo"> *@
+                                            @*     <span class="promo-badge">-@ViewBag.CurrentPromotion.DiscountPercent%</span> *@
+                                            @* </div> *@
+                                        
+                                    
                                         <div class="card-product-buy-count">
                                             <span><strong>Sold: </strong></span>
                                             <span>@book.BuyCount</span>
                                         </div>
-                                        @if (ViewBag.CurrentPromotion != null)
-                                        {
-                                            <div class="card-product-promo">
-                                                <span class="promo-badge">-@ViewBag.CurrentPromotion.DiscountPercent%</span>
-                                            </div>
-                                        }
-                                    }
+                                        
+                                            @* <div class="card-product-promo"> *@
+                                            @*     <span class="promo-badge">-@ViewBag.CurrentPromotion.DiscountPercent%</span> *@
+                                            @* </div> *@
+                                        
+                                    
                                     <div class="card-product-wrap-price">
-                                        <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", book.Discount))</span>
-                                        <span class="card-product-old-price">@(string.Format("{0:0,00#} VNĐ", book.Price))</span>
+                                        @if (book.Discount != book.Price)
+                                        {
+                                            <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", book.Discount))</span>
+                                            <span class="card-product-old-price">@(string.Format("{0:0,00#} VNĐ", book.Price))</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="card-product-current-price">@(string.Format("{0:0,00#} VNĐ", book.Discount))</span>
+                                        }
                                     </div>
                                 </div>
                                 <div class="card-product-footer">

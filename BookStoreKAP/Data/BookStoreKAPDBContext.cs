@@ -180,7 +180,7 @@ namespace BookStoreKAP.Data
 			#endregion
 
 			#region Table Orders
-			builder.Entity<Order>().Property(o => o.Status).HasDefaultValue(StatusType.WAITING_FOR_PROGRESSING);
+			builder.Entity<Order>().Property(o => o.Status).HasDefaultValue(1);
 			#endregion
 
 		}

@@ -187,7 +187,7 @@ namespace BookStoreKAP.Areas.Admin.Controllers
                     Quantity = req.Quantity,
                     Synopsis = req.Synopsis,
                     // TagID is now null and will be set by UpdateTagsAutomatically
-                    TagID = null,
+                    //TagID = null,
                     SeriesID = req.SeriesID,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,

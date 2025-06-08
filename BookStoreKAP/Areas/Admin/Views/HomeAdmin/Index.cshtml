@@ -1,95 +1,469 @@
-﻿@{ }
-<div class="container">
+﻿<div class="container">
     <div class="row">
         <div class="col-lg-12">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="d-flex align-items-center justify-content-center" style="column-gap: 8px;">
-                        <h5 class="text-center fw-bold">Thống kê tiền theo tháng, quý, năm</h5>
-                        <div>
-                            <select id="cboChoiceYear" name="choiceYear" class="form-control form-control-sm">
-                                <option value="2024" selected>2024</option>
-                                <option value="2023">2023</option>
-                                <option value="2022">2022</option>
-                                <option value="2021">2021</option>
-                                <option value="2021">2020</option>
-                            </select>
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="text-center fw-bold mb-0">Thống kê doanh thu</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3 align-items-center justify-content-center">
+                                <!-- Loại thống kê -->
+                                <div class="col-auto">
+                                    <label class="form-label fw-semibold">Loại thống kê:</label>
+                                    <select id="cboPeriodType" name="periodType" class="form-select form-select-sm">
+                                        <option value="day">Theo ngày</option>
+                                        <option value="week">Theo tuần</option>
+                                        <option value="month" selected>Theo tháng</option>
+                                        <option value="quarter">Theo quý</option>
+                                        <option value="year">Theo năm</option>
+                                    </select>
+                                </div>
+
+
+
+                                
+
+                                <!-- Khoảng thời gian tùy chọn -->
+                                <div class="col-12" id="customRangeContainer" >
+                                    <div class="row g-3 align-items-center justify-content-center">
+                                        
+                                        <div class="row g-3 align-items-center justify-content-center mt-2" id="customDropdownContainer">
+                                            
+                                            <!-- Chọn khoảng thời gian -->
+                                            <div class="row g-3 align-items-center mt-2">
+                                                <!-- Năm -->
+                                                <div class="col-auto">
+                                                    <label class="form-label fw-semibold">Từ năm:</label>
+                                                    <select id="customFromYear" class="form-select form-select-sm"></select>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <label class="form-label fw-semibold">Đến năm:</label>
+                                                    <select id="customToYear" class="form-select form-select-sm"></select>
+                                                </div>
+
+                                                <!-- Quý -->
+                                                <div class="col-auto">
+                                                    <label class="form-label fw-semibold">Từ quý:</label>
+                                                    <select id="customFromQuarter" class="form-select form-select-sm"></select>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <label class="form-label fw-semibold">Đến quý:</label>
+                                                    <select id="customToQuarter" class="form-select form-select-sm"></select>
+                                                </div>
+
+                                                <!-- Tháng -->
+                                                <div class="col-auto">
+                                                    <label class="form-label fw-semibold">Từ tháng:</label>
+                                                    <select id="customFromMonth" class="form-select form-select-sm"></select>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <label class="form-label fw-semibold">Đến tháng:</label>
+                                                    <select id="customToMonth" class="form-select form-select-sm"></select>
+                                                </div>
+
+                                                <!-- Tuần -->
+                                                <div class="col-auto">
+                                                    <label class="form-label fw-semibold">Từ tuần:</label>
+                                                    <select id="customFromWeek" class="form-select form-select-sm"></select>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <label class="form-label fw-semibold">Đến tuần:</label>
+                                                    <select id="customToWeek" class="form-select form-select-sm"></select>
+                                                </div>
+
+                                                <!-- Ngày -->
+                                                <div class="col-auto">
+                                                    <label class="form-label fw-semibold">Từ ngày:</label>
+                                                    <input type="date" id="customFromDate" class="form-control form-control-sm" />
+                                                </div>
+                                                <div class="col-auto">
+                                                    <label class="form-label fw-semibold">Đến ngày:</label>
+                                                    <input type="date" id="customToDate" class="form-control form-control-sm" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="button" id="btnApplyCustomRange" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-search"></i> Áp dụng
+                                            </button>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="button" id="btnClearCustomRange" class="btn btn-outline-secondary btn-sm">
+                                                <i class="fas fa-times"></i> Xóa
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Nút làm mới -->
+                                <div class="col-auto">
+                                    <button type="button" id="btnRefreshChart" class="btn btn-success btn-sm">
+                                        <i class="fas fa-sync-alt"></i> Làm mới
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-12">
-                    <canvas id="combinedChart"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h5 class="text-center fw-bold">Thống kê số liệu lượt truy cập sách</h5>
-                </div>
-                <div class="col-lg-12">
-                    <canvas id="canChartBookViewCount"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <h5 class="text-center fw-bold">Thống kê số liệu lượt sách tồn kho</h5>
-                        </div>
-                        <div class="col-lg-12">
-                            <canvas id="canChartBookAmount"></canvas>
+                    <div class="card">
+                        <div class="card-body">
+                            <canvas id="combinedChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="text-center fw-bold mb-0">Thống kê sách đã bán</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-center justify-content-center mb-3">
+                        <div class="col-auto">
+                            <label class="form-label fw-semibold">Thống kê theo:</label>
+                            <select id="cboBookSaleType" name="bookSaleType" class="form-select form-select-sm">
+                                <option value="genre" selected>Thể loại</option>
+                                <option value="series">Series</option>
+                                <option value="buycount">Lượt mua</option>
+                            </select>
+                        </div>
+                    </div>
+                    <canvas id="canChartBookSales"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="text-center fw-bold mb-0">Thống kê tồn kho</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="canChartBookAmount"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment/locale/vi.js"></script>
+
     <script>
-        const handleViewChartCountViewBook = () => {
-            handleAjax("/Api/Charts/GetChartCountViewBook", {}, (res) => {
-                if (res.success) {
-                    createChart("#canChartBookViewCount", "bar", res.data);
-                } else {
+        // Thiết lập moment sang tiếng Việt
+        moment.locale('vi');
+
+        // --- Các hàm tiện ích ---
+        function pad(n) {
+            return n.toString().padStart(2, '0');
+        }
+
+        function getISODate(date) {
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+        }
+
+
+        // --- Các hàm điền dữ liệu cho Dropdown ---
+
+        function populateYears() {
+            const now = new Date().getFullYear();
+            const fromYearSelect = $("#customFromYear");
+            const toYearSelect = $("#customToYear");
+
+            fromYearSelect.empty();
+            toYearSelect.empty();
+
+            for (let y = now - 5; y <= now + 1; y++) {
+                fromYearSelect.append(`<option value="${y}">${y}</option>`);
+                toYearSelect.append(`<option value="${y}">${y}</option>`);
+            }
+            // Mặc định chọn năm hiện tại
+            fromYearSelect.val(now);
+            toYearSelect.val(now);
+        }
+
+        function populateQuarters() {
+            const fromYear = parseInt($("#customFromYear").val());
+            const toYear = parseInt($("#customToYear").val());
+            const fromQSelect = $("#customFromQuarter");
+            const toQSelect = $("#customToQuarter");
+
+            fromQSelect.empty();
+            toQSelect.empty();
+
+            if (fromYear > toYear) return;
+
+            for (let y = fromYear; y <= toYear; y++) {
+                for (let q = 1; q <= 4; q++) {
+                    const val = `${y}-${q}`;
+                    const label = `Quý ${q} / ${y}`;
+                    fromQSelect.append(`<option value="${val}">${label}</option>`);
+                    toQSelect.append(`<option value="${val}">${label}</option>`);
                 }
-            }, {
-                type: "GET"
+            }
+            // Chọn mặc định giá trị đầu và cuối
+            fromQSelect.prop('selectedIndex', 0);
+            toQSelect.prop('selectedIndex', toQSelect.find('option').length - 1);
+        }
+
+        function populateMonths() {
+            const fromQuarterVal = $("#customFromQuarter").val();
+            const toQuarterVal = $("#customToQuarter").val();
+            const fromMSelect = $("#customFromMonth");
+            const toMSelect = $("#customToMonth");
+
+            fromMSelect.empty();
+            toMSelect.empty();
+
+            if (!fromQuarterVal || !toQuarterVal) return;
+
+            const [fromYear, fromQuarter] = fromQuarterVal.split('-').map(Number);
+            const [toYear, toQuarter] = toQuarterVal.split('-').map(Number);
+
+            const startDate = moment(`${fromYear}-01-01`).quarter(fromQuarter).startOf('quarter');
+            const endDate = moment(`${toYear}-01-01`).quarter(toQuarter).endOf('quarter');
+
+            let currentMonth = startDate.clone();
+            while (currentMonth.isBefore(endDate)) {
+                const val = currentMonth.format('YYYY-MM');
+                const label = `Tháng ${currentMonth.format('MM / YYYY')}`;
+                fromMSelect.append(`<option value="${val}">${label}</option>`);
+                toMSelect.append(`<option value="${val}">${label}</option>`);
+                currentMonth.add(1, 'month');
+            }
+            fromMSelect.prop('selectedIndex', 0);
+            toMSelect.prop('selectedIndex', toMSelect.find('option').length - 1);
+        }
+
+        function populateWeeks() {
+            const fromMonthVal = $("#customFromMonth").val();
+            const toMonthVal = $("#customToMonth").val();
+            const fromWSelect = $("#customFromWeek");
+            const toWSelect = $("#customToWeek");
+
+            fromWSelect.empty();
+            toWSelect.empty();
+
+            if (!fromMonthVal || !toMonthVal) return;
+
+            const startDate = moment(fromMonthVal).startOf('month');
+            const endDate = moment(toMonthVal).endOf('month');
+
+            let current = startDate.clone().startOf('week');
+
+            while (current.isBefore(endDate)) {
+                 const weekStart = current.clone();
+                 const weekEnd = current.clone().endOf('week');
+
+                 // Chỉ thêm tuần nếu nó giao với khoảng thời gian đã chọn
+                 if(weekEnd.isSameOrAfter(startDate) && weekStart.isSameOrBefore(endDate)) {
+                    const val = `${weekStart.format('YYYY-MM-DD')}_${weekEnd.format('YYYY-MM-DD')}`;
+                    const label = `Tuần ${weekStart.format('DD/MM')} - ${weekEnd.format('DD/MM/YYYY')}`;
+                    fromWSelect.append(`<option value="${val}">${label}</option>`);
+                    toWSelect.append(`<option value="${val}">${label}</option>`);
+                 }
+                 current.add(1, 'week');
+            }
+            fromWSelect.prop('selectedIndex', 0);
+            toWSelect.prop('selectedIndex', toWSelect.find('option').length - 1);
+        }
+
+        function populateDates() {
+            const fromWeekVal = $("#customFromWeek").val();
+            const toWeekVal = $("#customToWeek").val();
+            const fromDateInput = $("#customFromDate");
+            const toDateInput = $("#customToDate");
+
+            if (!fromWeekVal || !toWeekVal) {
+                fromDateInput.val('');
+                toDateInput.val('');
+                return;
+            };
+
+            const [minDate] = fromWeekVal.split('_');
+            const [, maxDate] = toWeekVal.split('_');
+
+            fromDateInput.attr('min', minDate).attr('max', maxDate).val(minDate);
+            toDateInput.attr('min', minDate).attr('max', maxDate).val(maxDate);
+        }
+
+        // --- Các hàm xử lý sự kiện ---
+
+        function bindDropdownEvents() {
+            // Khi thay đổi năm
+            $("#customFromYear, #customToYear").on("change", function() {
+                populateQuarters();
+                populateMonths();
+                populateWeeks();
+                populateDates();
             });
-        };
-        const handleViewChartBookAmount = () => {
-            handleAjax("/Api/Charts/GetChartBookAmount", {}, (res) => {
-                if (res.success) {
-                    createChart("#canChartBookAmount", "bar", res.data);
-                }
-            }, {
-                type: "GET"
+
+            // Khi thay đổi quý
+            $("#customFromQuarter, #customToQuarter").on("change", function() {
+                populateMonths();
+                populateWeeks();
+                populateDates();
             });
-        };
-        const handleChoiceYear = () => {
-            $("#cboChoiceYear").on("change", function () {
-                handleViewChartCombine(Number($(this).val()));
+
+            // Khi thay đổi tháng
+            $("#customFromMonth, #customToMonth").on("change", function() {
+                populateWeeks();
+                populateDates();
+            });
+
+            // Khi thay đổi tuần
+            $("#customFromWeek, #customToWeek").on("change", function() {
+                populateDates();
             });
         }
-        const handleViewChartCombine = (year = 2024) => {
-            handleAjax(`/Api/Charts/GetChartTotalPriceForMQY?year=${year}`, {}, (res) => {
+
+        function getApiParams() {
+             return {
+                periodType: $("#cboPeriodType").val(),
+                saleType: $("#cboBookSaleType").val(),
+                fromDate: $("#customFromDate").val(),
+                toDate: $("#customToDate").val()
+            };
+        }
+
+        function handleFetchAndDrawCharts() {
+            const params = getApiParams();
+
+            if (!params.fromDate || !params.toDate) {
+                alert("Vui lòng chọn khoảng thời gian hợp lệ.");
+                return;
+            }
+
+            const query = new URLSearchParams(params).toString();
+
+            // Fetch cho biểu đồ doanh thu
+            fetch(`/Api/Charts/GetChartTotalPrice?${query}`)
+                .then(r => r.json()).then(res => {
                 if (res.success) {
                     createChart("#combinedChart", "bar", res.data);
+                } else {
+                    alert(`Lỗi doanh thu: ${res.message}`);
+                    createChart("#combinedChart", "bar", { labels: [], dataChart: [{ label: 'Không có dữ liệu', data: [] }]});
                 }
-            }, {
-                type: "GET"
             });
-        };
-        function init() {
-            handleViewChartCountViewBook();
-            handleViewChartBookAmount();
-            handleViewChartCombine();
-            handleChoiceYear();
-        }
-        init();
 
+            // Fetch cho biểu đồ sách đã bán
+            fetch(`/Api/Charts/GetChartBookSales?${query}`)
+                .then(r => r.json()).then(res => {
+                 if (res.success) {
+                    createChart("#canChartBookSales", "bar", res.data);
+                } else {
+                    alert(`Lỗi sách bán: ${res.message}`);
+                    createChart("#canChartBookSales", "bar", { labels: [], dataChart: [{ label: 'Không có dữ liệu', data: [] }]});
+                }
+            });
+        }
+
+        function bindButtons() {
+            $("#btnApplyCustomRange").on("click", handleFetchAndDrawCharts);
+
+            // Thay đổi loại thống kê sách cũng vẽ lại biểu đồ tương ứng
+             $("#cboBookSaleType").on("change", handleFetchAndDrawCharts);
+             // Thay đổi loại thống kê thời gian cũng vẽ lại tất cả
+             $("#cboPeriodType").on("change", handleFetchAndDrawCharts);
+
+            $("#btnClearCustomRange").on("click", () => {
+                // Đặt lại tất cả các dropdown về trạng thái ban đầu và vẽ lại biểu đồ mặc định
+                initializePage();
+            });
+
+            // Nút làm mới cũng hoạt động như nút áp dụng
+            $("#btnRefreshChart").on("click", handleFetchAndDrawCharts);
+        }
+
+        function initializePage() {
+             populateYears();
+             populateQuarters();
+             populateMonths();
+             populateWeeks();
+             populateDates();
+             handleFetchAndDrawCharts(); // Tải dữ liệu mặc định ban đầu
+        }
+
+        $(document).ready(() => {
+            bindDropdownEvents();
+            bindButtons();
+            initializePage(); // Hàm khởi tạo chính
+        });
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let chartInstances = {};
+        function createChart(selector, type, chartData, labelOverride = null) {
+            const ctx = document.querySelector(selector);
+            if (!ctx) return;
+
+            if (chartInstances[selector]) {
+                chartInstances[selector].destroy();
+            }
+
+            // Xử lý trường hợp không có dữ liệu
+            if (!chartData || chartData.labels.length === 0) {
+                 const chartTitle = chartData && chartData.dataChart && chartData.dataChart.length > 0 ? chartData.dataChart[0].label : 'Không có dữ liệu';
+                 chartInstances[selector] = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels: [''], datasets: [{ label: chartTitle, data: [] }] },
+                    options: { plugins: { title: { display: true, text: 'Không có dữ liệu để hiển thị' } } }
+                });
+                return;
+            }
+
+            chartInstances[selector] = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.dataChart.map(dc => ({
+                        label: labelOverride || dc.label,
+                        data: dc.data,
+                        borderWidth: 1,
+                        backgroundColor: generateColors(dc.data.length, 0.5),
+                        borderColor: generateColors(dc.data.length, 1),
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } },
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        // Định dạng số có dấu phẩy ngăn cách hàng nghìn
+                                        label += new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateColors(count, opacity = 1) {
+            const baseColors = ['255, 99, 132', '54, 162, 235', '255, 206, 86', '75, 192, 192', '153, 102, 255', '255, 159, 64'];
+            return Array.from({ length: count }, (_, i) => `rgba(${baseColors[i % baseColors.length]}, ${opacity})`);
+        }
     </script>
 }
